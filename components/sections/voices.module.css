@@ -1,0 +1,341 @@
+/* ============================================================
+   Voices. A pinned horizontal rail of quote cards: vertical
+   scroll drives the track, a tracker bar fills as it travels.
+   ============================================================ */
+
+.voices {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(-72px, -4vw, -40px);
+  padding-block: calc(clamp(40px, 4vw, 72px) + clamp(44px, 5.6vw, 84px)) clamp(44px, 5.6vw, 84px);
+  border-radius: clamp(28px, 3vw, 44px) clamp(28px, 3vw, 44px) 0 0;
+  background: color-mix(in srgb, var(--bg), var(--ink) 1%);
+  color: var(--ink);
+  box-shadow: 0 -18px 42px rgb(0 0 0 / 0.18);
+  overflow: clip;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+  margin: 0 0 var(--eyebrow-gap);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(14px, 1.8vw, 22px);
+  margin-bottom: clamp(20px, 2.6vw, 30px);
+}
+@media (min-width: 900px) {
+  .head {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: end;
+    gap: clamp(32px, 5vw, 80px);
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(34px, 5.4vw, 78px);
+  font-weight: 800;
+  letter-spacing: -0.038em;
+  line-height: 0.94;
+  text-wrap: balance;
+  color: var(--ink);
+}
+.tMuted {
+  color: var(--body);
+}
+.tStrong {
+  color: var(--ink);
+}
+
+.lead {
+  margin: 0;
+  font-size: clamp(14px, 1.1vw, 17px);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--body);
+  max-width: 40ch;
+}
+
+/* ---- the tracker -------------------------------------------------------
+   Counter, then one segment per card: a hairline that fills with the
+   scroll and a node at every card boundary. The fill rides the same
+   scroll that moves the rail, so the bar is never ahead of or behind
+   the cards, and a node lights when its card owns the middle. */
+
+.tracker {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 0 0 clamp(22px, 3vw, 40px);
+}
+.trackIndex {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  min-width: 2ch;
+}
+.trackBar {
+  position: relative;
+  flex: 1;
+  height: 1px;
+  background: rgb(var(--line-rgb) / 0.12);
+}
+.trackFill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: left;
+  /* Painted at the current progress from the DOM write, so the bar
+     sits correctly for the native-scroll fallback before any tween. */
+  transform: scaleX(0);
+}
+/* One node per card, sitting where its card takes over the centre.
+   The passed nodes stay lit at half strength, so the row reads as a
+   history of the journey rather than only its leading edge. */
+.trackNode {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--at) * 100%);
+  width: 9px;
+  height: 9px;
+  border: 1px solid rgb(var(--line-rgb) / 0.22);
+  border-radius: 50%;
+  background: var(--bg);
+  transform: translate(-50%, -50%);
+  transition:
+    border-color var(--dur-state) var(--ease),
+    background var(--dur-state) var(--ease),
+    transform var(--dur-state) var(--ease);
+}
+.trackNode[data-on='true'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  transform: translate(-50%, -50%) scale(1.2);
+}
+.trackTotal {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--label);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- the rail ----------------------------------------------------------
+   The stage is the window: full bleed, and in the fallback modes an
+   ordinary horizontally scrollable strip with snap points. The rail is
+   the track inside it, sized to its content, and it is the track that
+   travels. Translating an overflow container would carry its clip along
+   and the cards would stay hidden, so the two jobs stay on two
+   elements. */
+
+.stage {
+  position: relative;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-block: clamp(4px, 0.6vw, 8px) clamp(20px, 2.4vw, 30px);
+}
+.stage::-webkit-scrollbar {
+  display: none;
+}
+@media (min-width: 1000px) {
+  .stage {
+    /* Travel room so the last card can end flush with the right edge
+       instead of the gutter. */
+    padding-inline: var(--gut);
+    margin-inline: calc(var(--gut) * -1);
+  }
+}
+
+.rail {
+  display: flex;
+  gap: clamp(14px, 1.6vw, 22px);
+  width: max-content;
+}
+
+.card {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+  width: min(82vw, clamp(340px, 31vw, 480px));
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.4vw, 18px);
+  /* Budgeted against the live viewport so the pinned view can never
+     crop a card: head plus tracker above cost roughly 300px, the rest
+     of the viewport belongs to the cards. Min only, never a max: the
+     quote card in particular must be allowed whatever its content
+     needs, because it is the section's main item. */
+  min-height: clamp(300px, calc(100dvh - 340px), 460px);
+  padding: clamp(22px, 2.6vw, 36px);
+  border-radius: var(--radius);
+  /* Light tokens mapped onto the card, accent included, so the one
+     accent rule holds inside it. */
+  --accent: var(--l-accent);
+  background: var(--l-bg);
+  color: var(--l-ink);
+  box-shadow: 0 18px 50px rgb(2 6 4 / 0.35);
+  transition: transform var(--dur-state) var(--ease);
+}
+.card:hover {
+  transform: translateY(-4px);
+}
+.card[data-kind='quote'] {
+  width: min(88vw, clamp(460px, 42vw, 680px));
+}
+
+/* The hero quote card. The one verbatim line, large and tight, capped
+   by viewport height as well as width so long quotes always land
+   whole inside the pinned view. */
+.glyph {
+  font-size: clamp(52px, 4.6vw, 76px);
+  line-height: 0.55;
+  font-weight: 800;
+  color: var(--l-accent);
+  opacity: 0.24;
+  user-select: none;
+}
+.quote {
+  margin: 0;
+  font-size: clamp(16px, min(1.55vw, 2.2dvh), 22px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.26;
+}
+.gloss {
+  margin: 0;
+  font-size: clamp(12px, min(0.95vw, 1.4dvh), 14px);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--l-body);
+  border-left: 2px solid var(--l-accent);
+  padding-left: 12px;
+}
+
+/* The receipt cards. Value first, source at the foot of the text. */
+.value {
+  font-size: clamp(34px, 3.4vw, 50px);
+  font-weight: 800;
+  letter-spacing: -0.034em;
+  line-height: 0.95;
+  font-variant-numeric: tabular-nums;
+}
+.valueLabel {
+  margin: 0;
+  font-size: clamp(13px, 1vw, 15px);
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  line-height: 1.3;
+}
+.src {
+  margin: auto 0 0;
+  padding-top: 10px;
+  border-top: 1px solid rgb(7 15 11 / 0.12);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  line-height: 1.45;
+  color: var(--l-label);
+}
+.src span {
+  color: var(--l-accent);
+}
+
+/* The chips card. */
+.chipNote {
+  margin: 0 0 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--l-label);
+}
+.chipList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.chipList li {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+.chipList li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--l-accent);
+  flex: 0 0 auto;
+}
+
+/* The foot every card shares: round avatar, name, role, bottom left. */
+.foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgb(7 15 11 / 0.14);
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--l-accent);
+  color: var(--l-bg);
+  font-size: 15px;
+  font-weight: 800;
+  flex: 0 0 auto;
+  user-select: none;
+}
+.avatar[data-kind='mark'] {
+  background: transparent;
+  border: 1px solid rgb(7 15 11 / 0.2);
+  color: var(--l-ink);
+}
+.avatar[data-kind='mark'] svg {
+  width: 22px;
+  height: 22px;
+}
+.who {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.who b {
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.who em {
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--l-label);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}

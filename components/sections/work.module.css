@@ -1,0 +1,427 @@
+/* ============================================================
+   Featured work. Sticky rail, scrolling covers, per-row pinned meta.
+   ============================================================ */
+
+.work {
+  background: var(--bg);
+  color: var(--ink);
+  padding-block: var(--section-pad);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.08);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+  margin: 0 0 var(--eyebrow-gap);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(16px, 2vw, 24px);
+  margin-bottom: var(--head-gap);
+  max-width: 60ch;
+}
+@media (min-width: 900px) {
+  .head {
+    grid-template-columns: minmax(0, 1.4fr);
+    gap: clamp(16px, 2vw, 24px);
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(40px, 6.4vw, 96px);
+  line-height: 0.9;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+/* Two lines, deliberate: the setup sits on line one, the claim on line
+   two with the accent inside it. Leaving the break to the wrapper let
+   the heading collapse to one word per line on narrow columns. */
+.tLine {
+  display: block;
+}
+.accent {
+  color: var(--accent);
+}
+.intro {
+  margin: 0;
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--body);
+  max-width: 52ch;
+}
+
+/* ---- the gallery -------------------------------------------------------
+   Two columns above the grid breakpoint: the pinned rail, then a stack
+   of project rows. Each row is a real element that owns one cover and
+   one meta, which is what keeps the meta's sticky inside its own row.
+   The earlier layout promoted cover and meta onto the gallery grid
+   through `display: contents`; with no row box of their own, every
+   meta escaped and they all pinned at once in the same column. */
+.gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(36px, 6vw, 72px);
+}
+@media (min-width: 1100px) {
+  .gallery {
+    grid-template-columns: minmax(0, 0.72fr) minmax(0, 2fr);
+    gap: clamp(28px, 3.4vw, 56px);
+    align-items: start;
+  }
+  /* The rail pins for the whole section, holding column one across
+     every project row while covers scroll past in the stack. */
+  .rail {
+    position: sticky;
+    top: calc(var(--nav-h) + 24px);
+  }
+}
+
+.rail {
+  display: grid;
+  gap: clamp(16px, 2vw, 24px);
+  align-content: start;
+}
+
+/* The stack of rows. The gap is the breathing room between projects,
+   and with the cover heights it sets how long each meta holds. */
+.stack {
+  display: grid;
+  gap: clamp(48px, 7vw, 104px);
+}
+
+/* One row: cover left, meta right. The row is the meta's sticky
+   containing block, so the pin lasts exactly as long as the row does. */
+.project {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(18px, 2.4vw, 28px);
+}
+@media (min-width: 1100px) {
+  .project {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+    gap: clamp(28px, 3.2vw, 52px);
+    align-items: start;
+  }
+  .meta {
+    position: sticky;
+    top: calc(var(--nav-h) + 48px);
+  }
+}
+
+.railCard {
+  display: grid;
+  gap: 6px;
+  padding: clamp(20px, 2vw, 28px);
+  border: 1px solid rgb(var(--line-rgb) / 0.12);
+  background: var(--surface);
+  border-radius: var(--radius);
+}
+.railKicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--label);
+}
+.railValue {
+  margin: 0 0 14px;
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 800;
+  letter-spacing: -0.026em;
+  color: var(--ink);
+}
+.railValue:last-of-type {
+  margin-bottom: 0;
+}
+
+.railIntro {
+  margin: 0;
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.6;
+  font-weight: 500;
+  color: var(--body);
+  max-width: 34ch;
+}
+
+.railStats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(14px, 1.6vw, 22px);
+}
+.railStats > div {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  padding: clamp(16px, 1.8vw, 22px);
+  border: 1px solid rgb(var(--line-rgb) / 0.12);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.railStatKey {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--label);
+}
+.railStatVal {
+  font-size: clamp(26px, 3.4vw, 40px);
+  font-weight: 800;
+  letter-spacing: -0.026em;
+  line-height: 0.9;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.railStatNote {
+  font-style: normal;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--body);
+  max-width: 20ch;
+}
+
+/* The live counter. Current row in the accent, four ticks, the total
+   in mono. Reads as an instrument, not a pagination control. */
+.railProgress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: clamp(14px, 1.6vw, 20px);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.1);
+}
+.railIndex {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.railTicks {
+  display: flex;
+  gap: 5px;
+}
+.railTicks i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgb(var(--line-rgb) / 0.18);
+  transition: background var(--dur-state) var(--ease), transform var(--dur-state) var(--ease);
+}
+.railTicks i[data-on='true'] {
+  background: var(--accent);
+  transform: scale(1.35);
+}
+.railTotal {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--label);
+  font-variant-numeric: tabular-nums;
+}
+
+.cover {
+  position: relative;
+  isolation: isolate;
+  /* Taller than a square so each row runs long enough for its meta to
+     hold. The pin is the point of the section; a short row never feels
+     pinned at all. */
+  aspect-ratio: 4 / 4.6;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid rgb(var(--line-rgb) / 0.12);
+  background: var(--surface);
+  background-image:
+    radial-gradient(60% 50% at 30% 0%, rgb(var(--bloom-rgb) / 0.16) 0%, transparent 70%),
+    radial-gradient(40% 50% at 100% 100%, rgb(96 140 118 / 0.16) 0%, transparent 60%);
+  background-color: var(--surface);
+  transition:
+    border-color var(--dur-state) var(--ease),
+    transform var(--dur-state) var(--ease);
+}
+.cover:hover {
+  border-color: rgb(var(--line-rgb) / 0.3);
+  transform: translateY(-4px);
+}
+
+.coverMark {
+  position: absolute;
+  right: -8%;
+  bottom: -8%;
+  width: 65%;
+  height: 65%;
+  color: rgb(var(--line-rgb) / 0.06);
+  pointer-events: none;
+  z-index: 0;
+  transition: color var(--dur-state) var(--ease);
+}
+.cover:hover .coverMark {
+  color: rgb(var(--line-rgb) / 0.12);
+}
+
+.coverIndex {
+  position: absolute;
+  top: clamp(14px, 1.6vw, 22px);
+  left: clamp(14px, 1.6vw, 22px);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  z-index: 2;
+}
+
+.coverMonogram {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-sans);
+  font-size: clamp(150px, 16vw, 240px);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  color: var(--ink);
+  opacity: 0.94;
+  z-index: 1;
+  user-select: none;
+  transition: transform 600ms var(--ease);
+}
+.cover:hover .coverMonogram {
+  transform: scale(1.04);
+}
+
+
+/* ---- the pinned meta column ----------------------------------------- */
+
+.meta {
+  display: grid;
+  align-content: start;
+  gap: clamp(14px, 1.6vw, 20px);
+  /* The sticky itself lives in the 1100px block above, on this row's
+     own copy. Down here the meta is an ordinary block under its cover. */
+}
+
+.metaIndex {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+
+.metaTitle {
+  margin-bottom: 2px;
+}
+.projectName {
+  margin: 0 0 8px;
+  font-size: clamp(28px, 3.6vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.036em;
+  line-height: 0.94;
+  color: var(--ink);
+}
+.projectSub {
+  margin: 0;
+  font-size: clamp(15px, 1.1vw, 17px);
+  font-weight: 600;
+  color: var(--body);
+  letter-spacing: -0.012em;
+  max-width: 30ch;
+}
+
+.metaFacts {
+  display: grid;
+  gap: 0;
+}
+.metaFacts > div {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  align-items: baseline;
+  gap: 16px;
+  padding: clamp(9px, 1vw, 12px) 0;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.1);
+}
+.metaFacts > div:last-child {
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.1);
+}
+.metaFacts span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--label);
+}
+.metaFacts b {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--accent);
+  letter-spacing: -0.008em;
+}
+
+.metaSummary {
+  margin: 0;
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.6;
+  font-weight: 500;
+  color: var(--body);
+  max-width: 44ch;
+}
+
+.metaCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.2);
+  padding-bottom: 5px;
+  width: max-content;
+  transition:
+    color var(--dur-state) var(--ease),
+    border-color var(--dur-state) var(--ease);
+}
+.metaCta svg {
+  width: 14px;
+  height: 14px;
+  transition: transform var(--dur-state) var(--ease);
+}
+.metaCta:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.metaCta:hover svg {
+  transform: translateX(5px);
+}
+
+@media (max-width: 1099px) {
+  /* On the stacked layout the meta is no longer pinned and the cover
+     reads above it, so the row reads as card-then-detail rather than a
+     two column spread. */
+  .project {
+    display: grid;
+    gap: clamp(18px, 2.4vw, 28px);
+  }
+  .railProgress {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cover,
+  .coverMark,
+  .coverMonogram,
+  .metaCta,
+  .metaCta svg,
+  .railTicks i {
+    transition: none;
+  }
+}

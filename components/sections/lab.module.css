@@ -1,0 +1,440 @@
+/* ============================================================
+   14. From the lab. Product reveal rows + the waitlist band.
+   ============================================================ */
+
+.lab {
+  position: relative;
+  background: var(--bg);
+  color: var(--ink);
+  padding-block: var(--section-pad);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.08);
+}
+
+/* ---- the announcement ticker --------------------------------------------
+   The loudest coming soon the page is allowed: one line, the accent,
+   running edge to edge without stopping. Pause on hover so it can be
+   read, fade the ends so it runs off rather than bouncing. */
+
+.ticker {
+  overflow: hidden;
+  border-block: 1px solid rgb(var(--line-rgb) / 0.12);
+  margin-bottom: clamp(24px, 3.4vw, 44px);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+.tickerTrack {
+  display: flex;
+  width: max-content;
+  animation: ticker-run 26s linear infinite;
+}
+.tickerTrack span {
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 1.3vw, 15px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding-block: clamp(10px, 1.3vw, 16px);
+  white-space: nowrap;
+}
+.ticker:hover .tickerTrack {
+  animation-play-state: paused;
+}
+@keyframes ticker-run {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(14px, 1.8vw, 22px);
+  margin-bottom: var(--head-gap);
+}
+@media (min-width: 900px) {
+  .head {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: end;
+    gap: clamp(32px, 5vw, 80px);
+  }
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--label);
+  margin: 0 0 var(--eyebrow-gap);
+}
+.eyebrow::before {
+  content: '+ ';
+  color: var(--accent);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(34px, 5.4vw, 78px);
+  font-weight: 800;
+  letter-spacing: -0.038em;
+  line-height: 0.94;
+  text-wrap: balance;
+  color: var(--ink);
+}
+.accent {
+  color: var(--accent);
+}
+
+.lead {
+  margin: 0;
+  font-size: clamp(14px, 1.1vw, 17px);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--body);
+  max-width: 44ch;
+}
+
+/* ---- the reveal rows --------------------------------------------------
+   Catalogue rows, not cards. Index and status sit in their own columns,
+   the name decrypts on scroll entry, and the "for whom" line expands on
+   hover. The detail is always painted on touch devices and under reduced
+   motion; the expansion is the desktop pointer's reward. */
+
+.rows {
+  display: grid;
+  margin-bottom: clamp(28px, 4vw, 48px);
+}
+
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  column-gap: clamp(16px, 2.4vw, 32px);
+  row-gap: clamp(10px, 1.4vw, 16px);
+  align-items: baseline;
+  padding-block: clamp(20px, 2.6vw, 32px);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.1);
+  transition: background var(--dur-state) var(--ease);
+}
+.row:last-child {
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.1);
+}
+/* The accent hairline that draws across the row's top edge on hover. */
+.row::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 520ms var(--ease);
+}
+.row:hover::before {
+  transform: scaleX(1);
+}
+.row:hover {
+  background: rgb(var(--line-rgb) / 0.02);
+}
+
+.rowHead {
+  display: contents;
+}
+.rowIndex {
+  grid-column: 1;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--label);
+  padding-top: 6px;
+  transition: color var(--dur-state) var(--ease);
+}
+.row:hover .rowIndex {
+  color: var(--accent);
+}
+.rowStatus {
+  grid-column: 2;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--line-rgb) / 0.16);
+  background: rgb(var(--line-rgb) / 0.04);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+  transition: border-color var(--dur-state) var(--ease);
+}
+.rowStatus i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: 0 0 auto;
+  /* The pulse says "alive, not late". */
+  animation: status-pulse 2.2s var(--ease) infinite;
+}
+@keyframes status-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.rowStatus[data-status='coming soon'] {
+  border-color: rgb(249 180 214 / 0.35);
+  color: var(--accent);
+}
+.row:hover .rowStatus {
+  border-color: rgb(var(--line-rgb) / 0.3);
+}
+.rowName {
+  grid-column: 3;
+  margin: 0;
+  font-size: clamp(26px, 3.4vw, 50px);
+  font-weight: 800;
+  letter-spacing: -0.032em;
+  line-height: 1;
+  color: var(--ink);
+  transition: transform var(--dur-state) var(--ease);
+}
+.row:hover .rowName {
+  transform: translateX(10px);
+}
+
+.rowBody {
+  grid-column: 3;
+  display: grid;
+  gap: 8px;
+}
+/* The category tag: what kind of product this is, in the accent, one
+   line, above the description. */
+.rowTag {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.rowWhat {
+  margin: 0;
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.55;
+  color: var(--body);
+  font-weight: 500;
+  max-width: 62ch;
+  transition: color var(--dur-state) var(--ease);
+}
+.row:hover .rowWhat {
+  color: var(--ink);
+}
+
+/* The "for whom" line. Collapsed at rest, expanded on hover via the
+   0fr to 1fr grid track, so the reveal is a transition, not a jump.
+   The inner wrapper carries the min-height zero that makes 0fr real. */
+.rowWho {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--body);
+  transition: grid-template-rows 480ms var(--ease);
+}
+.rowWho > span,
+.rowWho {
+  min-height: 0;
+}
+.rowWho span {
+  color: var(--accent);
+  overflow: hidden;
+}
+.row:hover .rowWho,
+.row:focus-within .rowWho {
+  grid-template-rows: 1fr;
+}
+/* Touch has no hover and reduced motion gets the finished state: the
+   line simply reads in place. */
+@media (hover: none) {
+  .rowWho {
+    grid-template-rows: 1fr;
+  }
+}
+
+/* ---- the waitlist band -------------------------------------------------
+   The one surface on the page the accent owns entirely. Dark ink on
+   accent, the capture row inverted, because the products are what the
+   studio sells next and the band is the section's whole point. */
+
+.capture {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: clamp(16px, 2vw, 24px);
+  padding: clamp(26px, 3.6vw, 48px);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(120% 130% at 100% 0%, rgb(4 7 6 / 0.12) 0%, transparent 55%),
+    var(--accent);
+  color: var(--d-void);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3);
+}
+.captureHead {
+  display: grid;
+  gap: 8px;
+}
+.captureKick {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(4 7 6 / 0.6);
+}
+.captureLabel {
+  font-size: clamp(26px, 3.2vw, 44px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  max-width: 22ch;
+}
+
+.captureRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 760px) {
+  .captureRow {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+  }
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+.fieldLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(4 7 6 / 0.6);
+}
+.input {
+  appearance: none;
+  background: rgb(4 7 6 / 0.06);
+  border: 1px solid rgb(4 7 6 / 0.3);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  color: var(--d-void);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  transition:
+    border-color var(--dur-state) var(--ease),
+    background var(--dur-state) var(--ease);
+}
+.input::placeholder {
+  color: rgb(4 7 6 / 0.42);
+}
+.input:focus {
+  outline: none;
+  border-color: var(--d-void);
+  background: rgb(4 7 6 / 0.1);
+}
+
+.submit {
+  appearance: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 22px;
+  border: 1px solid var(--d-void);
+  background: var(--d-void);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  transition:
+    transform var(--dur-state) var(--ease),
+    background var(--dur-state) var(--ease);
+}
+.submit svg {
+  width: 14px;
+  height: 14px;
+  transition: transform var(--dur-state) var(--ease);
+}
+.submit:hover {
+  transform: translateY(-2px);
+}
+.submit:hover svg {
+  transform: translateX(4px);
+}
+.submit:focus-visible {
+  outline: 2px solid var(--d-void);
+  outline-offset: 3px;
+}
+
+.captureNote {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgb(4 7 6 / 0.55);
+}
+
+@media (max-width: 699px) {
+  .row {
+    grid-template-columns: auto 1fr;
+  }
+  .rowIndex {
+    grid-column: 1;
+  }
+  .rowStatus {
+    grid-column: 2;
+    justify-self: end;
+  }
+  .rowName,
+  .rowBody {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tickerTrack {
+    animation: none;
+  }
+  .rowStatus i {
+    animation: none;
+  }
+  .row,
+  .row::before,
+  .rowIndex,
+  .rowStatus,
+  .rowName,
+  .rowWhat,
+  .rowWho,
+  .input,
+  .submit,
+  .submit svg {
+    transition: none;
+  }
+  .rowWho {
+    grid-template-rows: 1fr;
+  }
+}

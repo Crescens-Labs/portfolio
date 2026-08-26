@@ -1,0 +1,51 @@
+node_modules/
+.next/
+out/
+dist/
+build/
+.turbo/
+.vercel/
+coverage/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+graphify-out/
+
+.claude/
+
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+
+# test output
+/test-results/
+/playwright-report/
+/blob-report/
+
+# Local source material and agent tooling
+/assets/
+/docs/
+/.agents/
+/.claude/
+/.codex/
+/.impeccable/
+/AGENTS.md
+/CLAUDE.md
+
+# Generated local analysis and development output
+/graphify-out/
+/test-results/
+/playwright-report/
+/blob-report/
+
+# Local asset-fetch helper
+/scripts/fetch-logos.mjs
+
+# Internal design review route
+/app/styleguide/
+
+/.lighthouseci/

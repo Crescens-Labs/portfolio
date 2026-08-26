@@ -1,0 +1,1160 @@
+/* ============================================================
+   Primitive styles. Tokens only, no literal colours below this line
+   except inside the reduced-motion block, which has none anyway.
+   ============================================================ */
+
+/* ---- layout -------------------------------------------------------- */
+
+.band {
+  display: block;
+}
+
+.wrap {
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+}
+
+.pad {
+  padding-block: var(--pad-block);
+}
+.padSm {
+  padding-block: var(--pad-block-sm);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+.col {
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .col {
+    border-left: 1px solid rgb(var(--line-rgb) / 0.1);
+    padding-inline: var(--col-pad);
+  }
+  .col:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+  .col[data-span='2'] {
+    grid-column: span 2;
+  }
+  .col[data-span='3'] {
+    grid-column: span 3;
+  }
+  .col[data-span='4'] {
+    grid-column: span 4;
+  }
+}
+
+.hlH {
+  display: block;
+  height: 1px;
+  background: rgb(var(--line-rgb) / 0.1);
+}
+.hlV {
+  display: block;
+  width: 1px;
+  align-self: stretch;
+  background: rgb(var(--line-rgb) / 0.1);
+}
+
+/* Sticky only where there is room to scroll past it. Below 900px the grid
+   is a single column, so a pinned rail would just cover the content. */
+@media (min-width: 900px) {
+  .sticky {
+    position: sticky;
+  }
+  .sticky[data-offset='nav'] {
+    top: var(--nav-h);
+  }
+  .sticky[data-offset='section'] {
+    top: calc(var(--nav-h) * 2);
+  }
+}
+
+/* ---- type ---------------------------------------------------------- */
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--label);
+  margin: 0 0 clamp(20px, 2.6vw, 34px);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.eyebrow::before {
+  content: '+';
+  color: var(--accent);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--label);
+}
+
+.head {
+  font-size: clamp(30px, 5.1vw, 64px);
+  line-height: 0.9; /* reference teardown, measured */
+  font-weight: 800;
+  letter-spacing: -0.024em;
+  margin: 0 0 clamp(18px, 2.2vw, 28px);
+  text-wrap: balance;
+  color: var(--ink);
+}
+/* Capped at 68, not 80. At 80 the hero headline ran to four lines on a
+   laptop and pushed the lead and the CTA past the fold. */
+.head[data-level='1'] {
+  font-size: clamp(32px, 5.4vw, 68px);
+}
+.head[data-level='3'] {
+  font-size: clamp(20px, 2.2vw, 28px);
+  line-height: 1.02;
+}
+.headLead {
+  color: var(--body);
+}
+.headAccent {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.lead {
+  font-size: clamp(14px, 1.2vw, 17px);
+  line-height: 1.35;
+  font-weight: 500;
+  color: var(--ink);
+  margin: 0;
+  max-width: 40ch;
+}
+.body {
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--body);
+  margin: 0;
+  max-width: 46ch;
+}
+
+/* ---- CTA ----------------------------------------------------------- */
+
+.ctaKick {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--label);
+  margin: 0 0 10px;
+}
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid rgb(var(--line-rgb) / 0.16);
+  border-radius: var(--radius);
+  padding: 15px 18px;
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  transition:
+    background var(--dur-state) var(--ease),
+    border-color var(--dur-state) var(--ease);
+}
+.cta:hover {
+  background: var(--raise);
+  border-color: var(--accent);
+}
+.ctaDots {
+  display: grid;
+  gap: 3px;
+}
+.ctaDots i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ---- stats --------------------------------------------------------- */
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid rgb(var(--line-rgb) / 0.09);
+  border-radius: var(--radius);
+  padding: clamp(22px, 3vw, 32px);
+  transition:
+    border-color var(--dur-state) var(--ease),
+    transform var(--dur-state) var(--ease);
+}
+.stat[data-in='true'] {
+  animation: statIn 680ms var(--ease) backwards;
+  animation-delay: calc(var(--i) * 70ms);
+}
+@keyframes statIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+/* The whole card is the affordance: the border warms and the active dot
+   set brightens on hover. Nothing inside is individually clickable. */
+.stat:hover {
+  border-color: rgb(var(--line-rgb) / 0.22);
+  transform: translateY(-2px);
+}
+.dots {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+.dots i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgb(var(--line-rgb) / 0.22);
+}
+.dotOn {
+  background: var(--accent) !important;
+}
+.statLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--label);
+  margin: 0 0 10px;
+}
+.statValue {
+  font-size: clamp(34px, 4.4vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 0.85;
+  margin: 0 0 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.statValue em {
+  font-style: normal;
+  font-size: 0.42em;
+  font-weight: 700;
+  color: var(--accent);
+  margin-left: 1px;
+  vertical-align: super;
+}
+.statCap {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--body);
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+.statSrc {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--label);
+  /* Pinned to the card foot by the auto margin, with the hairline
+     separated by the padding. */
+  margin: auto 0 0;
+  padding-top: 12px;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.08);
+  line-height: 1.35;
+}
+.statSrc span {
+  color: var(--accent);
+}
+
+/* ---- accordion ----------------------------------------------------- */
+
+.acc {
+  border-top: 1px solid rgb(var(--line-rgb) / 0.1);
+}
+.accRow {
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.1);
+}
+.accHead {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+.accBtn {
+  appearance: none;
+  background: none;
+  border: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: clamp(15px, 1.8vw, 21px) 0;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+  font: inherit;
+  font-size: clamp(15px, 1.5vw, 18px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+/* dot to bar, transform only */
+.accMark {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: transform var(--dur-state) var(--ease);
+}
+.accMark[data-open='true'] {
+  transform: scaleY(0.22) scaleX(1.35);
+  border-radius: 2px;
+}
+.accPanel[data-open='true'] {
+  padding-bottom: clamp(15px, 1.8vw, 21px);
+}
+.accInner {
+  color: var(--body);
+  font-size: 14px;
+  line-height: 1.45;
+  max-width: 56ch;
+  padding-left: 24px;
+}
+
+/* ---- marquee ------------------------------------------------------- */
+
+.marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.mqTrack {
+  display: flex;
+  width: max-content;
+  animation: mq var(--speed) linear infinite;
+}
+.marquee[data-reverse='true'] .mqTrack {
+  animation-direction: reverse;
+}
+.mqTrack:hover {
+  animation-play-state: paused;
+}
+.mqRow {
+  display: flex;
+  align-items: center;
+  gap: clamp(26px, 4vw, 62px);
+  padding-right: clamp(26px, 4vw, 62px);
+}
+@keyframes mq {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* ---- form ---------------------------------------------------------- */
+
+.formField {
+  display: grid;
+  gap: 8px;
+}
+.formLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--label);
+}
+.formInput {
+  background: var(--surface);
+  border: 1px solid rgb(var(--line-rgb) / 0.16);
+  border-radius: var(--radius);
+  padding: 13px 14px;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  transition:
+    border-color var(--dur-state) var(--ease),
+    background var(--dur-state) var(--ease);
+}
+.formInput::placeholder {
+  color: var(--body);
+}
+.formInput:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--raise);
+}
+
+/* ---- reveal spine -------------------------------------------------- */
+
+.spine {
+  font-size: clamp(21px, 3.3vw, 40px);
+  line-height: 1.16;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  margin: 0;
+  max-width: 22ch;
+  text-wrap: balance;
+}
+/* Painted at the FINAL colour. GSAP dims these back down only when motion
+   is wanted, so opting out leaves a fully readable block. */
+.word {
+  color: var(--ink);
+}
+.wordHi {
+  font-style: normal;
+  color: var(--accent);
+}
+
+/* ---- loader -------------------------------------------------------- */
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  background: var(--d-void);
+  transition: transform 640ms var(--ease), opacity 400ms var(--ease);
+  /* The curtain is server rendered, so it is present in the very first
+     frame and there is no hero flash to cover for. The failsafe dismisses
+     it on its own if JavaScript never runs: content can never stay
+     trapped behind an intro that never leaves. Any script-driven removal
+     (repeat visit, reduced motion, the real schedule) happens before
+     this fires or unmounts the element outright. */
+  animation: loader-failsafe 1ms linear 7s forwards;
+}
+@keyframes loader-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+/* The curtain is once per session. The inline flag script in the layout
+   body sets this attribute before the first paint when the session has
+   already seen the intro, so a reload lands straight on content instead
+   of flashing a frame of curtain before hydration removes it. */
+html[data-intro-seen='1'] .loader {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce), (max-width: 767px) {
+  .loader {
+    display: none;
+  }
+}
+/* The loader is one screen that must wear the identity's specks too,
+   matching the page sheet: white flecks lifted out of the void. */
+.loaderGrain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.85;
+  background-image: url('/grain-speck.png');
+  background-repeat: repeat;
+  background-size: var(--grain-size) var(--grain-size);
+  mix-blend-mode: screen;
+}
+.loader[data-leaving='true'] {
+  transform: translate3d(0, -100%, 0);
+}
+.loaderInner {
+  display: grid;
+  justify-items: center;
+  gap: clamp(20px, 3vw, 30px);
+}
+.loaderMark {
+  width: clamp(104px, 19vw, 164px);
+  height: clamp(104px, 19vw, 164px);
+  color: var(--d-accent);
+  overflow: visible;
+}
+/* Resting state: parked at the scatter positions. The convergence
+   animation only runs once the identity block is shown. */
+.loaderDot {
+  fill: currentColor;
+  transform: translate(var(--fx), var(--fy)) scale(0.2);
+  transform-origin: center;
+  transform-box: fill-box;
+}
+@keyframes dotIn {
+  to {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+.loaderWord {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.16em;
+  font-size: clamp(19px, 2.7vw, 28px);
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  color: var(--d-ink);
+}
+/* The hidden state lives in the keyframe with `backwards` fill, never in
+   the rule itself. The element's resting style is visible, so if the
+   animation never runs the text is simply there. Parked at `opacity: 0` in
+   the rule, any failure to animate is a permanently blank element.
+   Both letter and word animations gate under `.loaderId[data-show='true']`
+   so the identity only assembles once the count completes. */
+.loaderWord span {
+  display: inline-block;
+}
+.loaderWord em {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 0.66em;
+  letter-spacing: 0.22em;
+  color: var(--d-accent);
+}
+@keyframes wordIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.5em);
+  }
+}
+
+/* ---- loader counter, dot-matrix percentage ------------------------- */
+
+/* Cell size scales the whole SVG number via the viewBox math in the
+   component, so one token resizes every glyph at once. */
+.loader {
+  --matrix-cell: clamp(1.6px, 0.62vw, 3.4px);
+}
+.matrix {
+  display: block;
+  color: var(--d-ink);
+  overflow: visible;
+}
+.matrixDot {
+  fill: currentColor;
+  transform: scale(0.2);
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: matrixDotIn 240ms var(--ease) forwards;
+}
+@keyframes matrixDotIn {
+  to {
+    transform: scale(1);
+  }
+}
+
+.loaderCount {
+  position: absolute;
+  right: var(--gut);
+  bottom: calc(var(--gut) + 10px);
+  line-height: 0;
+  transition: opacity 350ms var(--ease);
+}
+.loader[data-phase='reveal'] .loaderCount {
+  /* hidden-by-design: fades the counter out when the identity resolves.
+     Under reduced motion the entire loader is skipped. */
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loaderStatus {
+  position: absolute;
+  left: var(--gut);
+  bottom: var(--gut);
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--d-label);
+  transition: opacity 350ms var(--ease);
+}
+.loader[data-phase='reveal'] .loaderStatus {
+  /* hidden-by-design: fades the status line out when the identity
+     resolves. Under reduced motion the entire loader is skipped. */
+  opacity: 0;
+}
+.loaderStatus b {
+  color: var(--d-accent);
+  font-weight: 500;
+}
+.loaderStatus span {
+  color: var(--d-body);
+}
+
+/* scaleX, never width: the bar is progress, and progress animates on the
+   compositor or not at all. */
+.loaderBar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--d-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 120ms linear, opacity 350ms var(--ease);
+}
+.loader[data-phase='reveal'] .loaderBar {
+  /* hidden-by-design: fades the progress bar out with the counter.
+     Under reduced motion the entire loader is skipped. */
+  opacity: 0;
+}
+
+/* Beat 2: the identity block. Hidden until the count completes; at rest
+   it is visible, the hidden state is the keyframe, so a failed animation
+   is a blank but the element is never permanently invisible. */
+.loaderId {
+  display: grid;
+  justify-items: center;
+  gap: clamp(24px, 3.4vw, 36px);
+  /* hidden-by-design: the identity block is held invisible behind the
+     counter until the reveal beat. The schedule guarantees it is shown
+     before the curtain lifts, and under reduced motion the entire loader
+     is skipped so this class never renders. */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 380ms var(--ease);
+}
+.loaderId[data-show='true'] {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Dot converge and wordmark type only run when the block is shown. */
+.loaderId[data-show='true'] .loaderDot {
+  animation: dotIn 620ms var(--ease) forwards;
+  animation-delay: calc(var(--i) * 70ms);
+}
+.loaderId[data-show='true'] .loaderWord span {
+  animation: wordIn 420ms var(--ease) backwards;
+  animation-delay: calc(360ms + var(--i) * 34ms);
+}
+.loaderId[data-show='true'] .loaderWord em {
+  animation: wordIn 420ms var(--ease) backwards;
+  animation-delay: 700ms;
+}
+
+/* ---- nav ----------------------------------------------------------- */
+
+/* No max-width or gutter here. The nav renders inside the hero's inner
+   wrapper, which already owns both; applying them twice made the bar
+   narrower than the page and centred it. */
+.nav {
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  position: relative;
+  z-index: 40;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: clamp(9px, 1vw, 13px);
+  text-decoration: none;
+  color: var(--ink);
+}
+.markSvg {
+  width: clamp(21px, 2.3vw, 27px);
+  height: clamp(21px, 2.3vw, 27px);
+  color: var(--accent);
+  flex: 0 0 auto;
+}
+/* Bigger and heavier than the first pass, which set it at 12px and let the
+   logo read as a caption. It is the identity, so it gets display weight. */
+.wordmark {
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  font-size: clamp(15px, 1.6vw, 19px);
+  line-height: 1;
+}
+
+/* Right cluster: socials plus the burger. The icons answer "where else do
+   they exist" at one glance, which used to take opening the menu. */
+.navSide {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.4vw, 18px);
+}
+
+.navSocials {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.navSocials a {
+  display: grid;
+  place-items: center;
+  width: clamp(32px, 3.2vw, 38px);
+  height: clamp(32px, 3.2vw, 38px);
+  border-radius: 50%;
+  /* Accent chip with dark glyph. The old resting state was body-grey on
+     the dark field and all but invisible, which defeated the point of
+     putting them in the header. */
+  background: var(--accent);
+  color: var(--d-void);
+  transition:
+    background var(--dur-state) var(--ease),
+    color var(--dur-state) var(--ease),
+    transform var(--dur-state) var(--ease);
+}
+.navSocials a:hover {
+  background: var(--ink);
+  transform: translateY(-2px);
+}
+.navSocials svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Two bars that cross into an X. Transform only, so it costs no layout. */
+.burger {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 12px 0 12px 12px;
+  cursor: pointer;
+  color: var(--ink);
+}
+.burgerBars {
+  display: grid;
+  gap: 6px;
+  width: clamp(28px, 3vw, 36px);
+}
+.burgerBars i {
+  display: block;
+  height: 2px;
+  background: currentColor;
+  transition: transform var(--dur-state) var(--ease);
+}
+.burgerBars[data-open='true'] i:first-child {
+  transform: translateY(4px) rotate(45deg);
+}
+.burgerBars[data-open='true'] i:last-child {
+  transform: translateY(-4px) rotate(-45deg);
+}
+
+.menu {
+  position: fixed;
+  inset: 0;
+  background: var(--d-void);
+  color: var(--d-ink);
+  z-index: 39;
+  padding: calc(var(--nav-h) + clamp(16px, 4vw, 40px)) var(--gut) clamp(26px, 5vw, 54px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(24px, 5vw, 48px);
+  overflow-y: auto;
+  /* Momentum on iOS, or the panel scrolls like cardboard. */
+  -webkit-overflow-scrolling: touch;
+  /* Reaching the end of the panel must not chain the gesture through to
+     the page behind it. The JS half of the lock is in Nav.tsx, and the
+     `data-lenis-prevent` attribute on the element is what lets this panel
+     receive wheel events at all while Lenis is stopped. */
+  overscroll-behavior: contain;
+}
+/* The panel is the hero field again, not a flat black rectangle. Same
+   light, same grain, so opening the menu does not feel like leaving the
+   site.
+ *
+ * The grain gets its own layer at `soft-light` and a tenth of an opacity,
+ * exactly as the hero does. Painted as a plain background at half opacity
+ * it is a sheet of mid grey noise, and it lifted the whole panel from near
+ * black to charcoal. */
+.menu::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    54% 46% at 82% 2%,
+    rgb(var(--bloom-rgb) / 0.14) 0%,
+    transparent 62%
+  );
+  pointer-events: none;
+}
+.menu::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url('/grain.png') repeat;
+  background-size: var(--grain-size) var(--grain-size);
+  opacity: 0.09;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+.menuNav {
+  display: grid;
+}
+.menuNav a {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(12px, 2vw, 24px);
+  text-decoration: none;
+  color: var(--d-ink);
+  padding-block: clamp(8px, 1.4vw, 14px);
+  border-bottom: 1px solid rgb(var(--d-line-rgb) / 0.1);
+  /* Same rule as the loader: hidden state in the keyframe, `backwards`
+     fill, resting style visible. A menu whose links never faded in would
+     otherwise be an empty overlay with no way back except Escape. */
+  animation: menuIn 420ms var(--ease) backwards;
+  animation-delay: calc(60ms + var(--i) * 46ms);
+}
+.menuIndex {
+  font-family: var(--font-mono);
+  font-size: clamp(9px, 1vw, 11px);
+  color: var(--d-accent);
+  flex: 0 0 auto;
+}
+.menuLabel {
+  font-size: clamp(34px, 8.4vw, 78px);
+  font-weight: 800;
+  letter-spacing: -0.034em;
+  line-height: 0.98;
+  transition: color var(--dur-state) var(--ease);
+}
+.menuNav a:hover .menuLabel {
+  color: var(--d-accent);
+}
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+.menuFoot {
+  display: grid;
+  gap: clamp(20px, 3vw, 34px);
+  grid-template-columns: 1fr;
+  align-items: start;
+  padding-top: clamp(22px, 3vw, 36px);
+  border-top: 1px solid rgb(var(--d-line-rgb) / 0.1);
+  margin-top: auto;
+}
+@media (min-width: 860px) {
+  .menuFoot {
+    grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 72px);
+  }
+}
+.menuFoot p {
+  margin: 0;
+  display: grid;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--d-ink);
+}
+.menuFoot span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--d-label);
+}
+
+/* The reason the panel is full screen rather than a dropdown. It says
+   something before the visitor has picked a destination. */
+.menuFoot .menuStatement {
+  font-size: clamp(15px, 1.5vw, 19px);
+  font-weight: 500;
+  line-height: 1.42;
+  color: var(--d-body);
+  max-width: 34ch;
+}
+
+.menuMeta {
+  display: grid;
+  gap: clamp(12px, 1.6vw, 18px);
+}
+
+/* Contact set at display size. For a studio taking enquiries this is the
+   second most important thing on the screen, so it is sized like it. */
+.menuMail {
+  font-size: clamp(20px, 2.6vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--d-ink);
+  text-decoration: none;
+  transition: color var(--dur-state) var(--ease);
+}
+.menuMail:hover {
+  color: var(--d-accent);
+}
+.menuFoot .menuSay {
+  gap: 9px;
+}
+
+/* The labelled counterpart to the header icons. */
+.menuSocials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  padding-top: 6px;
+}
+.menuSocials a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--d-body);
+  text-decoration: none;
+  transition: color var(--dur-state) var(--ease);
+}
+.menuSocials a:hover {
+  color: var(--d-accent);
+}
+
+/* Fills the dead space under a five item list without adding anything to
+   read. Clipped by the bottom edge, so it reads as the identity underneath
+   the page rather than a decorative graphic placed on it. */
+/* Absolute, not in flow. In flow it added its own height to a panel that
+   already scrolls, so it sat below the fold and was never seen. Anchored
+   to the bottom edge and slightly past it, it reads as the identity
+   underneath the page rather than a graphic placed on it. */
+.menuGhost {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1.6%;
+  z-index: -1;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+.menuGhost text {
+  font-family: var(--font-sans);
+  font-size: 200px;
+  font-weight: 800;
+  fill: rgb(var(--d-line-rgb) / 0.045);
+}
+/* Both sit above the two decorative layers. */
+.menuNav,
+.menuFoot {
+  position: relative;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loaderDot,
+  .loaderWord span,
+  .loaderWord em,
+  .matrixDot,
+  .stat[data-in='true'],
+  .menuNav a {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .loader,
+  .loaderBar,
+  .stat,
+  .navSocials a,
+  .menuSocials a {
+    transition: none;
+  }
+}
+
+/* ---- hero canvas --------------------------------------------------- */
+
+.constellation {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- pinned steps -------------------------------------------------- */
+
+.pinWrap {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(22px, 3vw, 40px);
+}
+@media (min-width: 900px) {
+  .pinWrap {
+    grid-template-columns: 260px 1fr;
+    gap: clamp(30px, 4vw, 72px);
+    align-items: start;
+  }
+}
+
+/* Sticky, not a ScrollTrigger pin. Only above 900px, where the layout is
+   two columns and there is something for the rail to hold still against. */
+.pinRail {
+  align-self: start;
+}
+@media (min-width: 900px) {
+  .pinRail {
+    position: sticky;
+    top: calc(var(--nav-h) + 24px);
+  }
+}
+
+.pinSteps > .step:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.pinLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--label);
+  margin: 0 0 16px;
+}
+.pinTicks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 11px;
+}
+.pinTick {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--body);
+  transition: color var(--dur-state) var(--ease);
+}
+.pinTick i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(var(--line-rgb) / 0.24);
+  flex: 0 0 auto;
+  transition:
+    background var(--dur-state) var(--ease),
+    transform var(--dur-state) var(--ease);
+}
+.pinTick[data-on='true'] {
+  color: var(--ink);
+}
+.pinTick[data-on='true'] i {
+  background: var(--accent);
+  transform: scale(1.34);
+}
+
+/* Generous gap is the point: the steps have to arrive one at a time for
+   the rail to have anything to track. */
+.pinSteps {
+  display: grid;
+  gap: clamp(38px, 7vw, 96px);
+}
+.step {
+  border-top: 1px solid rgb(var(--line-rgb) / 0.12);
+  padding-top: clamp(16px, 2vw, 24px);
+}
+.stepNum {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+  margin: 0 0 12px;
+  font-variant-numeric: tabular-nums;
+}
+.stepTitle {
+  font-size: clamp(20px, 2.6vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.024em;
+  line-height: 0.98;
+  margin: 0 0 10px;
+  color: var(--ink);
+}
+.stepDesc {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.42;
+  color: var(--body);
+  font-weight: 500;
+  max-width: 48ch;
+}
+.stepOut {
+  margin: 14px 0 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--ink);
+  font-weight: 600;
+  display: grid;
+  gap: 5px;
+}
+.stepOut span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--label);
+  letter-spacing: 0.04em;
+}
+
+/* ---- decrypt + magnetic -------------------------------------------- */
+
+.decrypt {
+  font-variant-ligatures: none;
+  /* The scrambled frames are different glyphs, so without a tabular lock
+     the line reflows on every frame and the whole row jitters. */
+  font-variant-numeric: tabular-nums;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.magnetic {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* ---- process bar --------------------------------------------------- */
+
+.bar {
+  display: block;
+  height: 2px;
+  background: rgb(var(--line-rgb) / 0.14);
+  margin-top: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.barFill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(var(--s));
+  transform-origin: left center;
+  will-change: transform;
+}
+
+/* ---- global ---------------------------------------------------------- */
+
+.cta:focus-visible,
+.accBtn:focus-visible,
+.formInput:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mqTrack {
+    animation: none;
+    /* The row stays reachable rather than frozen mid-slide. */
+    overflow-x: auto;
+  }
+  .marquee {
+    mask-image: none;
+  }
+  .accMark,
+  .cta,
+  .formInput {
+    transition: none;
+  }
+}

@@ -1,0 +1,537 @@
+/* ============================================================
+   7. Capability bento. Six cards, each visual performs its argument.
+   ============================================================ */
+
+.bento {
+  background: var(--bg);
+  color: var(--ink);
+  padding-block: var(--section-pad);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(12px, 1.4vw, 18px);
+}
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .card[data-span='2'] {
+    grid-column: span 2;
+  }
+}
+
+/* The card. Depth comes from a top light gradient and an inner top
+   highlight, so the surface reads as raised from the field rather than
+   as a flat rectangle with a border. The bloom stays inside the one
+   accent discipline: everything here is line colour or accent. */
+.card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(200px, 21vw, 280px);
+  background:
+    linear-gradient(180deg, rgb(var(--line-rgb) / 0.05) 0%, transparent 46%),
+    var(--surface);
+  border: 1px solid rgb(var(--line-rgb) / 0.09);
+  border-radius: var(--radius);
+  box-shadow: inset 0 1px 0 rgb(var(--line-rgb) / 0.06);
+  padding: clamp(20px, 2.4vw, 30px);
+  transition:
+    border-color var(--dur-state) var(--ease),
+    transform var(--dur-state) var(--ease),
+    box-shadow var(--dur-state) var(--ease);
+}
+.card:hover {
+  border-color: rgb(var(--line-rgb) / 0.24);
+  transform: translateY(-3px);
+  box-shadow: inset 0 1px 0 rgb(var(--line-rgb) / 0.12);
+}
+
+.cardText {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.title {
+  margin: 0 0 10px;
+  font-size: clamp(19px, 1.7vw, 24px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--ink);
+}
+.body {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--body);
+  font-weight: 500;
+  max-width: 46ch;
+}
+.points {
+  list-style: none;
+  margin: auto 0 0;
+  padding: 18px 0 0;
+  display: grid;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  color: var(--label);
+}
+.points span {
+  color: var(--accent);
+}
+
+/* ---- the accent card, the one loud cell ----------------------------- */
+
+.card[data-kind='accent'] {
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgb(4 7 6 / 0.1) 0%, transparent 55%),
+    var(--accent);
+  border-color: transparent;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.28);
+}
+.card[data-kind='accent'] .title {
+  color: var(--d-void);
+  position: relative;
+}
+.card[data-kind='accent'] .body {
+  color: rgb(4 7 6 / 0.72);
+  position: relative;
+}
+.ghost {
+  position: absolute;
+  left: -0.06em;
+  bottom: -0.28em;
+  margin: 0;
+  font-size: clamp(72px, 7.4vw, 108px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: rgb(4 7 6 / 0.1);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  transition: transform 600ms var(--ease);
+}
+.card[data-kind='accent']:hover .ghost {
+  transform: translateX(0.08em);
+}
+
+/* The sources row: the card argues answers arrive with their documents
+   attached, so the foot of the card shows exactly that. Dark chips on
+   the accent, and the one dot that says "grounded". */
+.sources {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: auto 0 0;
+  padding-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+.sources span {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgb(4 7 6 / 0.1);
+  color: rgb(4 7 6 / 0.68);
+  transition: background var(--dur-state) var(--ease);
+}
+.card[data-kind='accent']:hover .sources span {
+  background: rgb(4 7 6 / 0.16);
+}
+.sources i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--d-void);
+  margin-left: 2px;
+}
+
+/* ---- the ascii cell, the mark live ---------------------------------- */
+
+.card[data-kind='ascii'] {
+  align-items: stretch;
+  justify-content: stretch;
+  gap: clamp(8px, 1vw, 12px);
+  padding: clamp(14px, 1.6vw, 20px);
+}
+/* The turning mark. Ink glyphs carry the body of the cluster, and the
+   component resolves the leading sphere in the element's own color,
+   which is the accent: the one colored thing in the cell is whichever
+   dot currently faces you. */
+.ascii3d {
+  width: 100%;
+  flex: 1;
+  min-height: 200px;
+  color: var(--accent);
+  --fig-ink: rgb(var(--line-rgb) / 0.6);
+}
+.asciiHint {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--label);
+  opacity: 0.7;
+  text-align: center;
+}
+
+/* The instrument index every card carries, top right, out of the
+   content's way. */
+.cardIndex {
+  position: absolute;
+  top: clamp(12px, 1.4vw, 18px);
+  right: clamp(14px, 1.6vw, 20px);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--label);
+  opacity: 0.8;
+  z-index: 2;
+}
+.cardIndex[data-on-accent] {
+  color: rgb(4 7 6 / 0.55);
+}
+
+/* ---- the visual stage every card shares ------------------------------ */
+
+/* The viz and its readout arrive as one object, pinned to the card's
+   foot, so every card ends on its argument performed and then said. */
+.vizBox {
+  display: grid;
+  gap: 12px;
+  margin: auto 0 0;
+  padding-top: 20px;
+  justify-items: start;
+}
+.vizBox svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* The readout: one slot, two states. The hover text is the card's
+   promise and only exists once the card performs it. */
+.readout {
+  position: relative;
+  margin: 0;
+  display: grid;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+.roRest,
+.roHover {
+  grid-area: 1 / 1;
+  justify-self: start;
+  white-space: nowrap;
+  transition: opacity var(--dur-state) var(--ease);
+}
+.roRest {
+  color: var(--label);
+}
+.roHover {
+  /* hidden-by-design: the hover state's sentence exists only while the
+     card is performing it; at rest it would be a promise not yet made. */
+  opacity: 0;
+  color: var(--accent);
+}
+.card:hover .roRest {
+  /* hidden-by-design: mirror of the above swap, the rest state leaves. */
+  opacity: 0;
+}
+.card:hover .roHover {
+  opacity: 1;
+}
+
+/* ---- offline: the sync path ----------------------------------------- */
+
+.vizSync {
+  max-width: 400px;
+}
+.vizSyncPath {
+  stroke: rgb(var(--line-rgb) / 0.3);
+  animation: syncDrift 1.4s linear infinite;
+}
+@keyframes syncDrift {
+  to {
+    stroke-dashoffset: -9;
+  }
+}
+.vizFlowDot {
+  fill: var(--accent);
+  offset-path: path('M50 34 C 105 8 157 8 212 32');
+  animation: syncFlow 2.7s linear backwards infinite;
+  animation-delay: var(--d);
+}
+@keyframes syncFlow {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+/* ---- inbox: six fold into one --------------------------------------- */
+
+.vizInbox {
+  max-width: 280px;
+  overflow: visible;
+  justify-self: end;
+}
+.vizBox .vizInbox {
+  width: 100%;
+}
+.inboxWin {
+  fill: rgb(var(--line-rgb) / 0.16);
+  transition:
+    transform 480ms var(--ease),
+    opacity 480ms var(--ease);
+  transition-delay: calc(var(--i) * 45ms);
+}
+.card:hover .inboxWin {
+  /* Each window folds toward the inbox and dims out. The shift is a
+     fixed proportion of its distance, so the row collapses in order
+     rather than jumping. */
+  transform: translateX(46px) scaleX(0.4) scaleY(0.72);
+  opacity: 0.12;
+}
+.inboxMain {
+  fill: var(--accent);
+  transition: transform var(--dur-state) var(--ease);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.card:hover .inboxMain {
+  transform: scale(1.06);
+}
+.vizStrokeInk {
+  stroke: var(--d-void);
+  fill: none;
+  opacity: 0.66;
+}
+
+/* ---- books: the ledger reconciles ------------------------------------ */
+
+.vizBooks {
+  max-width: 280px;
+  overflow: visible;
+  justify-self: end;
+}
+.vizBox .vizBooks {
+  width: 100%;
+}
+.ledgerRow {
+  fill: rgb(var(--line-rgb) / 0.2);
+  transform: scaleX(var(--w));
+  transform-box: fill-box;
+  transform-origin: left center;
+  transition:
+    transform 560ms var(--ease),
+    fill 560ms var(--ease);
+  transition-delay: calc(var(--i) * 70ms);
+}
+.card:hover .ledgerRow {
+  transform: scaleX(1);
+  fill: rgb(var(--line-rgb) / 0.34);
+}
+.ledgerDot {
+  fill: var(--accent);
+  transform: scale(0);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 300ms var(--ease);
+  transition-delay: calc(240ms + var(--i) * 70ms);
+}
+.card:hover .ledgerDot {
+  transform: scale(1);
+}
+
+/* ---- yours: the stack fans open -------------------------------------- */
+
+.vizDocs {
+  max-width: 340px;
+  overflow: visible;
+}
+.vizBox .vizDocs {
+  width: 100%;
+}
+
+/* ---- grounded: the answer, cited ------------------------------------- */
+
+.vizGrounded {
+  width: 100%;
+  max-width: 220px;
+  margin: auto 0 0;
+  padding-top: 16px;
+  overflow: visible;
+}
+.answerLine {
+  fill: rgb(4 7 6 / 0.18);
+  transition: fill 480ms var(--ease);
+  transition-delay: calc(var(--i) * 70ms);
+}
+.card[data-kind='accent']:hover .answerLine {
+  fill: rgb(4 7 6 / 0.34);
+}
+.citeDot {
+  fill: rgb(4 7 6 / 0.3);
+  transition: fill 480ms var(--ease);
+  transition-delay: calc(180ms + var(--i) * 70ms);
+}
+.card[data-kind='accent']:hover .citeDot {
+  fill: var(--d-void);
+}
+.docSheet {
+  fill: rgb(var(--line-rgb) / 0.1);
+  transition: transform 480ms var(--ease);
+  transition-delay: calc(var(--i) * 40ms);
+  transform-box: fill-box;
+  transform-origin: bottom left;
+}
+.card:hover .docSheet {
+  transform: rotate(-2.5deg) translateY(2px);
+}
+.docTop {
+  fill: var(--surface);
+  stroke: var(--accent);
+  stroke-width: 1.4;
+  transition: transform 480ms var(--ease);
+  transform-box: fill-box;
+  transform-origin: bottom left;
+}
+.card:hover .docTop {
+  transform: translateY(-3px);
+}
+.vizStrokeThin {
+  stroke: rgb(var(--line-rgb) / 0.2);
+  fill: none;
+}
+.docKeyLine {
+  stroke: var(--accent);
+  fill: none;
+  stroke-dasharray: 68;
+  stroke-dashoffset: 68;
+  transition: stroke-dashoffset 700ms var(--ease) 120ms;
+}
+.card:hover .docKeyLine {
+  stroke-dashoffset: 0;
+}
+.docSign {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* hidden-by-design: the signature only exists once the stack fans on
+     hover, which is the moment it signs. At rest the document is
+     unsigned and nothing is missing from the composition. */
+  opacity: 0;
+  transform: translateY(3px);
+  transition:
+    opacity 300ms var(--ease) 480ms,
+    transform 300ms var(--ease) 480ms;
+}
+.card:hover .docSign {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- shared visual helpers ------------------------------------------- */
+
+/* Fill and stroke are split deliberately: a rect reads `fill`, a line
+   reads `stroke`. Setting both on one class adds a thin outline to
+   every filled bar, so each visual target gets the property it
+   actually reads. */
+.vizShapeDim {
+  fill: rgb(var(--line-rgb) / 0.26);
+}
+.vizShapeAccent {
+  fill: var(--accent);
+}
+.vizStrokeDim {
+  stroke: rgb(var(--line-rgb) / 0.26);
+  fill: none;
+}
+
+/* The 2 col cards lay text and visual side by side once there is room. */
+@media (min-width: 900px) {
+  .card[data-card='yours'],
+  .card[data-card='offline'] {
+    flex-direction: row;
+    align-items: stretch;
+    gap: clamp(20px, 2.6vw, 36px);
+  }
+  .card[data-card='yours'] .cardText,
+  .card[data-card='offline'] .cardText {
+    flex: 1 1 50%;
+  }
+  .card[data-card='yours'] .vizBox,
+  .card[data-card='offline'] .vizBox {
+    align-self: flex-end;
+    width: 46%;
+    margin: 0;
+    padding-top: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .ghost,
+  .sources span,
+  .roRest,
+  .roHover,
+  .answerLine,
+  .citeDot,
+  .inboxWin,
+  .inboxMain,
+  .ledgerRow,
+  .ledgerDot,
+  .docSheet,
+  .docTop,
+  .docKeyLine,
+  .docSign {
+    transition: none;
+  }
+  .vizSyncPath,
+  .vizFlowDot {
+    animation: none;
+  }
+  .vizFlowDot {
+    display: none;
+  }
+  /* Reduced motion still gets the performed end state: ledger rows
+     reconciled, key line drawn, signature present. Hover performs
+     nothing, so the honest state is the finished one. */
+  .ledgerRow {
+    transform: scaleX(1);
+  }
+  .ledgerDot {
+    transform: scale(1);
+  }
+  .docKeyLine {
+    stroke-dashoffset: 0;
+  }
+  .docSign {
+    opacity: 1;
+    transform: none;
+  }
+}

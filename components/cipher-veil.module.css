@@ -1,0 +1,45 @@
+/* The decrypt veil. One canvas over the section content, never taking
+   a pointer event, painting only cipher that is not yet decrypted. */
+
+.veil {
+  --veil-ink: rgb(154 162 158 / 0.55);
+  --veil-edge: rgb(249 180 214 / 0.92);
+  --veil-wash: rgb(8 17 13 / 0.93);
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* The hint rides the veil, so it disappears with the canvas on the
+   fallbacks where the veil never mounts at all. */
+.veil::after {
+  content: attr(data-hint);
+  position: absolute;
+  right: clamp(14px, 2vw, 26px);
+  bottom: clamp(12px, 1.6vw, 20px);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--label);
+  animation: hint-breathe 2.6s var(--ease) infinite;
+}
+
+@keyframes hint-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .veil::after {
+    animation: none;
+  }
+}

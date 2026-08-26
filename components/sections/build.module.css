@@ -1,0 +1,288 @@
+/* ============================================================
+   Services. Section 8 of the content model. The shared header anatomy
+   (eyebrow, head, title, lead) also serves Process and the bento.
+   ============================================================ */
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+  margin: 0 0 var(--eyebrow-gap);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(20px, 3vw, 40px);
+  align-items: end;
+  margin-bottom: var(--head-gap);
+}
+@media (min-width: 900px) {
+  .head {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: clamp(40px, 6vw, 96px);
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(34px, 5.4vw, 74px);
+  line-height: 0.94;
+  font-weight: 800;
+  letter-spacing: -0.036em;
+  text-wrap: balance;
+}
+.tMuted {
+  color: var(--body);
+}
+.tStrong {
+  color: var(--ink);
+}
+.tAccent {
+  color: var(--accent);
+}
+.lead {
+  margin: 0;
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--body);
+  max-width: 42ch;
+}
+
+/* ============================================================
+   8. Services, sticky rail plus rows
+   ============================================================ */
+
+.services {
+  background: var(--bg);
+  color: var(--ink);
+  padding-block: var(--section-pad);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.08);
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(30px, 4vw, 56px);
+}
+@media (min-width: 900px) {
+  .servicesGrid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr);
+    gap: clamp(48px, 7vw, 120px);
+  }
+  /* The rail holds while the rows scroll, so the reader always knows
+     which section they are in. */
+  .servicesRail {
+    position: sticky;
+    top: var(--nav-h);
+    align-self: start;
+  }
+}
+
+.servicesRows {
+  display: grid;
+}
+.serviceRow {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: clamp(16px, 2vw, 28px);
+  row-gap: 8px;
+  padding-block: clamp(22px, 2.6vw, 34px);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.1);
+  transition: background var(--dur-state) var(--ease);
+}
+.serviceRow:last-child {
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.1);
+}
+/* The accent hairline that draws itself across the top edge on hover.
+   scaleX from the left, so it costs no layout. */
+.serviceRow::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 520ms var(--ease);
+}
+.serviceRow:hover::before {
+  transform: scaleX(1);
+}
+.serviceRow:hover {
+  background: rgb(var(--line-rgb) / 0.025);
+}
+.serviceIndex {
+  grid-row: span 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--label);
+  padding-top: 5px;
+  transition: color var(--dur-state) var(--ease);
+}
+/* The marker dot is the brand's motif arriving on the row. It scales in
+   on hover, so the row reads as selected before a word is re-read. */
+.serviceDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: scale(0);
+  transition: transform var(--dur-state) var(--ease);
+}
+.serviceRow:hover .serviceIndex {
+  color: var(--accent);
+}
+.serviceRow:hover .serviceDot {
+  transform: scale(1);
+}
+.serviceTitle {
+  margin: 0;
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--ink);
+  transition: transform var(--dur-state) var(--ease);
+}
+.serviceRow:hover .serviceTitle {
+  transform: translateX(10px);
+}
+.serviceBody {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--body);
+  font-weight: 500;
+  max-width: 52ch;
+  transition: color var(--dur-state) var(--ease);
+}
+.serviceRow:hover .serviceBody {
+  color: var(--ink);
+}
+
+/* ---- the command bar CTA ---------------------------------------------
+   A full width prompt row. At rest it is quiet: mono kicker, prompt
+   glyph, label, arrow. On hover the accent fills from the left and the
+   whole row inverts, which is the one loud interaction in the section
+   and the reason it does not read as the fourth repeated link. */
+.scopeBar {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'kick kick'
+    'label arrow';
+  align-items: end;
+  gap: 10px clamp(20px, 3vw, 48px);
+  margin-top: clamp(30px, 4.4vw, 56px);
+  padding: clamp(18px, 2.2vw, 28px) clamp(18px, 2.6vw, 34px);
+  border: 1px solid rgb(var(--line-rgb) / 0.16);
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: border-color var(--dur-state) var(--ease);
+}
+.scopeFill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 560ms var(--ease);
+}
+.scopeBar:hover .scopeFill,
+.scopeBar:focus-visible .scopeFill {
+  transform: scaleX(1);
+}
+.scopeBar:hover,
+.scopeBar:focus-visible {
+  border-color: var(--accent);
+}
+.scopeKick {
+  grid-area: kick;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--label);
+  transition: color var(--dur-state) var(--ease);
+}
+.scopeLabel {
+  grid-area: label;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 14px;
+  font-size: clamp(26px, 3.4vw, 46px);
+  font-weight: 800;
+  letter-spacing: -0.028em;
+  line-height: 1;
+  color: var(--ink);
+  transition: color var(--dur-state) var(--ease);
+}
+.scopePrompt {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.62em;
+  color: var(--accent);
+  transition: color var(--dur-state) var(--ease);
+}
+.scopeArrow {
+  grid-area: arrow;
+  display: grid;
+  place-items: center;
+  width: clamp(40px, 4.4vw, 58px);
+  height: clamp(40px, 4.4vw, 58px);
+  border: 1px solid rgb(var(--line-rgb) / 0.2);
+  border-radius: 50%;
+  color: var(--ink);
+  transition:
+    color var(--dur-state) var(--ease),
+    border-color var(--dur-state) var(--ease),
+    transform var(--dur-state) var(--ease);
+}
+.scopeArrow svg {
+  width: 45%;
+  height: 45%;
+}
+.scopeBar:hover .scopeKick {
+  color: rgb(4 7 6 / 0.6);
+}
+.scopeBar:hover .scopeLabel {
+  color: var(--d-void);
+}
+.scopeBar:hover .scopePrompt {
+  color: var(--d-void);
+}
+.scopeBar:hover .scopeArrow {
+  color: var(--d-void);
+  border-color: rgb(4 7 6 / 0.4);
+  transform: translateX(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .serviceRow,
+  .serviceRow::before,
+  .serviceIndex,
+  .serviceDot,
+  .serviceTitle,
+  .serviceBody,
+  .scopeBar,
+  .scopeFill,
+  .scopeKick,
+  .scopeLabel,
+  .scopePrompt,
+  .scopeArrow {
+    transition: none;
+  }
+}

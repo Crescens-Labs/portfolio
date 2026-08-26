@@ -1,0 +1,81 @@
+/* ============================================================
+   16. FAQ. Three groups, dot-to-bar accordion rows.
+   ============================================================ */
+
+.faq {
+  background: var(--bg);
+  color: var(--ink);
+  padding-block: var(--section-pad);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.08);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(16px, 2vw, 26px);
+  margin-bottom: var(--head-gap);
+}
+@media (min-width: 900px) {
+  .head {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: end;
+    gap: clamp(40px, 6vw, 96px);
+  }
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+  margin: 0 0 var(--eyebrow-gap);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(34px, 5.4vw, 78px);
+  font-weight: 800;
+  letter-spacing: -0.038em;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+.tMuted {
+  color: var(--body);
+}
+.tStrong {
+  color: var(--ink);
+}
+
+.lead {
+  margin: 0;
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--body);
+  max-width: 40ch;
+}
+
+/* The three groups stack in one column with hairline separation so phone
+   questions stay readable and the dot-to-bar marker remains useful. */
+.groups {
+  display: grid;
+  gap: clamp(28px, 4vw, 48px);
+}
+
+.group {
+  display: grid;
+  gap: clamp(8px, 1vw, 12px);
+}
+
+.groupLabel {
+  margin: 0 0 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--label);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Accordion transitions handled by the primitive. */
+}

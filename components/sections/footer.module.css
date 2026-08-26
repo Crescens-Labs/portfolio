@@ -1,0 +1,267 @@
+/* ============================================================
+   18. Footer. The closing composition: meta row, statement plus
+   circular CTA, giant wordmark, meta row, barcode. Void ground.
+   ============================================================ */
+
+.footer {
+  position: relative;
+  isolation: isolate;
+  background: var(--bg);
+  color: var(--ink);
+  padding-top: var(--section-pad);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.08);
+  overflow: hidden;
+}
+
+/* ---- top meta row: tagline / nav / email ------------------------------ */
+
+.metaTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(14px, 2vw, 24px) clamp(24px, 3.4vw, 48px);
+  padding-bottom: clamp(18px, 2.4vw, 28px);
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.1);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.tagline {
+  color: var(--accent);
+  letter-spacing: 0.18em;
+}
+.metaNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(16px, 2.4vw, 34px);
+}
+.metaNav a,
+.metaEmail {
+  color: var(--body);
+  text-decoration: none;
+  transition: color var(--dur-state) var(--ease);
+}
+.metaNav a:hover,
+.metaEmail:hover {
+  color: var(--ink);
+}
+
+/* ---- centre: the close as a triptych ------------------------------------
+   Two display lines with the seal between them: claim on the left, the
+   rotating ring as the keystone, the reason mirrored on the right. All
+   three carry display weight, so the band reads as one sentence the
+   visitor walks through rather than a caption under a button. The ring
+   is the page's last perpetual motion; everything else holds still. */
+
+.mid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(26px, 3.6vw, 44px);
+  padding-block: clamp(48px, 7vw, 104px);
+}
+.midKicker {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+.midGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+  gap: clamp(30px, 4vw, 48px);
+  align-items: center;
+}
+@media (min-width: 1000px) {
+  .midGrid {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: clamp(32px, 4.4vw, 72px);
+  }
+}
+.statement {
+  margin: 0;
+}
+/* The claim. Accent on the clause that is the whole studio. */
+.statement p {
+  max-width: 15ch;
+  font-size: clamp(30px, 3.7vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.034em;
+  line-height: 1.02;
+}
+/* The reason, mirrored: same weight as the claim, right aligned on the
+   desktop triptych so the two lines bracket the seal. */
+.midTail {
+  margin: 0;
+  max-width: 16ch;
+  font-size: clamp(30px, 3.7vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.034em;
+  line-height: 1.02;
+}
+@media (min-width: 1000px) {
+  .statement p {
+    text-align: left;
+  }
+  .midTail {
+    justify-self: end;
+    text-align: right;
+  }
+}
+
+/* The seal: rotating text ring, arrow core. */
+.ctaOrb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(150px, 16vw, 192px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform var(--dur-state) var(--ease);
+}
+.ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: ringSpin 26s linear infinite;
+}
+.ring text {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  fill: var(--label);
+  transition: fill var(--dur-state) var(--ease);
+}
+@keyframes ringSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.orbCore {
+  display: grid;
+  place-items: center;
+  width: 42%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgb(var(--line-rgb) / 0.3);
+  background: rgb(var(--line-rgb) / 0.05);
+  transition:
+    background var(--dur-state) var(--ease),
+    border-color var(--dur-state) var(--ease),
+    color var(--dur-state) var(--ease);
+}
+.orbCore svg {
+  width: 40%;
+  height: 40%;
+}
+.ctaOrb:hover {
+  transform: scale(1.04);
+}
+.ctaOrb:hover .ring text {
+  fill: var(--accent);
+}
+.ctaOrb:hover .orbCore {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--d-void);
+}
+.ctaOrb:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+
+/* ---- the giant wordmark at the foot ------------------------------------
+   Full width, full weight, pulled tight to the bottom meta rows so the
+   page ends on the name rather than on a strip of links. Same
+   textLength solve as the hero wordmark: exact at every viewport. */
+.wordmarkRow {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(8px, 1.4vw, 20px);
+  /* Clip the descender line so the letters sit on the row below them. */
+  overflow: hidden;
+}
+.wordmark {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.wordmark text {
+  font-family: var(--font-sans);
+  font-size: 200px;
+  font-weight: 800;
+  fill: var(--ink);
+}
+
+/* ---- bottom meta row: copyright / elsewhere + legal / locale ---------- */
+
+.metaBottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(12px, 1.8vw, 20px) clamp(24px, 3.4vw, 48px);
+  padding-block: clamp(18px, 2.4vw, 28px);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.1);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--label);
+}
+.copy {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.metaLinks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(14px, 2vw, 26px);
+}
+.metaLinks a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--body);
+  text-decoration: none;
+  transition: color var(--dur-state) var(--ease);
+}
+.metaLinks a:hover {
+  color: var(--ink);
+}
+.metaLinks a svg {
+  width: 14px;
+  height: 14px;
+}
+.metaSep {
+  width: 1px;
+  height: 14px;
+  background: rgb(var(--line-rgb) / 0.16);
+}
+.locale {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    animation: none;
+  }
+  .metaNav a,
+  .metaEmail,
+  .ctaOrb,
+  .ring text,
+  .orbCore,
+  .metaLinks a {
+    transition: none;
+  }
+}

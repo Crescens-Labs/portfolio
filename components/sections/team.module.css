@@ -1,0 +1,237 @@
+/* ============================================================
+   13. Team. Two editorial monogram portraits on a light ground.
+   ============================================================ */
+
+.team {
+  background: var(--bg);
+  color: var(--ink);
+  padding-block: var(--section-pad);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.08);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(16px, 2vw, 26px);
+  margin-bottom: var(--head-gap);
+}
+@media (min-width: 900px) {
+  .head {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: end;
+    gap: clamp(40px, 6vw, 96px);
+  }
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+  margin: 0 0 var(--eyebrow-gap);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(36px, 5.8vw, 84px);
+  font-weight: 800;
+  letter-spacing: -0.038em;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+.tMuted {
+  color: var(--body);
+}
+.tStrong {
+  color: var(--ink);
+}
+
+.lead {
+  margin: 0;
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--body);
+  max-width: 40ch;
+}
+
+/* The two founder cards use an equal-weight split on the grid. */
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 4vw, 48px);
+}
+@media (min-width: 900px) {
+  .row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(28px, 3.6vw, 56px);
+  }
+}
+
+.card {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 0;
+  border: 1px solid rgb(var(--line-rgb) / 0.12);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+/* The portrait area is a 4:5 frame holding the editorial monogram. The
+   dot-cluster mark sits behind the initial at low contrast, the same
+   ghost mark used by the Featured work covers, so the brand reads
+   through every "portrait" on the page without looking like a logo
+   being stamped on a person. */
+.portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  isolation: isolate;
+  background: linear-gradient(
+    160deg,
+    rgb(var(--line-rgb) / 0.08) 0%,
+    rgb(var(--line-rgb) / 0.02) 60%,
+    transparent 100%
+  );
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.08);
+  overflow: hidden;
+}
+.mark {
+  position: absolute;
+  right: -10%;
+  bottom: -14%;
+  width: 65%;
+  height: 65%;
+  color: rgb(var(--line-rgb) / 0.1);
+  pointer-events: none;
+  z-index: 0;
+}
+.monogram {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-sans);
+  font-size: clamp(120px, 22vw, 240px);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  color: var(--ink);
+  opacity: 0.92;
+  z-index: 1;
+  user-select: none;
+}
+
+.meta {
+  display: grid;
+  gap: 10px;
+  padding: clamp(22px, 2.6vw, 34px);
+}
+.name {
+  margin: 0;
+  font-size: clamp(22px, 2.4vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--ink);
+}
+.role {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.bio {
+  margin: 6px 0 0;
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.55;
+  color: var(--body);
+  font-weight: 500;
+  max-width: 42ch;
+}
+
+/* The closing block: the studio's whole position in two sentences, set
+   centred and at display weight, with the section CTA directly beneath
+   it so the two read as one destination. The measure runs wide enough
+   to use the section's full width, landing the quote in four to five
+   lines instead of staircasing down a narrow middle. */
+.close {
+  display: grid;
+  justify-items: center;
+  gap: clamp(20px, 2.6vw, 32px);
+  text-align: center;
+  margin: clamp(40px, 6vw, 84px) auto 0;
+  max-width: min(100%, 46em);
+}
+.closeGlyph {
+  font-size: clamp(64px, 7vw, 110px);
+  line-height: 0.5;
+  font-weight: 800;
+  color: var(--accent);
+  opacity: 0.4;
+  user-select: none;
+  display: block;
+}
+.closing {
+  margin: 0;
+}
+.closing p {
+  margin: 0;
+  font-size: clamp(30px, 4.4vw, 62px);
+  font-weight: 800;
+  letter-spacing: -0.032em;
+  line-height: 1.04;
+  color: var(--ink);
+}
+
+/* The section CTA sits directly beneath the quote, centred, so the two
+   read as one statement: the claim, then where to act on it. */
+.cta {
+  display: inline-grid;
+  gap: 6px;
+  justify-items: center;
+  text-decoration: none;
+}
+.ctaKick {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--label);
+}
+.ctaLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: clamp(22px, 2.4vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.026em;
+  color: var(--ink);
+  padding-bottom: clamp(6px, 0.8vw, 10px);
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.2);
+  transition:
+    color var(--dur-state) var(--ease),
+    border-color var(--dur-state) var(--ease);
+}
+.ctaLabel svg {
+  width: 0.85em;
+  height: 0.85em;
+  transition: transform var(--dur-state) var(--ease);
+}
+.cta:hover .ctaLabel {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.cta:hover .ctaLabel svg {
+  transform: translateX(5px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta,
+  .ctaLabel,
+  .ctaLabel svg {
+    transition: none;
+  }
+}

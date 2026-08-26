@@ -1,0 +1,806 @@
+/* ============================================================
+   Hero. Dark field, short headline, one action, wordmark bleeding off
+   the bottom.
+   ============================================================ */
+
+/* The hero is one screen of content plus a run out below it.
+ *
+ * The run out is padding on the hero itself, not a separate band, because
+ * the wordmark needs dark behind it at the moment it locks to the top of
+ * the viewport and a separate band cannot match the hero's gradient, grain
+ * and vignette. A standalone dark div left a hard horizontal line across
+ * the full width, which is the same seam the nav used to have.
+ *
+ * `min-height` sizes the border box, so the content area is still exactly
+ * one screen and the call to action stays above the fold. */
+.hero {
+  --run: clamp(180px, 30vh, 320px);
+  position: relative;
+  isolation: isolate;
+  background: var(--d-void);
+  color: var(--ink);
+  min-height: calc(100svh + var(--run));
+  padding-bottom: var(--run);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- the field -----------------------------------------------------
+
+   Four layers instead of one flat colour. A single dark fill plus a soft
+   circle is what "cheap dark hero" looks like; depth comes from the field
+   being lit from one direction and falling away in every other.
+
+   Layer order matters: gradient, then grain over it so the texture sits
+   in the light rather than under it, then the vignette last so the frame
+   closes over both. -------------------------------------------------- */
+
+.field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fieldGrad {
+  position: absolute;
+  inset: -10%;
+  background:
+    /* the key light, high and to the right, tight enough to read as a
+       source rather than as a wash */
+    radial-gradient(
+      58% 46% at 76% 6%,
+      rgb(var(--bloom-rgb) / 0.3) 0%,
+      rgb(var(--bloom-rgb) / 0.11) 34%,
+      transparent 68%
+    ),
+    /* a cooler fill from the opposite corner so the shadow side is not
+       dead flat */
+    radial-gradient(72% 60% at 4% 88%, rgb(96 140 118 / 0.14) 0%, transparent 62%),
+    /* the body of the field, lifting slightly toward the light */
+    linear-gradient(168deg, #0c1a14 0%, #08120e 46%, #050b08 100%);
+}
+@media (min-width: 900px) {
+  .fieldGrad {
+    background:
+      radial-gradient(
+        44% 52% at 72% 2%,
+        rgb(var(--bloom-rgb) / 0.32) 0%,
+        rgb(var(--bloom-rgb) / 0.1) 32%,
+        transparent 66%
+      ),
+      radial-gradient(60% 70% at 2% 92%, rgb(96 140 118 / 0.15) 0%, transparent 60%),
+      linear-gradient(158deg, #0d1c15 0%, #08120e 44%, #040a07 100%);
+  }
+}
+
+/* The silk loop and its still. They fill the field and are cropped to
+   centre by `cover`, which at phone widths is exactly where the frame is
+   emptiest, so the crop costs nothing. The gradient stays underneath as
+   the base both layers enhance. */
+.heroVideo,
+.heroPoster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* The seamless pair. The wrapper fades in once the first element is
+   rolling; each element's opacity is then driven every frame from its
+   own distance to its loop seam, which is the crossfade itself. No CSS
+   transition on the elements: the rAF values are the animation. The
+   resting opacity 0 means playback that never starts leaves only the
+   gradient, as before. */
+.heroVideoPair {
+  position: absolute;
+  inset: 0;
+  /* hidden-by-design: the pair starts transparent and fades over the
+     gradient only once frames are playing. If playback never starts the
+     layer must stay invisible, because an unpainted video box over the
+     field is worse than no video. The gradient is the resting state. */
+  opacity: 0;
+  transition: opacity 900ms var(--ease);
+}
+.heroVideoPair[data-playing='true'] {
+  opacity: 1;
+}
+/* The elements themselves paint visible: the wrapper owns the hidden
+   resting state, and once it fades in, the crossfade values from rAF
+   are what vary. Nothing here parks at zero. */
+.heroVideo {
+  opacity: 1;
+}
+
+/* Closes the frame. Without it the field bleeds pale into the corners and
+   the giant wordmark has nothing to sit against. */
+.fieldVignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 92% at 50% 34%, transparent 40%, rgb(2 6 4 / 0.66) 100%);
+}
+
+/* ---- layout -------------------------------------------------------- */
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: var(--max);
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--gut);
+}
+
+.heroBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(28px, 4vw, 52px);
+  padding-block: clamp(34px, 6vw, 76px);
+}
+
+/* Three tones inside one sentence. Two read as a template, because there
+   is no hierarchy between the setup and the claim. */
+.heroHead {
+  font-size: clamp(42px, 8.6vw, 122px);
+  line-height: 0.86;
+  font-weight: 800;
+  letter-spacing: -0.038em;
+  margin: 0;
+  max-width: 14ch;
+  text-wrap: balance;
+}
+.hLead {
+  color: var(--body);
+}
+.hMain {
+  color: var(--ink);
+}
+.hAccent {
+  color: var(--accent);
+}
+
+.heroFoot {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(24px, 3vw, 40px);
+  align-items: end;
+}
+@media (min-width: 860px) {
+  .heroFoot {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(32px, 5vw, 80px);
+  }
+}
+
+.heroLead {
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--body);
+  margin: 0;
+  max-width: 40ch;
+}
+
+/* Stacked, right aligned. The primary ends furthest right and the
+   secondary tucks under it, so the ranking is visible before either label
+   is read. Side by side they looked like two equal options. */
+.heroActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(12px, 1.4vw, 18px);
+}
+@media (min-width: 860px) {
+  .heroActions {
+    align-items: flex-end;
+  }
+}
+
+/* ---- the call to action -------------------------------------------- */
+
+.ctaCard {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(18px, 2.4vw, 30px);
+  border: 1px solid rgb(var(--line-rgb) / 0.2);
+  border-radius: 999px;
+  padding: 15px 18px 15px 26px;
+  background: rgb(var(--line-rgb) / 0.04);
+  backdrop-filter: blur(10px);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: clamp(15px, 1.1vw, 16px);
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  transition:
+    background var(--dur-state) var(--ease),
+    border-color var(--dur-state) var(--ease);
+}
+.ctaCard:hover {
+  background: rgb(var(--line-rgb) / 0.1);
+  border-color: rgb(var(--line-rgb) / 0.4);
+}
+
+.ctaLabel {
+  white-space: nowrap;
+}
+
+/* The dots resolve into an arrow. Both live in the same fixed box and
+   cross-fade with transforms, so nothing reflows and the button does not
+   change width on hover. */
+.ctaGlyph {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--d-bg);
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+.ctaDots {
+  grid-area: 1 / 1;
+  display: grid;
+  gap: 3px;
+  transition:
+    transform var(--dur-state) var(--ease),
+    opacity var(--dur-state) var(--ease);
+}
+.ctaDots i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.ctaArrow {
+  grid-area: 1 / 1;
+  width: 15px;
+  height: 15px;
+  /* hidden-by-design: decorative glyph in a hover cross fade. The link
+     carries its own text label and this SVG is aria-hidden, so a visitor
+     who never hovers loses nothing. */
+  opacity: 0;
+  transform: translateX(-8px);
+  transition:
+    transform var(--dur-state) var(--ease),
+    opacity var(--dur-state) var(--ease);
+}
+.ctaCard:hover .ctaDots {
+  /* hidden-by-design: the other half of the same cross fade. Only reachable
+     while hovering, and the arrow is visible at that moment. */
+  opacity: 0;
+  transform: translateX(9px);
+}
+.ctaCard:hover .ctaArrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.heroSecondary {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--body);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: color var(--dur-state) var(--ease);
+}
+.heroSecondary::after {
+  content: '>';
+  color: var(--accent);
+}
+.heroSecondary:hover {
+  color: var(--ink);
+}
+
+/* ---- proof strip ---------------------------------------------------- */
+
+.proofStrip {
+  border-top: 1px solid rgb(var(--line-rgb) / 0.1);
+  padding-block: clamp(14px, 2.2vw, 26px) clamp(14px, 2.8vw, 34px);
+}
+.proofLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--label);
+  margin: 0 0 clamp(12px, 1.6vw, 18px);
+}
+
+/* On narrow screens this is a snap scroller, not a 2x2 grid. Four stacked
+   cards would push the call to action below the fold, and the fold is the
+   only guarantee we have about what a visitor sees. */
+.proofList {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--gut) 0 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 62vw;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* Bleed the scroller to the screen edge so a half visible fourth card
+     signals there is more, instead of ending flush and looking complete. */
+  margin-inline: calc(var(--gut) * -1) 0;
+  padding-left: var(--gut);
+}
+.proofList::-webkit-scrollbar {
+  display: none;
+}
+@media (min-width: 760px) {
+  .proofList {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-columns: auto;
+    gap: clamp(10px, 1.2vw, 14px);
+    overflow: visible;
+    margin-inline: 0;
+    padding: 0;
+  }
+}
+
+/* A card, not a row. A flat list of four facts reads as a footnote. These
+   are the four claims a stranger has the least reason to doubt, so they
+   get a surface, an edge and a reaction to the pointer. */
+.proofCard {
+  position: relative;
+  display: grid;
+  gap: 3px;
+  align-content: start;
+  min-width: 0;
+  scroll-snap-align: start;
+  padding: clamp(12px, 1.4vw, 16px) clamp(12px, 1.4vw, 16px) clamp(13px, 1.5vw, 17px);
+  border: 1px solid rgb(var(--line-rgb) / 0.09);
+  border-radius: 12px;
+  overflow: hidden;
+  background:
+    linear-gradient(168deg, rgb(var(--line-rgb) / 0.055) 0%, rgb(var(--line-rgb) / 0.015) 100%);
+  transition:
+    transform var(--dur-state) var(--ease),
+    border-color var(--dur-state) var(--ease),
+    background var(--dur-state) var(--ease);
+}
+.proofCard:hover {
+  transform: translateY(-3px);
+  border-color: rgb(var(--line-rgb) / 0.22);
+  background: linear-gradient(168deg, rgb(var(--line-rgb) / 0.1) 0%, rgb(var(--line-rgb) / 0.03) 100%);
+}
+
+/* One accent hairline along the top edge, drawn from the left on hover.
+   `scaleX` from a left origin, so it costs no layout. */
+.proofRule {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-reveal) var(--ease);
+}
+.proofCard:hover .proofRule {
+  transform: scaleX(1);
+}
+
+.proofTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: clamp(10px, 2.2vw, 26px);
+}
+.proofIndex {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+.proofCard img {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  border-radius: 4px;
+  object-fit: contain;
+  /* Four brand colours would be four competing accents on a page that
+     allows one. Desaturated they read as evidence, not decoration. */
+  filter: grayscale(1) brightness(1.6) contrast(0.8);
+  opacity: 0.42;
+  transition:
+    filter var(--dur-state) var(--ease),
+    opacity var(--dur-state) var(--ease);
+}
+.proofCard:hover img {
+  filter: none;
+  opacity: 1;
+}
+
+/* The result reads first. Nobody remembers which logo was which; they
+   remember "winner". */
+.proofCard b {
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-weight: 800;
+  letter-spacing: -0.026em;
+  color: var(--ink);
+  line-height: 1;
+}
+.proofEvent {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--body);
+  text-wrap: balance;
+}
+.proofCard em {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+  color: var(--label);
+}
+
+/* ---- the giant wordmark --------------------------------------------
+
+   `sticky; top: 0`. It starts at the foot of the hero, rides up with the
+   scroll, holds against the top of the viewport while the light band
+   passes behind it, and releases when the zone ends.
+
+   An earlier version used `bottom: 0`, which pinned it to the foot of the
+   screen for the entire hero. It never arrived, so it never landed.
+
+   No ancestor of this element may set `overflow: hidden`. Any that does
+   turns sticky into static silently, which is the usual way this effect
+   is lost. ---------------------------------------------------------- */
+
+.wordmarkBand {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  width: 100%;
+  pointer-events: none;
+  background: transparent;
+  /* Pulled back up into the hero's run out padding, so the mark's resting
+     position is INSIDE the dark field rather than at the join below it.
+     That is what puts dark behind the letters at the moment they lock to
+     the top of the screen, and it is why there is no separate dark band to
+     seam against. The offset leaves air between the proof cards and the
+     mark; pressed against them the two read as one block. */
+  margin-top: calc(clamp(20px, 5vh, 60px) - clamp(180px, 30vh, 320px));
+  /* The blend belongs on the element that owns the stacking context. On
+     the glyphs inside, `z-index` here means they can only see their
+     siblings, which is nothing, and the mark stays white over the cream. */
+  mix-blend-mode: difference;
+}
+
+/* No `overflow: hidden` and no clipping. `textLength` fits the word to the
+   box exactly, so it spans edge to edge at every width with all eight
+   letters present. See the component for why this is SVG and not text. */
+.giant {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.giant text {
+  font-family: var(--font-sans);
+  font-size: 200px;
+  font-weight: 800;
+  fill: #fff;
+}
+
+/* ---- the run out the wordmark holds across --------------------------
+
+   The mark needs somewhere to be still while the ground changes under it.
+   The dark half is the hero's own bottom padding, so there is no seam. The
+   cream half is this, and it rises through the held letters and sweeps the
+   inversion across them instead of flipping in a single frame.
+
+   `z-index: 2`, because an unpositioned block paints below a positioned
+   one and the hero is positioned. Without it the cream slid behind the
+   hero and the sweep never appeared. Below the mark's own 3, so the
+   letters stay on top of it. ---------------------------------------- */
+
+.wordmarkRunLight {
+  position: relative;
+  z-index: 2;
+  height: clamp(220px, 42vh, 420px);
+  background: var(--l-bg);
+}
+
+/* ============================================================
+   4. Who we are
+   ============================================================ */
+
+/* Block layout with margins, not a grid.
+ *
+ * `Wrap` centres itself with `margin-inline: auto`. As a grid item that
+ * stops being a no-op: auto margins absorb the free space, the item
+ * collapses to fit-content and centres, which silently pulled the section
+ * action into the middle of the page. */
+.who {
+  position: relative;
+  background: var(--bg);
+  color: var(--ink);
+  padding-block: var(--section-pad) clamp(40px, 5vw, 76px);
+}
+.who > * + * {
+  margin-top: clamp(30px, 4.4vw, 56px);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+  margin: 0 0 var(--eyebrow-gap);
+}
+
+/* Statement left, support right. The support column is deliberately
+   narrow, so it reads as a note against the claim rather than a second
+   claim of equal weight. */
+.whoHead {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(20px, 3vw, 40px);
+  align-items: end;
+}
+@media (min-width: 900px) {
+  .whoHead {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: clamp(40px, 6vw, 96px);
+  }
+}
+
+.whoTitle {
+  margin: 0;
+  font-size: clamp(34px, 5.4vw, 74px);
+  line-height: 0.94;
+  font-weight: 800;
+  letter-spacing: -0.036em;
+  text-wrap: balance;
+}
+.tMuted {
+  color: var(--body);
+}
+.tStrong {
+  color: var(--ink);
+}
+
+.whoSupport {
+  margin: 0;
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--body);
+  max-width: 42ch;
+}
+
+/* ---- the quote ------------------------------------------------------ */
+
+/* `.whoHead` and this are plain siblings inside the wrapper, so the
+   section's grid gap does not reach them. Without the margin the quote
+   mark landed on the second line of the heading. */
+.quote {
+  margin: clamp(28px, 4vw, 52px) 0 0;
+  position: relative;
+  padding-left: clamp(0px, 4vw, 84px);
+  display: grid;
+  gap: clamp(18px, 2.4vw, 30px);
+  justify-items: start;
+}
+
+/* Set in the accent and oversized, hanging outside the text column. It is
+   the one piece of ornament in the section and it earns its place by
+   marking where the studio speaks in the first person. */
+.quoteGlyph {
+  position: absolute;
+  left: 0;
+  top: -0.34em;
+  font-size: clamp(56px, 7vw, 104px);
+  line-height: 1;
+  font-weight: 800;
+  color: var(--accent);
+  opacity: 0.3;
+  user-select: none;
+}
+@media (max-width: 899px) {
+  .quoteGlyph {
+    position: static;
+    display: block;
+  }
+}
+
+.quoteBody {
+  margin: 0;
+}
+/* The measure has to be set here, not on the blockquote. `.spine` carries
+   its own `max-width: 22ch`, and `ch` resolves against the element's own
+   font size, so a constraint on the parent is computed against body text
+   and comes out roughly half the intended width. */
+.quoteBody p {
+  font-size: clamp(20px, 2.3vw, 32px);
+  line-height: 1.22;
+  font-weight: 700;
+  letter-spacing: -0.026em;
+  max-width: 34ch;
+}
+
+.quoteBy {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-top: clamp(6px, 1vw, 12px);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.14);
+}
+.quoteBy b {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.quoteBy span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--label);
+}
+
+/* ---- capability marquee --------------------------------------------- */
+
+.marqueeBand {
+  border-block: 1px solid rgb(var(--line-rgb) / 0.1);
+  padding-block: clamp(14px, 1.8vw, 22px);
+  display: grid;
+  gap: clamp(14px, 1.8vw, 22px);
+  /* The track is deliberately wider than the screen, and `.marquee` clips
+     it. This is the belt to that braces: any layout mode that sizes to
+     content would otherwise widen the whole section to fit the track and
+     push every sibling off the right edge of the document. */
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Display weight, same treatment as the styleguide's marquee: the
+   capabilities are the argument of the section, not a footnote, so they
+   are set like one. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(26px, 4vw, 62px);
+  font-size: clamp(22px, 3.4vw, 44px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+/* A dot after each item, from the logo's motif. Cheaper than a divider
+   rule and it keeps the row reading as one continuous line. */
+.chip::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: 0 0 auto;
+}
+
+/* Smaller and quieter than the capability belt on purpose: the tools
+   support the claim, they do not make it. Greyscale at rest, colour on
+   hover, same contract as the proof cards. */
+.logoChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.logoChip img {
+  width: clamp(19px, 2vw, 24px);
+  height: auto;
+  filter: grayscale(1) brightness(1.7) contrast(0.85);
+  opacity: 0.5;
+  transition:
+    filter var(--dur-state) var(--ease),
+    opacity var(--dur-state) var(--ease);
+}
+.logoChip:hover img {
+  filter: none;
+  opacity: 1;
+}
+.logoName {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--label);
+}
+
+/* ---- section action ------------------------------------------------- */
+
+/* Centred and set at display size. This is the section's close and the
+   bridge to the process, so it reads as a destination rather than a
+   footnote link. */
+.whoCta {
+  display: grid;
+  justify-items: center;
+  gap: clamp(10px, 1.4vw, 16px);
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+  color: var(--ink);
+}
+.whoCtaKick {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--label);
+}
+.whoCtaLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 20px);
+  font-size: clamp(32px, 5.6vw, 68px);
+  font-weight: 800;
+  letter-spacing: -0.036em;
+  line-height: 0.95;
+  padding-bottom: clamp(6px, 0.8vw, 10px);
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.2);
+  transition:
+    color var(--dur-state) var(--ease),
+    border-color var(--dur-state) var(--ease);
+}
+.whoCtaLabel svg {
+  width: 0.72em;
+  height: 0.72em;
+  transition: transform var(--dur-state) var(--ease);
+}
+.whoCta:hover .whoCtaLabel {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.whoCta:hover svg {
+  transform: translateX(5px);
+}
+
+/* ============================================================
+   5. Stats strip
+   ============================================================ */
+
+.stats {
+  background: var(--bg);
+  color: var(--ink);
+  padding-block: 0 var(--section-pad);
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(28px, 4vw, 52px) clamp(18px, 3vw, 44px);
+  padding-top: clamp(28px, 4vw, 56px);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.12);
+}
+@media (min-width: 900px) {
+  .statsRow {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .whoCtaLabel,
+  .whoCta svg,
+  .proofCard,
+  .proofCard img,
+  .proofRule,
+  .heroSecondary,
+  .ctaCard,
+  .ctaDots,
+  .ctaArrow {
+    transition: none;
+  }
+}

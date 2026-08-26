@@ -1,0 +1,196 @@
+/* ============================================================
+   10. What working together looks like.
+   Light ground, ASCII figure header, dot-marked triptych.
+   ============================================================ */
+
+.together {
+  --fig-ink: var(--ink);
+  background: var(--bg);
+  color: var(--ink);
+  padding-block: var(--section-pad);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.08);
+}
+
+/* The head is a two column row: the copy on the left, the live ASCII
+   figure on the right. Below the grid breakpoint the figure drops out
+   and the copy stacks, the same rhythm the other cream sections use. */
+.headRow {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 4vw, 48px);
+  margin-bottom: var(--head-gap);
+}
+@media (min-width: 760px) {
+  .headRow {
+    display: grid;
+    grid-template-columns: minmax(0, 1.16fr) minmax(0, 0.84fr);
+    align-items: center;
+    gap: clamp(36px, 5vw, 80px);
+  }
+}
+
+.headText {
+  display: grid;
+  gap: clamp(14px, 1.8vw, 22px);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+  margin: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(36px, 5.8vw, 84px);
+  font-weight: 800;
+  letter-spacing: -0.038em;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+.tMuted {
+  color: var(--body);
+  /* Two lines, guaranteed: the setup sits on its own line above the
+     claim rather than leaving the break to the wrapper. */
+  display: block;
+}
+.tStrong {
+  color: var(--ink);
+  display: block;
+}
+
+.lead {
+  margin: 0;
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--body);
+  max-width: 44ch;
+}
+
+/* The figure: a void plate on the cream ground, white ASCII inside,
+   captioned like an exhibit. The plate is what lets it run large; the
+   white marks would vanish into the cream without it. One ink, no
+   accent band, the confusion carved into the head itself. */
+.figure {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: clamp(18px, 2.4vw, 30px);
+  padding-bottom: clamp(34px, 4vw, 46px);
+  background: var(--d-void);
+  border: 1px solid rgb(0 0 0 / 0.32);
+  border-radius: var(--radius);
+  --fig-ink: #fff;
+}
+.figureCanvas {
+  width: 100%;
+  max-width: 440px;
+  display: block;
+}
+.figureCap {
+  position: absolute;
+  left: clamp(14px, 1.8vw, 22px);
+  bottom: clamp(12px, 1.5vw, 18px);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.55);
+}
+
+/* ---- the triptych ---------------------------------------------------- */
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 4vw, 48px);
+}
+@media (min-width: 900px) {
+  .row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(36px, 5.4vw, 88px);
+  }
+}
+
+.cell {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding-top: clamp(20px, 2.4vw, 28px);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.14);
+  transition: transform var(--dur-state) var(--ease);
+}
+.cell:hover {
+  transform: translateY(-3px);
+}
+/* The accent bar that draws itself in across the top edge on hover,
+   sitting over the hairline the row already carries. */
+.cellBar {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 520ms var(--ease);
+}
+.cell:hover .cellBar {
+  transform: scaleX(1);
+}
+
+.cellTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cellDot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: 0 0 auto;
+  transition: transform var(--dur-state) var(--ease);
+}
+.cell:hover .cellDot {
+  transform: scale(1.25);
+}
+.cellTop em {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--label);
+}
+
+.cellTitle {
+  margin: 0;
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.026em;
+  line-height: 1.02;
+  color: var(--ink);
+}
+
+.cellBody {
+  margin: 0;
+  font-size: clamp(15px, 1.1vw, 17px);
+  line-height: 1.55;
+  font-weight: 500;
+  color: var(--body);
+  max-width: 38ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell,
+  .cellBar,
+  .cellDot {
+    transition: none;
+  }
+}

@@ -1,0 +1,66 @@
+.field {
+  position: relative;
+  isolation: isolate;
+  background: var(--bg);
+  color: var(--ink);
+  transition: background var(--dur-state) var(--ease), color var(--dur-state) var(--ease);
+}
+
+/* Paper fibre, extracted from assets/hero-background.png.
+   256px tile, 37 KB, one cache hit, resolution independent. */
+.grain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--grain);
+  background-image: url('/grain.png');
+  background-repeat: repeat;
+  background-size: var(--grain-size) var(--grain-size);
+  /* soft-light keeps the fibre reading as texture in the field rather than
+     as a grey haze sitting on top of it */
+  mix-blend-mode: soft-light;
+}
+
+/* The light bloom. Same colour as the sampled PNG, but positioned by
+   custom property so it can move at a breakpoint, and capped by the alpha
+   budget in tokens.css so text over it is never a surprise. */
+.bloom {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle var(--b-r) at var(--b-x-n) var(--b-y-n),
+    rgb(var(--bloom-rgb) / var(--b-a)) 0%,
+    rgb(var(--bloom-rgb) / calc(var(--b-a) * 0.42)) 26%,
+    rgb(var(--bloom-rgb) / calc(var(--b-a) * 0.11)) 52%,
+    transparent 74%
+  );
+}
+
+@media (min-width: 900px) {
+  .bloom {
+    background: radial-gradient(
+      circle var(--b-r-w) at var(--b-x) var(--b-y),
+      rgb(var(--bloom-rgb) / var(--b-a)) 0%,
+      rgb(var(--bloom-rgb) / calc(var(--b-a) * 0.42)) 26%,
+      rgb(var(--bloom-rgb) / calc(var(--b-a) * 0.11)) 52%,
+      transparent 74%
+    );
+  }
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+/* The grain tile is a fixed 256px, so on a 3x phone it renders at a third
+   of its intended optical size and turns into mush. Scaling it with dpr
+   keeps the fibre the same physical size on every screen. */
+@media (min-resolution: 2dppx) {
+  .grain {
+    background-size: calc(var(--grain-size) * 0.62) calc(var(--grain-size) * 0.62);
+  }
+}

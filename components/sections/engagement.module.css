@@ -1,0 +1,216 @@
+/* ============================================================
+   15. Engagement models. Three shapes, three cards, one footnote.
+   ============================================================ */
+
+.engagement {
+  background: var(--bg);
+  color: var(--ink);
+  padding-block: var(--section-pad);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.08);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(16px, 2vw, 26px);
+  margin-bottom: var(--head-gap);
+}
+@media (min-width: 900px) {
+  .head {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: end;
+    gap: clamp(40px, 6vw, 96px);
+  }
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+  margin: 0 0 var(--eyebrow-gap);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(34px, 5.4vw, 78px);
+  font-weight: 800;
+  letter-spacing: -0.038em;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+.tAccent {
+  color: var(--accent);
+}
+.tStrong {
+  color: var(--ink);
+}
+
+.lead {
+  margin: 0;
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--body);
+  max-width: 44ch;
+}
+
+/* Three equal cards. One column on phone, three on grid. The card's
+   heading is a mono index on a row labelled "shape", which frames the
+   three as catalogued entries rather than as a recommended progression. */
+.models {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(20px, 2.4vw, 28px);
+}
+@media (min-width: 900px) {
+  .models {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.card {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding: clamp(22px, 2.6vw, 32px);
+  border: 1px solid rgb(var(--line-rgb) / 0.12);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition:
+    border-color var(--dur-state) var(--ease),
+    transform var(--dur-state) var(--ease);
+}
+.card:hover {
+  border-color: rgb(var(--line-rgb) / 0.26);
+  transform: translateY(-2px);
+}
+
+.cardHead {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 2px;
+}
+.cardIndex {
+  font-family: var(--font-mono);
+  font-size: clamp(34px, 4vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.028em;
+  line-height: 1;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.cardKicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--label);
+}
+
+.cardName {
+  margin: 0;
+  font-size: clamp(22px, 2.4vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.026em;
+  line-height: 1.02;
+  color: var(--ink);
+}
+.cardDesc {
+  margin: 0;
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--ink);
+  max-width: 32ch;
+}
+
+.cardPoints {
+  list-style: none;
+  margin: auto 0 0;
+  padding: clamp(14px, 1.6vw, 18px) 0 0;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.08);
+  display: grid;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--label);
+}
+.cardPoints li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.cardPoints span {
+  color: var(--accent);
+}
+
+/* The footnote + CTA. The footnote is the one line that distinguishes us
+   from a retainer studio, and it sits on the same row as the CTA so it
+   reads as the contract under the action rather than as a disclaimer
+   buried below the cards. */
+.foot {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(22px, 3vw, 36px);
+  align-items: center;
+  margin-top: clamp(44px, 6vw, 76px);
+  padding-top: clamp(24px, 3vw, 36px);
+  border-top: 1px solid rgb(var(--line-rgb) / 0.14);
+}
+@media (min-width: 900px) {
+  .foot {
+    grid-template-columns: minmax(0, 1.4fr) auto;
+  }
+}
+
+.footText {
+  margin: 0;
+  font-size: clamp(18px, 2vw, 26px);
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.25;
+  color: var(--ink);
+  max-width: 44ch;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  padding: 15px 22px;
+  border: 1px solid rgb(var(--line-rgb) / 0.2);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  transition:
+    background var(--dur-state) var(--ease),
+    border-color var(--dur-state) var(--ease),
+    color var(--dur-state) var(--ease);
+}
+.cta svg {
+  width: 15px;
+  height: 15px;
+  transition: transform var(--dur-state) var(--ease);
+}
+.cta:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--d-void);
+}
+.cta:hover svg {
+  transform: translateX(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .cta,
+  .cta svg {
+    transition: none;
+  }
+}

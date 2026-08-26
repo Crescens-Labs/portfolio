@@ -1,0 +1,25 @@
+# Crescens Labs
+
+> End to end software studio, two founders, remote from Indonesia. We structure the problem, architect the solution, build it with you, then train your team and hand over, so you can run and extend the system without us. Tagline: Don't trust. Verify. Every number on the site carries its source.
+
+Crescens Labs builds custom software end to end: web apps, mobile apps, internal systems (POS, finance, inventory, logistics, HR), AI integration with RAG over the client's own knowledge, offline-first architecture, and consulting. The positioning: most clients arrive unsure what their actual problem is. The studio's job is to help find the problem worth solving, then build it with them. Handover is the definition of the work, not an upsell.
+
+## Proof, judged
+
+- Winner, National Campus Hackathon (Solana Foundation with Colosseum Frontier), shipped as RoyaleCard Arena, an on-chain competitive strategy game where market knowledge is the trading edge. Source: final standings.
+- Top 7, Meta Llama AI Accelerator, the only active student team to advance, shipped as SimplyBox, an AI unified inbox for the Meta ecosystem. Source: Meta 2025 cohort standings.
+- 1st of 100+, Grab marketing competition. Source: Grab final standings.
+- Client outcomes: response time down 80%+ for SimplyBox teams (source: measured against the client's own pre-launch baseline), 5 apps replaced by 1 at a photobooth venue running Snapose (source: operator workflow audit, 2025).
+
+## Founders
+
+- Dylansius Putra, Founder, PM, Fullstack Developer
+- Daffa Hasanal Arkaan, Founder, Lead Engineer
+
+## Contact
+
+- Email: hi@crescenslabs.com
+- Site: https://crescenslabs.com
+- GitHub: https://github.com/crescens-labs
+- X: https://x.com/crescenslabs
+- LinkedIn: https://www.linkedin.com/company/crescens-labs

@@ -1,0 +1,153 @@
+/* ============================================================
+   Crescens Labs, locked token layer.
+
+   Palette: Forest Neutral, plus a VOID ground for full bleed moments.
+   Type:    Inter + JetBrains Mono.
+   Motion:  one easing, two durations.
+
+   Every value here is verified in tests/tokens.spec.ts. Do not edit a
+   colour without running `pnpm test`, the contrast floor is enforced.
+
+   Naming note, read this before you use the text tones:
+   `--label` is BRIGHTER than `--body`. That is deliberate, not a typo.
+   `--body` carries paragraphs at 15px, `--label` carries 10 to 11px mono
+   which needs more contrast to stay readable at that size. The old name
+   for `--label` was `--faint`, which read as "dimmer" and caused exactly
+   the wrong instinct.
+   ============================================================ */
+
+:root {
+  /* ---- ink ramp, shared by both grounds ---- */
+  --logo-dot: #ddbfd1;
+
+  /* ---- dark ground, the page default ---- */
+  --d-void: #040706;
+  --d-bg: #08120e;
+  --d-surface: #0e1a15;
+  --d-raise: #17291f;
+  --d-ink: #fbfdfc;
+  --d-body: #858e8a;
+  --d-label: #9aa29e;
+  --d-accent: #f9b4d6;
+  --d-line-rgb: 251 253 252;
+
+  /* ---- light ground, used for the counterpoint bands ---- */
+  --l-void: #dfe6e1;
+  --l-bg: #eff2ef;
+  --l-surface: #ffffff;
+  --l-raise: #dfe6e1;
+  --l-ink: #070f0b;
+  --l-body: #4e5955;
+  --l-label: #414b47;
+  --l-accent: #8c2565;
+  --l-line-rgb: 7 15 11;
+
+  /* ---- motion, one easing token for the whole site ---- */
+  --ease: cubic-bezier(0.44, 0, 0.56, 1);
+  --dur-state: 300ms;
+  --dur-reveal: 1000ms;
+
+  /* ---- layout ---- */
+  --gut: clamp(16px, 3.4vw, 48px);
+  --col-pad: clamp(16px, 1.7vw, 26px);
+  --max: 1512px;
+  --radius: 3px;
+  --nav-h: clamp(64px, 7vw, 96px);
+  --pad-block: clamp(52px, 8vw, 132px);
+  --pad-block-sm: clamp(34px, 5vw, 76px);
+
+  /* ---- section rhythm ----
+     One vertical scale for the whole page. Sections used to each carry
+     `clamp(72px, 12vw, 176px)` top and bottom, which stacked into a full
+     empty screen between neighbours. The scale below keeps the air but
+     cuts the dead space roughly in half, and because every section reads
+     the same token the rhythm stays uniform as it is tuned. */
+  --section-pad: clamp(56px, 8vw, 116px);
+  /* Header anatomy, measured from the heading outward: the eyebrow hugs
+     the title, the head block clears the content below it by one step
+     more. An eyebrow that floats 40px above its heading reads as a label
+     for the previous section, which is the gap the old values created. */
+  --eyebrow-gap: clamp(13px, 1.5vw, 17px);
+  --head-gap: clamp(26px, 3.6vw, 44px);
+
+  /* ---- field, the bloom and grain that replace the background PNGs ----
+
+     The bloom is sampled from assets/hero-background.png (core #C6D5CB)
+     but composited in CSS so it can be repositioned per breakpoint and
+     capped for contrast. Baked into a PNG it did neither.
+
+     Alpha budget, measured against --d-bg in tests/tokens.spec.ts:
+
+       0.10  ink 15.28  body 4.63  accent 9.31   -> all three pass AA
+       0.35  ink  7.51  body 2.28  accent 4.58   -> headings and accent only
+       0.62  ink  3.4                            -> no text at all
+
+     Pick the level by what sits on top. Never raise a level to make a
+     section prettier, move the bloom instead. */
+  --bloom-rgb: 198 213 203;
+  --bloom-safe: 0.1;
+  --bloom-head: 0.35;
+  --bloom-hot: 0.62;
+
+  --grain-size: 256px;
+  --grain-dark: 0.05;
+  --grain-light: 0.035;
+}
+
+/* ---- ground mapping ------------------------------------------------ */
+
+[data-ground='dark'] {
+  --void: var(--d-void);
+  --bg: var(--d-bg);
+  --surface: var(--d-surface);
+  --raise: var(--d-raise);
+  --ink: var(--d-ink);
+  --body: var(--d-body);
+  --label: var(--d-label);
+  --accent: var(--d-accent);
+  --line-rgb: var(--d-line-rgb);
+  --grain: var(--grain-dark);
+  --word-dim: 0.22;
+  color-scheme: dark;
+}
+
+[data-ground='light'] {
+  --void: var(--l-void);
+  --bg: var(--l-bg);
+  --surface: var(--l-surface);
+  --raise: var(--l-raise);
+  --ink: var(--l-ink);
+  --body: var(--l-body);
+  --label: var(--l-label);
+  --accent: var(--l-accent);
+  --line-rgb: var(--l-line-rgb);
+  --grain: var(--grain-light);
+  /* Higher than dark. The same 0.22 that reads as a dimmed word on a near
+     black field is almost invisible as dark ink on cream, so the unrevealed
+     half of the spine disappeared instead of waiting. */
+  --word-dim: 0.34;
+  color-scheme: light;
+}
+
+/* The void ground is the dark palette with the field dropped to near
+   black. Used for the wordmark band, the footer, and any full bleed
+   moment that needs to read as a hard cut rather than a shade. */
+[data-ground='void'] {
+  --void: var(--d-void);
+  --bg: var(--d-void);
+  --surface: var(--d-bg);
+  --raise: var(--d-surface);
+  --ink: var(--d-ink);
+  --body: var(--d-body);
+  --label: var(--d-label);
+  --accent: var(--d-accent);
+  --line-rgb: var(--d-line-rgb);
+  --grain: 0.062;
+  color-scheme: dark;
+}
+
+/* ---- backwards compatible aliases for the /directions preview ------- */
+[data-ground] {
+  --muted: var(--body);
+  --faint: var(--label);
+}
