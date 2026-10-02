@@ -44,3 +44,13 @@ next-env.d.ts
 
 # Raw ElevenLabs takes, re-masterable without regenerating
 /.audio-raw/
+
+# local working material: brand sources, agent skills and config,
+# planning docs, agent instructions. Kept on disk, out of the repo.
+/assets/
+/.agents/
+/docs/
+/.codex/
+/.impeccable/
+/AGENTS.md
+/CLAUDE.md
