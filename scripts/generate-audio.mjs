@@ -98,7 +98,21 @@ export const SFX = [
  */
 export const PICKS = { hover: 1, click: 1, open: 2, close: 1, on: 1, off: 3, focus: 2, confirm: 1 };
 
-/** The studio theme. Instrumental, built to loop under a reading visitor. */
+/**
+ * The tape-hiss bed for the generative score (lib/score.ts). Generated
+ * with `loop: true` from the sound-effects endpoint, mastered by
+ * --master-only into public/audio/grain.mp3.
+ */
+export const GRAIN = {
+  text: 'Soft warm tape hiss with faint gentle vinyl crackle, steady, quiet, no music, no hum',
+  seconds: 20,
+};
+
+/**
+ * The composed studio theme. The ElevenLabs Music API needs a paid plan;
+ * until one is on the account the site plays the generative score, and
+ * the moment public/audio/theme.mp3 exists the engine prefers it.
+ */
 export const THEME = {
   name: 'theme',
   ms: 120000,
@@ -162,7 +176,7 @@ function masterSfx(src, dst, maxMs) {
  * the first 4s, so the loop point has no seam, then the whole track is
  * normalised to a quiet -23 LUFS bed.
  */
-function masterTheme(src, dst) {
+function masterTheme(src, dst, lufs = -23) {
   const dur = parseFloat(
     execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', src]).toString(),
   );
@@ -175,7 +189,7 @@ function masterTheme(src, dst) {
       `[0]atrim=${x}:${dur - x},asetpts=PTS-STARTPTS[body]`,
       `[0]atrim=${dur - x}:${dur},asetpts=PTS-STARTPTS[tail]`,
       `[tail][head]acrossfade=d=${x}:c1=tri:c2=tri[seam]`,
-      `[seam][body]concat=n=2:v=0:a=1,loudnorm=I=-23:TP=-2:LRA=9[out]`,
+      `[seam][body]concat=n=2:v=0:a=1,loudnorm=I=${lufs}:TP=-2:LRA=9[out]`,
     ].join(';'),
     '-map', '[out]', '-ar', '44100', '-b:a', '128k', dst,
   ]);
@@ -195,6 +209,10 @@ async function main() {
       console.log(`master ${cue.name} <- take ${pick}`);
     }
     if (existsSync(join(RAW, 'theme-raw.mp3'))) masterTheme(join(RAW, 'theme-raw.mp3'), join(OUT, 'theme.mp3'));
+    // The film-grain bed under the generative score: tape hiss and
+    // crackle, looped seamlessly, quiet. Taken from the sound-effects
+    // endpoint, which the free tier allows (the music API does not).
+    if (existsSync(join(RAW, 'grain.mp3'))) masterTheme(join(RAW, 'grain.mp3'), join(OUT, 'grain.mp3'), -30);
     return;
   }
   const key = loadKey();
