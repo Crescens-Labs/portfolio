@@ -54,7 +54,7 @@ export function Footer() {
                 than a spinner. On hover the ring text and the core take
                 the accent: the whole seal lights before the visitor
                 commits to it. */}
-            <Link className={s.ctaOrb} href="/#contact" aria-label="Start a project, go to the contact form">
+            <Link className={s.ctaOrb} href="/#contact" aria-label="Start a project · let's talk · go to the contact form">
               <svg className={s.ring} viewBox="0 0 120 120" aria-hidden="true" focusable="false">
                 <defs>
                   <path id="ctaRing" d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0" />
