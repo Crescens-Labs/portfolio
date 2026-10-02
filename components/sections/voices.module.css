@@ -188,8 +188,29 @@
   background: var(--sheet);
   color: var(--l-ink);
   box-shadow: 0 24px 60px rgb(2 6 4 / 0.38);
-  transform: translateY(var(--lift, 0px));
-  transition: transform var(--dur-state) var(--ease);
+
+  /* Focus. JS writes --f (0..1) as the focus line passes; hover and
+     keyboard focus raise --h to 1 so any card can be read on demand.
+     Without JS --f is unset and every card sits at full strength.
+     Lift and focus ride `translate`, not `transform`, so they compose
+     with the GSAP entrance instead of being overwritten by it. */
+  --k: max(var(--f, 1), var(--h, 0));
+  opacity: calc(0.38 + 0.62 * var(--k));
+  translate: 0 calc(var(--lift, 0px) - 16px * var(--k));
+  transition:
+    translate var(--dur-state) var(--ease),
+    opacity 180ms linear,
+    filter 450ms var(--ease);
+}
+/* Out of focus the sheet softens, as in the reference: the words are
+   still there, but the eye is told where to read. */
+.card[data-active='false'] {
+  filter: saturate(0.5) blur(1.4px);
+}
+.card:hover,
+.card:focus-within {
+  --h: 1;
+  filter: none;
 }
 .card[data-kind='quote'] {
   width: clamp(300px, 27vw, 420px);
