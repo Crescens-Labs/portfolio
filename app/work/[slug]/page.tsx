@@ -5,6 +5,7 @@ import { CaseStory } from '@/components/case/CaseStory';
 import { CaseOutro } from '@/components/case/CaseOutro';
 import { Footer } from '@/components/sections/Footer';
 import { CASE_STUDIES, getCaseStudy } from '@/content/work';
+import { caseStudyJsonLd } from '@/lib/seo';
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -43,6 +44,9 @@ export default async function CaseStudyPage({ params }: Params) {
         <CaseOutro study={study} />
       </main>
       <Footer />
+      {caseStudyJsonLd(study).map((ld, i) => (
+        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
+      ))}
     </>
   );
 }

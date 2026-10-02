@@ -1,4 +1,5 @@
 import { CONTACT, FAQ, SOCIALS, TAGLINE, TEAM } from '@/content/home';
+import type { CaseStudy } from '@/content/work';
 
 /**
  * Structured data, built from the same content the page renders so the
@@ -87,4 +88,37 @@ export function faqLd() {
 /** The full block the home page renders, in order. */
 export function homeJsonLd() {
   return [organizationLd(), professionalServiceLd(), webSiteLd(), faqLd()];
+}
+
+/**
+ * A case study page: the work itself as a CreativeWork made by the studio,
+ * and the breadcrumb home > work > study. Built from the same record the
+ * page renders, like everything else in this file.
+ */
+export function caseStudyJsonLd(study: CaseStudy) {
+  const url = `${SITE_URL}/work/${study.slug}`;
+  return [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CreativeWork',
+      '@id': `${url}#work`,
+      name: study.name,
+      headline: `${study.name}, ${study.subtitle}`,
+      description: study.summary,
+      url,
+      dateCreated: study.year,
+      creator: { '@id': `${SITE_URL}/#organization` },
+      about: study.subtitle,
+      creativeWorkStatus: study.status === 'shipped' ? 'Published' : 'Incomplete',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+        { '@type': 'ListItem', position: 2, name: 'Work', item: `${SITE_URL}/work` },
+        { '@type': 'ListItem', position: 3, name: study.name, item: url },
+      ],
+    },
+  ];
 }
