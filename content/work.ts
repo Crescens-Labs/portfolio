@@ -230,8 +230,217 @@ export const CASE_STUDIES: CaseStudy[] = [
     ],
     gallery: [],
   },
+  {
+    slug: 'snapose',
+    index: '03',
+    name: 'Snapose',
+    initial: 'A',
+    subtitle: 'Photobooth studio platform',
+    year: '2025',
+    type: 'Client product',
+    role: 'Problem structuring, architecture, build, training',
+    status: 'shipped',
+    summary:
+      'Competitors sell software. We shipped the operation around it: auto finance with waste analysis, offline-first with Drive sync. Five apps became one.',
+    problem:
+      'A photobooth studio ran each event across five or more apps, and every one of them assumed the venue had internet. They asked for photobooth software.',
+    reframe:
+      'Competitors already sell photobooth software. The real constraints were connectivity, because a crowded venue is where the internet fails first, and reconciliation, because five apps meant five versions of the books.',
+    build: [
+      {
+        title: 'Offline first',
+        body: 'The booth runs without a connection and syncs to Google Drive when one returns. Data is backed up by default.',
+      },
+      {
+        title: 'Shared across laptops',
+        body: 'Sync goes through the studio’s own Drive, so every laptop on that Drive sees the same data instead of one device holding it.',
+      },
+      {
+        title: 'Books that close themselves',
+        body: 'Finance is captured as the booth runs, with waste analysis, so reconciliation stops being a monthly fire.',
+      },
+    ],
+    architecture: {
+      columns: [
+        {
+          label: 'venue',
+          nodes: [
+            { id: 'cam', label: 'Camera' },
+            { id: 'booth', label: 'Booth laptop', note: 'works offline' },
+          ],
+        },
+        {
+          label: 'local',
+          nodes: [
+            { id: 'store', label: 'Local store', note: 'source of truth' },
+            { id: 'fin', label: 'Auto finance', note: 'waste analysis' },
+          ],
+        },
+        {
+          label: 'sync',
+          nodes: [
+            { id: 'drive', label: 'Google Drive', note: 'when online' },
+            { id: 'peers', label: 'Other laptops' },
+          ],
+        },
+      ],
+      edges: [
+        ['cam', 'booth'],
+        ['booth', 'store'],
+        ['store', 'fin'],
+        ['store', 'drive'],
+        ['fin', 'drive'],
+        ['drive', 'peers'],
+      ],
+      caption: 'The laptop is the source of truth on the night. Drive is where it lands afterwards, and how every other laptop catches up.',
+    },
+    results: [
+      {
+        label: 'Apps a venue runs',
+        value: '5 to 1',
+        caption: 'Photobooth operators, before and after Snapose',
+        source: 'Operator workflow audit, 2025',
+      },
+    ],
+    voice: 'snapose',
+    handover: HANDOVER_SCOPE,
+    gallery: [],
+  },
+  {
+    slug: 'pawtrait',
+    index: '04',
+    name: 'Pawtrait',
+    initial: 'P',
+    subtitle: 'DIY pet photobox, end to end',
+    year: '2026',
+    type: 'Client, in build',
+    role: 'Problem structuring, architecture, hardware integration, build',
+    status: 'in build',
+    summary:
+      'Every paw deserves a spotlight. A DIY pet photobox that prints accessory sheets for collars, bracelets and keychains, with the camera, printer, template editor, finance and gallery in one system.',
+    problem:
+      'Pawtrait wanted a self-serve photobox for pets that turns a session into something to wear: an accessory sheet for a collar, a bracelet or a keychain.',
+    reframe:
+      'Booth software alone would not do it. A DIY booth has no operator to rescue a stuck print or a confused customer, so the flow itself has to carry the session, from the camera to the printer to a file the owner keeps.',
+    build: [
+      {
+        title: 'Wired to the hardware',
+        body: 'The software drives the camera and the printer directly, so a session goes from shot to printed sheet without a person at the controls.',
+      },
+      {
+        title: 'Template editor',
+        body: 'Pawtrait designs its own accessory layouts, so new collar, bracelet and keychain sheets ship without us.',
+      },
+      {
+        title: 'Finance and gallery',
+        body: 'Every session is booked into the finance view, and each customer gets a soft-file gallery site for their photos afterwards.',
+      },
+    ],
+    architecture: {
+      columns: [
+        {
+          label: 'booth',
+          nodes: [
+            { id: 'flow', label: 'Booth flow', note: 'made for them' },
+            { id: 'cam', label: 'Camera' },
+          ],
+        },
+        {
+          label: 'core',
+          nodes: [
+            { id: 'session', label: 'Session' },
+            { id: 'tpl', label: 'Template editor' },
+            { id: 'fin', label: 'Finance' },
+          ],
+        },
+        {
+          label: 'out',
+          nodes: [
+            { id: 'print', label: 'Printer', note: 'accessory sheet' },
+            { id: 'gallery', label: 'Gallery site', note: 'soft files' },
+          ],
+        },
+      ],
+      edges: [
+        ['flow', 'session'],
+        ['cam', 'session'],
+        ['tpl', 'session'],
+        ['session', 'fin'],
+        ['session', 'print'],
+        ['session', 'gallery'],
+      ],
+      caption: 'One session object carries a visit from the first shot to the printed sheet and the gallery link, with finance written as it goes.',
+    },
+    results: [],
+    pending: 'In build. Numbers land here after launch, measured, with their sources.',
+    voice: 'pawtrait',
+    handover: HANDOVER_SCOPE,
+    gallery: [],
+  },
+  {
+    slug: 'franchise-system',
+    index: '05',
+    name: 'Franchise System',
+    initial: 'F',
+    subtitle: 'Multi-outlet operations platform',
+    year: '2026',
+    type: 'Client, in build',
+    role: 'Problem structuring, architecture, full build',
+    status: 'in build',
+    summary:
+      'One operating system for a leading multi-outlet restaurant chain: POS, finance, inventory, logistics and HR in one place.',
+    problem:
+      'A leading restaurant chain in Central Java needed operations, POS, finance and accounting, inventory, logistics and HR for every outlet.',
+    reframe:
+      'Read as a list, that is six products. The real job is one record that all six read from, built to survive a bad connection at an outlet, because six systems that disagree cannot be reconciled after the fact.',
+    build: [
+      {
+        title: 'One record per outlet',
+        body: 'POS, inventory and logistics write to the same data, so stock follows sales without anyone retyping it.',
+      },
+      {
+        title: 'Finance and accounting',
+        body: 'Books built from what the outlets actually did, not from what was reported at the end of the month.',
+      },
+      {
+        title: 'People',
+        body: 'HR sits in the same system, so staffing is planned against the outlets it serves.',
+      },
+    ],
+    architecture: {
+      columns: [
+        {
+          label: 'outlets',
+          nodes: [{ id: 'pos', label: 'POS', note: 'every outlet' }],
+        },
+        {
+          label: 'operations',
+          nodes: [
+            { id: 'inv', label: 'Inventory' },
+            { id: 'log', label: 'Logistics' },
+            { id: 'hr', label: 'HR' },
+          ],
+        },
+        {
+          label: 'head office',
+          nodes: [{ id: 'fin', label: 'Finance and accounting' }],
+        },
+      ],
+      edges: [
+        ['pos', 'inv'],
+        ['pos', 'fin'],
+        ['inv', 'log'],
+        ['log', 'fin'],
+        ['hr', 'fin'],
+      ],
+      caption: 'Sales at the till move stock, stock moves logistics, and all of it lands in the same books.',
+    },
+    results: [],
+    pending: 'In build. Results are published after handover, with their sources.',
+    handover: HANDOVER_SCOPE,
+    gallery: [],
+  },
 ];
-
 
 export function getCaseStudy(slug: string): CaseStudy | undefined {
   return CASE_STUDIES.find((c) => c.slug === slug);
