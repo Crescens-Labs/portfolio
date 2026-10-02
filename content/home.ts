@@ -638,7 +638,8 @@ export const ENGAGEMENT = {
   lead: 'Three shapes, chosen by whether the scope is knowable up front. We tell you which one fits after the first call.',
   footnote:
     'Every engagement ends with handover. That is not an upsell, it is the definition of the work.',
-  cta: { label: 'Book a call', href: '#contact' },
+  /** Opens WhatsApp with WHATSAPP.messages.call prefilled. */
+  cta: { label: 'Book a call' },
   models: [
     {
       key: 'project',
@@ -725,6 +726,24 @@ export const FAQ = {
 } as const;
 
 /**
+ * WhatsApp, the fast lane. The form stays the considered route; this is
+ * for the visitor who wants to ask one thing before writing a brief, and
+ * for "Book a call", which is a scheduling conversation, not a form.
+ *
+ * `number` is digits only, country code first, no plus: the shape wa.me
+ * expects. The prefilled lines are written so the first message we
+ * receive already says which button was pressed.
+ */
+export const WHATSAPP = {
+  number: '6281510123155',
+  display: '+62 815 1012 3155',
+  messages: {
+    hello: 'Hi Crescens, I have a question before I send a brief.',
+    call: 'Hi Crescens, I would like to book a call. Here is a little about what we are working on:',
+  },
+} as const;
+
+/**
  * Section 17. Contact. The form field is labelled "What is breaking?"
  * on purpose. "Message" filters for nothing; "What is breaking?" filters
  * for people with a real operational problem and primes the exact
@@ -750,6 +769,7 @@ export const CONTACT = {
     'The scope arrives in writing, before anything is signed.',
   ],
   secondaryLine: 'Prefer email? Write to us directly at',
+  whatsapp: { kicker: 'Rather ask first?', label: 'Chat on WhatsApp' },
   email: 'hi@crescens.dev',
 } as const;
 

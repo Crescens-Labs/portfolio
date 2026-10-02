@@ -26,3 +26,16 @@ describe('content', () => {
     }
   });
 });
+
+describe('whatsapp', () => {
+  it('stores the number in the digits-only shape wa.me expects', async () => {
+    const { WHATSAPP } = await import('@/content/home');
+    expect(WHATSAPP.number).toMatch(/^62\d{8,13}$/);
+  });
+
+  it('builds a deep link with the message encoded', async () => {
+    const { waHref } = await import('@/lib/whatsapp');
+    expect(waHref()).toBe('https://wa.me/6281510123155');
+    expect(waHref('Hi, a call?')).toBe('https://wa.me/6281510123155?text=Hi%2C%20a%20call%3F');
+  });
+});

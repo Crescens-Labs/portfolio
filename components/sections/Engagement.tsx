@@ -3,7 +3,8 @@
 import { useRef } from 'react';
 import { Wrap } from '@/components/layout';
 import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
-import { ENGAGEMENT } from '@/content/home';
+import { ENGAGEMENT, WHATSAPP } from '@/content/home';
+import { external, waHref } from '@/lib/whatsapp';
 import s from './engagement.module.css';
 
 /**
@@ -80,7 +81,9 @@ export function Engagement() {
 
         <div className={s.foot}>
           <p className={s.footText}>{ENGAGEMENT.footnote}</p>
-          <a className={s.cta} href={ENGAGEMENT.cta.href}>
+          {/* A call is a scheduling conversation, so it goes straight to
+              WhatsApp with the request already typed, not to the form. */}
+          <a className={s.cta} href={waHref(WHATSAPP.messages.call)} {...external}>
             {ENGAGEMENT.cta.label}
             <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
               <path
