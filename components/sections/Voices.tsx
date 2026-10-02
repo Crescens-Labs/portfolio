@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { Wrap } from '@/components/layout';
 import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
+import { getSound } from '@/lib/sound';
 import { VOICES, type VoiceCard } from '@/content/home';
 import s from './voices.module.css';
 
@@ -82,6 +83,9 @@ export function Voices() {
           }
         });
         if (best !== lastActive) {
+          // A card turned over: the hand-over is audible, softly, once
+          // the rail is in motion (not on the first measurement).
+          if (lastActive !== -1) getSound()?.play('focus');
           lastActive = best;
           cards.forEach((el, i) => (el.dataset.active = String(i === best)));
           setActive(best);

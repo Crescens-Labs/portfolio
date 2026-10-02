@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { getLenis } from '@/lib/lenis';
+import { getSound } from '@/lib/sound';
 import { CONTACT, SOCIALS, WHATSAPP } from '@/content/home';
 import { external, waHref } from '@/lib/whatsapp';
 import s from './ui.module.css';
@@ -104,6 +105,17 @@ export function Nav() {
    * without it, reaching the end of a long menu chains the gesture through
    * to whatever is behind.
    */
+  // The menu is a sheet: it slides open and shut, and sounds like it.
+  // Skips the first render so loading the page never makes a sound.
+  const opened = useRef(false);
+  useEffect(() => {
+    if (!opened.current) {
+      opened.current = true;
+      return;
+    }
+    getSound()?.play(open ? 'open' : 'close');
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
 
@@ -181,6 +193,7 @@ export function Nav() {
             aria-expanded={open}
             aria-controls="nav-menu"
             aria-label={open ? 'Close menu' : 'Open menu'}
+            data-sfx="none"
             onClick={() => setOpen((v) => !v)}
           >
             <span className={s.burgerBars} data-open={open} aria-hidden="true">
