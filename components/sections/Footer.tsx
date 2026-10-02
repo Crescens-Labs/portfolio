@@ -2,7 +2,8 @@ import { Wrap } from '@/components/layout';
 import { RevealText } from '@/components/RevealText';
 import { SocialGlyph } from '@/components/Nav';
 import { BarcodeStrip } from '@/components/BarcodeStrip';
-import { FOOTER, SOCIALS, TAGLINE } from '@/content/home';
+import { FOOTER, SOCIALS, TAGLINE, WHATSAPP } from '@/content/home';
+import { external, waHref } from '@/lib/whatsapp';
 import s from './footer.module.css';
 
 /**
@@ -107,6 +108,10 @@ export function Footer() {
                 <span>{sl.label}</span>
               </a>
             ))}
+            <a href={waHref(WHATSAPP.messages.hello)} {...external} aria-label="WhatsApp">
+              <SocialGlyph label="WhatsApp" />
+              <span>WhatsApp</span>
+            </a>
             <span className={s.metaSep} aria-hidden="true" />
             {FOOTER.legal.map((l) => (
               <a key={l.label} href={l.href}>

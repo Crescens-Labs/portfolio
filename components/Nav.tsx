@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { getLenis } from '@/lib/lenis';
-import { CONTACT, SOCIALS } from '@/content/home';
+import { CONTACT, SOCIALS, WHATSAPP } from '@/content/home';
+import { external, waHref } from '@/lib/whatsapp';
 import s from './ui.module.css';
 
 /** 15px glyphs for the header social cluster. Strokes and fills both ride
@@ -248,6 +249,9 @@ export function Nav() {
                   {l.label}
                 </a>
               ))}
+              <a href={waHref(WHATSAPP.messages.hello)} {...external}>
+                WhatsApp
+              </a>
             </span>
           </p>
         </div>
