@@ -332,6 +332,173 @@
   color: var(--body);
 }
 
+/* ---- the result ----
+   The recognition ledger's anatomy: value first, then what it was and
+   where it checks. */
+.results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.results li {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  column-gap: clamp(20px, 3vw, 48px);
+  align-items: baseline;
+  padding-block: clamp(18px, 2.4vw, 30px);
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.1);
+}
+.results li:first-child {
+  padding-top: 0;
+}
+.resultValue {
+  min-width: 4.4ch;
+  font-size: clamp(48px, 6.4vw, 104px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.resultText {
+  display: grid;
+  gap: 5px;
+  max-width: 44ch;
+}
+.resultLabel {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+.resultCaption {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--body);
+}
+.resultSrc {
+  margin: 8px 0 0;
+  padding-top: 7px;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.08);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--label);
+}
+.resultSrc span {
+  color: var(--accent);
+}
+.pending {
+  display: grid;
+  gap: 12px;
+}
+.pending b {
+  font-size: clamp(48px, 6.4vw, 104px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  color: var(--accent);
+}
+.pending p {
+  margin: 0;
+  max-width: 44ch;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--body);
+}
+
+/* ---- in their words ----
+   The Voices rail's sheet at full width: lilac paper, speaker at the
+   foot, the words large. */
+.voice {
+  --sheet: color-mix(in oklab, var(--l-bg) 74%, var(--logo-dot));
+  margin: 0;
+  padding: clamp(24px, 3.4vw, 52px);
+  border-radius: 2px;
+  background: var(--sheet);
+  color: var(--l-ink);
+  display: grid;
+  gap: clamp(16px, 2vw, 24px);
+  box-shadow: 0 24px 60px rgb(2 6 4 / 0.38);
+}
+.voice blockquote {
+  margin: 0;
+  max-width: 32ch;
+  font-size: clamp(24px, 2.8vw, 42px);
+  font-weight: 600;
+  letter-spacing: -0.026em;
+  line-height: 1.18;
+}
+.voiceGloss {
+  margin: 0;
+  max-width: 56ch;
+  padding-left: 12px;
+  border-left: 2px solid var(--l-accent);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--l-body);
+}
+.voice figcaption {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 12px;
+  align-items: center;
+  margin-top: clamp(10px, 2vw, 24px);
+}
+.voice figcaption span {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--l-accent);
+  color: var(--l-bg);
+  font-weight: 800;
+}
+.voice figcaption b {
+  font-size: 14px;
+}
+.voice figcaption em {
+  font-style: normal;
+  font-size: 12.5px;
+  color: var(--l-body);
+}
+
+/* ---- handover ---- */
+.handover {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.1);
+}
+.handover li {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  padding-block: 16px;
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.1);
+  font-size: clamp(16px, 1.4vw, 20px);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+.handover li::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translateY(-2px);
+}
+.handoverNote {
+  margin: 18px 0 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--label);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .plate {
     animation: none;
