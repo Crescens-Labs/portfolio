@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import { MotionProvider } from '@/components/MotionProvider';
 import { MusicToggle } from '@/components/MusicToggle';
@@ -55,6 +55,12 @@ export const metadata: Metadata = {
     description: 'Find the problem worth solving. Then build it with you.',
   },
   robots: { index: true, follow: true },
+};
+
+/** Mobile browser chrome takes the void ground, not the default white. */
+export const viewport: Viewport = {
+  themeColor: '#040706',
+  colorScheme: 'dark',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
