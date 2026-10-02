@@ -146,16 +146,15 @@
    The gallery cover's studio box at banner proportions: key light from
    above, the laptop standing on the floor line. */
 .plate {
-  --device-w: 52cqw;
+  --device-w: 52%;
   position: relative;
   isolation: isolate;
-  container-type: inline-size;
   display: flex;
   align-items: flex-end;
   margin: clamp(32px, 5vw, 72px) 0 0;
   aspect-ratio: 16 / 8.4;
   min-height: 300px;
-  padding-bottom: 7cqw;
+  padding-bottom: 7%;
   overflow: hidden;
   border: 1px solid rgb(var(--line-rgb) / 0.1);
   border-radius: var(--radius);
@@ -167,9 +166,9 @@
 }
 @media (max-width: 699px) {
   .plate {
-    --device-w: 86cqw;
+    --device-w: 86%;
     aspect-ratio: 1 / 0.9;
-    padding-bottom: 12cqw;
+    padding-bottom: 12%;
   }
 }
 @keyframes plateIn {

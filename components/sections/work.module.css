@@ -234,18 +234,18 @@
 
 /* The stage: a dark studio box with a key light from above, the
    laptop standing in its lower half, the way the reference shoots its
-   devices. It is the laptop's size container, so the device scales
-   with the column and never needs a breakpoint of its own. */
+   devices. The device sizes in percent of this box, so it scales with
+   the column and never needs a breakpoint of its own. No container
+   query: one per cover tripled style and layout cost on mobile. */
 .cover {
   position: relative;
   isolation: isolate;
-  container-type: inline-size;
   display: flex;
   align-items: flex-end;
   /* Taller than wide so each row runs long enough for its meta to hold.
      The pin is the point of the section. */
   aspect-ratio: 1 / 1.06;
-  padding-bottom: 15cqw;
+  padding-bottom: 15%;
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid rgb(var(--line-rgb) / 0.1);
@@ -263,7 +263,9 @@
   right: 0;
   bottom: 0;
   height: 30%;
-  z-index: 0;
+  /* Under the device: the parallax transform makes the device its own
+     stacking layer at z 0, which a later z 0 sibling would paint over. */
+  z-index: -1;
   background: linear-gradient(180deg, rgb(255 255 255 / 0.025), transparent 40%);
   pointer-events: none;
 }
@@ -273,7 +275,7 @@
 /* The laptop lifts a little toward the hand. Scroll moves the device,
    hover moves the lift inside it, so the two never fight. */
 .cover:hover [data-lift] {
-  transform: translateY(-1.4cqw);
+  transform: translateY(-2.5%);
 }
 
 .coverIndex {
