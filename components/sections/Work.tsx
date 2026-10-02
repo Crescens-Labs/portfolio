@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { Wrap } from '@/components/layout';
 import { gsap, ScrollTrigger, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 import Link from 'next/link';
+import { Device } from '@/components/Device';
 import { CASE_STUDIES, type CaseStudy } from '@/content/work';
 import s from './work.module.css';
 
@@ -97,6 +98,19 @@ export function Work() {
           scrollTrigger: { trigger: row, start: 'top 84%', once: true },
         });
 
+        // The laptop drifts up through its stage as the row passes, a
+        // slow parallax against the fixed key light. Scrubbed, so it is
+        // tied to the hand on the wheel rather than to a clock.
+        gsap.fromTo(
+          rq('[data-device]'),
+          { yPercent: 9 },
+          {
+            yPercent: -4,
+            ease: 'none',
+            scrollTrigger: { trigger: row, start: 'top bottom', end: 'bottom top', scrub: true },
+          },
+        );
+
         // The meta's own blocks rise into place beside the arriving
         // cover, once, staggered top to bottom.
         gsap.from(rq(`.${s.meta} > *`), {
@@ -114,7 +128,10 @@ export function Work() {
 
   return (
     <section id="work" data-ground="dark" className={`specks-host ${s.work}`} ref={root}>
-      <i className="specks specks-live" aria-hidden="true" />
+      {/* Still grain, not the drifting film: the covers are the moving
+          thing in this section, and a second motion behind them only
+          competed with the devices. */}
+      <i className="specks specks-static" style={{ '--specks-o': 0.32 } as React.CSSProperties} aria-hidden="true" />
       <Wrap>
         <p className={s.eyebrow}>+ selected work</p>
         <div className={s.head}>
@@ -221,35 +238,16 @@ function ProjectMeta({ project }: { project: CaseStudy }) {
 }
 
 /**
- * Each cover is an oversized initial inside a bordered frame, the
- * dot-cluster mark behind it as a low-contrast ghost, the accent index in
- * the top corner. On hover the monogram lifts and the ghost sharpens,
- * so the cover reads as a surface with depth rather than a flat stamp.
+ * The cover is a studio stage with the project on a laptop, after the
+ * reference's device shots. The screen holds the real capture once one
+ * exists, a title card until then (see components/Device.tsx).
  */
 function ProjectCover({ project }: { project: CaseStudy }) {
   return (
-    <div className={s.cover}>
-      <svg className={s.coverMark} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        {[-88, -134, 180, 134, 88].map((deg) => {
-          const a = (deg * Math.PI) / 180;
-          return (
-            <circle
-              key={deg}
-              cx={12 + Math.cos(a) * 9.4}
-              cy={12 + Math.sin(a) * 9.4}
-              r={2.6}
-              fill="currentColor"
-            />
-          );
-        })}
-      </svg>
-
+    <Link className={s.cover} href={`/work/${project.slug}`} tabIndex={-1} aria-hidden="true">
       <span className={s.coverIndex}>{project.index}</span>
-
-      <span className={s.coverMonogram} aria-hidden="true">
-        {project.initial}
-      </span>
-
-    </div>
+      <span className={s.coverStatus}>{project.status}</span>
+      <Device study={project} />
+    </Link>
   );
 }
