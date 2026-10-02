@@ -143,21 +143,34 @@
 }
 
 /* ---- the plate ----
-   The gallery cover at banner proportions. */
+   The gallery cover's studio box at banner proportions: key light from
+   above, the laptop standing on the floor line. */
 .plate {
+  --device-w: 52cqw;
   position: relative;
   isolation: isolate;
+  container-type: inline-size;
+  display: flex;
+  align-items: flex-end;
   margin: clamp(32px, 5vw, 72px) 0 0;
-  aspect-ratio: 16 / 7;
-  min-height: 260px;
+  aspect-ratio: 16 / 8.4;
+  min-height: 300px;
+  padding-bottom: 7cqw;
   overflow: hidden;
-  border: 1px solid rgb(var(--line-rgb) / 0.12);
+  border: 1px solid rgb(var(--line-rgb) / 0.1);
   border-radius: var(--radius);
   background:
-    radial-gradient(56% 70% at 22% 0%, rgb(var(--bloom-rgb) / 0.16) 0%, transparent 70%),
-    radial-gradient(40% 60% at 100% 100%, rgb(96 140 118 / 0.16) 0%, transparent 62%),
-    var(--d-surface);
+    radial-gradient(60% 60% at 50% -8%, rgb(var(--bloom-rgb) / 0.24) 0%, rgb(var(--bloom-rgb) / 0.06) 46%, transparent 72%),
+    radial-gradient(120% 40% at 50% 106%, rgb(0 0 0 / 0.55) 0%, transparent 70%),
+    linear-gradient(180deg, #1b211e 0%, #101512 52%, #0a0e0c 100%);
   animation: plateIn 1.1s var(--ease) both;
+}
+@media (max-width: 699px) {
+  .plate {
+    --device-w: 86cqw;
+    aspect-ratio: 1 / 0.9;
+    padding-bottom: 12cqw;
+  }
 }
 @keyframes plateIn {
   from {
@@ -168,15 +181,6 @@
     clip-path: inset(0 0 0 0 round 3px);
     transform: none;
   }
-}
-.plateMark {
-  position: absolute;
-  right: -4%;
-  top: -18%;
-  width: 62%;
-  height: 136%;
-  color: rgb(var(--line-rgb) / 0.05);
-  z-index: 0;
 }
 .plateIndex,
 .plateStatus {
@@ -201,20 +205,6 @@
 .plateStatus[data-status='in build'] {
   border-color: var(--accent);
   color: var(--accent);
-}
-.plateMonogram {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  font-size: clamp(170px, 26vw, 400px);
-  font-weight: 800;
-  letter-spacing: -0.06em;
-  line-height: 1;
-  color: var(--ink);
-  opacity: 0.94;
-  user-select: none;
 }
 
 .summary {

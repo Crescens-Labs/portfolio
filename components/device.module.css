@@ -7,7 +7,9 @@
 
 .device {
   position: relative;
-  width: 84cqw;
+  /* Stages set --device-w to frame the shot; a gallery cover runs the
+     laptop near full width, a banner plate leaves it air. */
+  width: var(--device-w, 84cqw);
   margin-inline: auto;
 }
 

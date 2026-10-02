@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Device } from '@/components/Device';
 import { Nav } from '@/components/Nav';
 import { CASE_STUDIES, type CaseStudy } from '@/content/work';
 import s from './case.module.css';
@@ -65,26 +66,14 @@ export function CaseHero({ study }: { study: CaseStudy }) {
           </dl>
         </div>
 
-        <figure className={s.plate} aria-hidden="true">
-          <svg className={s.plateMark} viewBox="0 0 24 24" focusable="false">
-            {[-88, -134, 180, 134, 88].map((deg) => {
-              const a = (deg * Math.PI) / 180;
-              return (
-                <circle
-                  key={deg}
-                  cx={12 + Math.cos(a) * 9.4}
-                  cy={12 + Math.sin(a) * 9.4}
-                  r={2.6}
-                  fill="currentColor"
-                />
-              );
-            })}
-          </svg>
+        {/* The gallery cover's studio shot at banner proportions, so
+            the case opens on the frame the visitor just clicked. */}
+        <figure className={s.plate}>
           <span className={s.plateIndex}>{study.index}</span>
           <span className={s.plateStatus} data-status={study.status}>
             {study.status}
           </span>
-          <span className={s.plateMonogram}>{study.initial}</span>
+          <Device study={study} priority />
         </figure>
 
         <p className={s.summary}>{study.summary}</p>
