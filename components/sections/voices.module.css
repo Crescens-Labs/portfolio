@@ -137,109 +137,175 @@
    elements. */
 
 .stage {
+  /* The rail starts on the content gutter, the same left edge as the
+     heading above it, and may run out to the screen edge on the right.
+     The old negative margin pulled the first card past the gutter and
+     off screen, which is why it opened cropped. */
+  --edge: max(var(--gut), calc((100% - var(--max)) / 2 + var(--gut)));
   position: relative;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--edge);
   scrollbar-width: none;
-  padding-block: clamp(4px, 0.6vw, 8px) clamp(20px, 2.4vw, 30px);
+  padding-inline: var(--edge);
 }
 .stage::-webkit-scrollbar {
   display: none;
 }
-@media (min-width: 1000px) {
-  .stage {
-    /* Travel room so the last card can end flush with the right edge
-       instead of the gutter. */
-    padding-inline: var(--gut);
-    margin-inline: calc(var(--gut) * -1);
-  }
-}
 
 .rail {
+  list-style: none;
+  margin: 0;
+  padding-inline: 0;
   display: flex;
-  gap: clamp(14px, 1.6vw, 22px);
+  align-items: flex-start;
+  gap: clamp(16px, 1.7vw, 26px);
   width: max-content;
+  /* Headroom for the staggered hand: the highest card lifts above the
+     rail line and the lowest drops below it. */
+  padding-block: 14px 44px;
 }
+
+/* ---- the card -----------------------------------------------------------
+   The social proof reference's sheet: pale, square cornered, speaker top
+   left, open space, the words set large at the foot. The sheet is the
+   light ground with the logo's own lilac mixed in, so it reads as the
+   brand's paper rather than a white box. That is a tint of the existing
+   accent, not a second colour. */
 
 .card {
+  --sheet: color-mix(in oklab, var(--l-bg) 74%, var(--logo-dot));
+  --accent: var(--l-accent);
   scroll-snap-align: start;
   flex: 0 0 auto;
-  width: min(82vw, clamp(340px, 31vw, 480px));
   display: flex;
   flex-direction: column;
-  gap: clamp(12px, 1.4vw, 18px);
-  /* Budgeted against the live viewport so the pinned view can never
-     crop a card: head plus tracker above cost roughly 300px, the rest
-     of the viewport belongs to the cards. Min only, never a max: the
-     quote card in particular must be allowed whatever its content
-     needs, because it is the section's main item. */
-  min-height: clamp(300px, calc(100dvh - 340px), 460px);
-  padding: clamp(22px, 2.6vw, 36px);
-  border-radius: var(--radius);
-  /* Light tokens mapped onto the card, accent included, so the one
-     accent rule holds inside it. */
-  --accent: var(--l-accent);
-  background: var(--l-bg);
+  justify-content: space-between;
+  gap: clamp(28px, 4vh, 56px);
+  width: clamp(280px, 23vw, 360px);
+  /* Budgeted against the live viewport so the pinned view never crops a
+     card: head and tracker above cost about 340px, the stagger 40px. */
+  min-height: clamp(280px, calc(100dvh - 430px), 400px);
+  padding: clamp(18px, 1.7vw, 26px);
+  border-radius: 2px;
+  background: var(--sheet);
   color: var(--l-ink);
-  box-shadow: 0 18px 50px rgb(2 6 4 / 0.35);
-  transition: transform var(--dur-state) var(--ease);
+  box-shadow: 0 24px 60px rgb(2 6 4 / 0.38);
+
+  /* Focus. JS writes --f (0..1) as the focus line passes; hover and
+     keyboard focus raise --h to 1 so any card can be read on demand.
+     Without JS --f is unset and every card sits at full strength.
+     Lift and focus ride `translate`, not `transform`, so they compose
+     with the GSAP entrance instead of being overwritten by it. */
+  --k: max(var(--f, 1), var(--h, 0));
+  opacity: calc(0.38 + 0.62 * var(--k));
+  translate: 0 calc(var(--lift, 0px) - 16px * var(--k));
+  transition:
+    translate var(--dur-state) var(--ease),
+    opacity 180ms linear,
+    filter 450ms var(--ease);
 }
-.card:hover {
-  transform: translateY(-4px);
+/* Out of focus the sheet softens, as in the reference: the words are
+   still there, but the eye is told where to read. */
+.card[data-active='false'] {
+  filter: saturate(0.5) blur(1.4px);
+}
+.card:hover,
+.card:focus-within {
+  --h: 1;
+  filter: none;
 }
 .card[data-kind='quote'] {
-  width: min(88vw, clamp(460px, 42vw, 680px));
+  width: clamp(300px, 27vw, 420px);
 }
 
-/* The hero quote card. The one verbatim line, large and tight, capped
-   by viewport height as well as width so long quotes always land
-   whole inside the pinned view. */
-.glyph {
-  font-size: clamp(52px, 4.6vw, 76px);
-  line-height: 0.55;
+/* ---- speaker ---- */
+.who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--l-accent);
+  color: var(--l-bg);
+  font-size: 15px;
   font-weight: 800;
-  color: var(--l-accent);
-  opacity: 0.24;
   user-select: none;
 }
+.whoText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.whoText b {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.whoText em {
+  font-style: normal;
+  font-size: 12.5px;
+  color: var(--l-body);
+}
+
+/* ---- foot ---- */
+.body {
+  display: grid;
+  gap: 12px;
+}
+
 .quote {
   margin: 0;
-  font-size: clamp(16px, min(1.55vw, 2.2dvh), 22px);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.26;
+  font-size: clamp(18px, min(1.45vw, 2.6dvh), 23px);
+  font-weight: 500;
+  letter-spacing: -0.014em;
+  line-height: 1.32;
+  text-wrap: pretty;
+}
+/* Long quotes step down a size so every quote lands whole in the pinned
+   view; the long one is the Snapose line, said in one breath. */
+.quote[data-long] {
+  font-size: clamp(16px, min(1.2vw, 2.2dvh), 19px);
 }
 .gloss {
   margin: 0;
-  font-size: clamp(12px, min(0.95vw, 1.4dvh), 14px);
-  line-height: 1.5;
-  font-weight: 500;
-  color: var(--l-body);
-  border-left: 2px solid var(--l-accent);
   padding-left: 12px;
+  border-left: 2px solid var(--l-accent);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--l-body);
 }
 
-/* The receipt cards. Value first, source at the foot of the text. */
 .value {
-  font-size: clamp(34px, 3.4vw, 50px);
+  font-size: clamp(38px, 3.6vw, 56px);
   font-weight: 800;
-  letter-spacing: -0.034em;
+  letter-spacing: -0.036em;
   line-height: 0.95;
   font-variant-numeric: tabular-nums;
 }
 .valueLabel {
   margin: 0;
-  font-size: clamp(13px, 1vw, 15px);
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
   letter-spacing: -0.012em;
   line-height: 1.3;
 }
 .src {
-  margin: auto 0 0;
+  margin: 4px 0 0;
   padding-top: 10px;
-  border-top: 1px solid rgb(7 15 11 / 0.12);
+  border-top: 1px solid rgb(7 15 11 / 0.14);
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: 10px;
   line-height: 1.45;
   color: var(--l-label);
 }
@@ -247,9 +313,8 @@
   color: var(--l-accent);
 }
 
-/* The chips card. */
 .chipNote {
-  margin: 0 0 4px;
+  margin: 0;
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.08em;
@@ -261,77 +326,23 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 10px;
+  gap: 9px;
 }
 .chipList li {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 10px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.02em;
+  font-size: 15px;
   font-weight: 600;
+  letter-spacing: -0.01em;
 }
 .chipList li::before {
   content: '';
+  flex: 0 0 auto;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--l-accent);
-  flex: 0 0 auto;
-}
-
-/* The foot every card shares: round avatar, name, role, bottom left. */
-.foot {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: auto;
-  padding-top: 14px;
-  border-top: 1px solid rgb(7 15 11 / 0.14);
-}
-.avatar {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: var(--l-accent);
-  color: var(--l-bg);
-  font-size: 15px;
-  font-weight: 800;
-  flex: 0 0 auto;
-  user-select: none;
-}
-.avatar[data-kind='mark'] {
-  background: transparent;
-  border: 1px solid rgb(7 15 11 / 0.2);
-  color: var(--l-ink);
-}
-.avatar[data-kind='mark'] svg {
-  width: 22px;
-  height: 22px;
-}
-.who {
-  display: grid;
-  gap: 2px;
-  min-width: 0;
-}
-.who b {
-  font-size: 13.5px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.who em {
-  font-style: normal;
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--l-label);
 }
 
 @media (prefers-reduced-motion: reduce) {

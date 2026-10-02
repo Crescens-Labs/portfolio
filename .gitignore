@@ -26,15 +26,7 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 
-# Local source material and agent tooling
 /assets/
-/docs/
-/.agents/
-/.claude/
-/.codex/
-/.impeccable/
-/AGENTS.md
-/CLAUDE.md
 
 # Generated local analysis and development output
 /graphify-out/
@@ -49,3 +41,16 @@ next-env.d.ts
 /app/styleguide/
 
 /.lighthouseci/
+
+# Raw ElevenLabs takes, re-masterable without regenerating
+/.audio-raw/
+
+# local working material: brand sources, agent skills and config,
+# planning docs, agent instructions. Kept on disk, out of the repo.
+/assets/
+/.agents/
+/docs/
+/.codex/
+/.impeccable/
+/AGENTS.md
+/CLAUDE.md

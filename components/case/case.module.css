@@ -1,0 +1,612 @@
+/* ============================================================
+   Case study pages, /work/<slug>.
+   Same tokens, grain and type as home; the page reads as the next
+   frame of the cover the visitor clicked.
+   ============================================================ */
+
+/* ---- the opening ------------------------------------------------- */
+
+.top {
+  background: var(--d-void);
+  color: var(--ink);
+  padding-bottom: var(--section-pad);
+}
+
+/* The hero's key light, one source high right, so the case page opens
+   on the same field the home page does. */
+.topField {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(54% 40% at 78% 4%, rgb(var(--bloom-rgb) / 0.2) 0%, rgb(var(--bloom-rgb) / 0.07) 38%, transparent 70%),
+    radial-gradient(60% 50% at 0% 100%, rgb(96 140 118 / 0.1) 0%, transparent 64%);
+}
+
+.topInner {
+  position: relative;
+  z-index: 3;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+}
+
+.crumbs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: clamp(20px, 4vw, 56px);
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.12);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--label);
+  text-decoration: none;
+  transition: color var(--dur-state) var(--ease);
+}
+.back svg {
+  width: 14px;
+  height: 14px;
+  transition: transform var(--dur-state) var(--ease);
+}
+.back:hover {
+  color: var(--ink);
+}
+.back:hover svg {
+  transform: translateX(-3px);
+}
+.count b {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.eyebrow {
+  margin: clamp(40px, 7vw, 104px) 0 var(--eyebrow-gap);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+}
+
+.name {
+  margin: 0;
+  font-size: clamp(52px, 10.4vw, 168px);
+  font-weight: 800;
+  letter-spacing: -0.052em;
+  line-height: 0.86;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.intro {
+  display: grid;
+  gap: clamp(22px, 3vw, 40px);
+  margin-top: clamp(22px, 3vw, 40px);
+}
+@media (min-width: 900px) {
+  .intro {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    align-items: end;
+  }
+}
+.subtitle {
+  margin: 0;
+  max-width: 22ch;
+  font-size: clamp(20px, 2.3vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.026em;
+  line-height: 1.08;
+  color: var(--body);
+}
+
+/* The meta ledger: four facts in a hairline grid, mono key over value. */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.14);
+}
+@media (min-width: 640px) {
+  .facts {
+    grid-template-columns: 0.6fr 1fr 1.6fr 0.8fr;
+  }
+}
+.facts > div {
+  padding: 12px 14px 0 0;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+.facts dt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--label);
+}
+.facts dd {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+}
+.facts [data-k='status'] dd {
+  color: var(--accent);
+}
+
+/* ---- the plate ----
+   The gallery cover's studio box at banner proportions: key light from
+   above, the laptop standing on the floor line. */
+.plate {
+  --device-w: 52%;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  margin: clamp(32px, 5vw, 72px) 0 0;
+  aspect-ratio: 16 / 8.4;
+  min-height: 300px;
+  padding-bottom: 7%;
+  overflow: hidden;
+  border: 1px solid rgb(var(--line-rgb) / 0.1);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(60% 60% at 50% -8%, rgb(var(--bloom-rgb) / 0.24) 0%, rgb(var(--bloom-rgb) / 0.06) 46%, transparent 72%),
+    radial-gradient(120% 40% at 50% 106%, rgb(0 0 0 / 0.55) 0%, transparent 70%),
+    linear-gradient(180deg, #1b211e 0%, #101512 52%, #0a0e0c 100%);
+  animation: plateIn 1.1s var(--ease) both;
+}
+@media (max-width: 699px) {
+  .plate {
+    --device-w: 86%;
+    aspect-ratio: 1 / 0.9;
+    padding-bottom: 12%;
+  }
+}
+@keyframes plateIn {
+  from {
+    clip-path: inset(10% 6% 10% 6% round 3px);
+    transform: scale(0.97);
+  }
+  to {
+    clip-path: inset(0 0 0 0 round 3px);
+    transform: none;
+  }
+}
+.plateIndex,
+.plateStatus {
+  position: absolute;
+  top: clamp(14px, 1.6vw, 22px);
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.plateIndex {
+  left: clamp(14px, 1.6vw, 22px);
+  color: var(--accent);
+}
+.plateStatus {
+  right: clamp(14px, 1.6vw, 22px);
+  padding: 5px 10px;
+  border: 1px solid rgb(var(--line-rgb) / 0.18);
+  border-radius: 999px;
+  color: var(--label);
+}
+.plateStatus[data-status='in build'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.summary {
+  margin: clamp(26px, 3.4vw, 44px) 0 0;
+  max-width: 52ch;
+  font-size: clamp(16px, 1.35vw, 20px);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--body);
+}
+
+/* ---- chapters ------------------------------------------------------
+   Label column, then content across the other three. The label is
+   sticky so it rides beside its chapter, the home page's rail at
+   chapter scale. Hairline across the top of every chapter. */
+
+.chapter {
+  position: relative;
+  background: var(--bg);
+  color: var(--ink);
+  padding-block: var(--section-pad);
+}
+.chapterInner {
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+  display: grid;
+  gap: clamp(18px, 2.4vw, 28px);
+}
+@media (min-width: 900px) {
+  .chapterInner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    gap: clamp(30px, 4vw, 72px);
+    align-items: start;
+  }
+}
+.label {
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.14);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+}
+.label span {
+  margin-right: 12px;
+  color: var(--accent);
+}
+@media (min-width: 900px) {
+  .label {
+    position: sticky;
+    top: calc(var(--nav-h) + 12px);
+  }
+}
+.chapterBody {
+  min-width: 0;
+  padding-top: 14px;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.14);
+}
+/* RevealText's spine at reading scale for a chapter statement. */
+.chapterBody > p:not(.kicker),
+.chapterBody > blockquote {
+  margin: 0;
+  max-width: 30ch;
+  font-size: clamp(26px, 3.3vw, 50px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.kicker {
+  margin: 0 0 clamp(16px, 2vw, 26px);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+}
+
+/* ---- the build ---- */
+.build {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: clamp(26px, 3vw, 40px);
+}
+@media (min-width: 760px) {
+  .build {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.build li {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+.buildIndex {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+}
+.buildTitle {
+  margin: 0;
+  font-size: clamp(20px, 1.9vw, 28px);
+  font-weight: 800;
+  letter-spacing: -0.026em;
+  line-height: 1.02;
+}
+.buildBody {
+  margin: 0;
+  max-width: 40ch;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--body);
+}
+
+/* ---- the result ----
+   The recognition ledger's anatomy: value first, then what it was and
+   where it checks. */
+.results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.results li {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  column-gap: clamp(20px, 3vw, 48px);
+  align-items: baseline;
+  padding-block: clamp(18px, 2.4vw, 30px);
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.1);
+}
+.results li:first-child {
+  padding-top: 0;
+}
+.resultValue {
+  min-width: 4.4ch;
+  font-size: clamp(48px, 6.4vw, 104px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.resultText {
+  display: grid;
+  gap: 5px;
+  max-width: 44ch;
+}
+.resultLabel {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+.resultCaption {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--body);
+}
+.resultSrc {
+  margin: 8px 0 0;
+  padding-top: 7px;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.08);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--label);
+}
+.resultSrc span {
+  color: var(--accent);
+}
+.pending {
+  display: grid;
+  gap: 12px;
+}
+.pending b {
+  font-size: clamp(48px, 6.4vw, 104px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  color: var(--accent);
+}
+.pending p {
+  margin: 0;
+  max-width: 44ch;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--body);
+}
+
+/* ---- in their words ----
+   The Voices rail's sheet at full width: lilac paper, speaker at the
+   foot, the words large. */
+.voice {
+  --sheet: color-mix(in oklab, var(--l-bg) 74%, var(--logo-dot));
+  margin: 0;
+  padding: clamp(24px, 3.4vw, 52px);
+  border-radius: 2px;
+  background: var(--sheet);
+  color: var(--l-ink);
+  display: grid;
+  gap: clamp(16px, 2vw, 24px);
+  box-shadow: 0 24px 60px rgb(2 6 4 / 0.38);
+}
+.voice blockquote {
+  margin: 0;
+  max-width: 32ch;
+  font-size: clamp(24px, 2.8vw, 42px);
+  font-weight: 600;
+  letter-spacing: -0.026em;
+  line-height: 1.18;
+}
+.voiceGloss {
+  margin: 0;
+  max-width: 56ch;
+  padding-left: 12px;
+  border-left: 2px solid var(--l-accent);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--l-body);
+}
+.voice figcaption {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 12px;
+  align-items: center;
+  margin-top: clamp(10px, 2vw, 24px);
+}
+.voice figcaption span {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--l-accent);
+  color: var(--l-bg);
+  font-weight: 800;
+}
+.voice figcaption b {
+  font-size: 14px;
+}
+.voice figcaption em {
+  font-style: normal;
+  font-size: 12.5px;
+  color: var(--l-body);
+}
+
+/* ---- handover ---- */
+.handover {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.1);
+}
+.handover li {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  padding-block: 16px;
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.1);
+  font-size: clamp(16px, 1.4vw, 20px);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+.handover li::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translateY(-2px);
+}
+.handoverNote {
+  margin: 18px 0 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--label);
+}
+
+/* ---- next ---- */
+.next {
+  background: var(--bg);
+  color: var(--ink);
+  padding-block: var(--section-pad);
+}
+.nextInner {
+  position: relative;
+  z-index: 3;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+}
+.nextLink {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(14px, 2vw, 28px);
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.14);
+  padding-bottom: clamp(14px, 2vw, 26px);
+}
+.nextIndex {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+}
+.nextName {
+  font-size: clamp(48px, 9vw, 150px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  transition: color var(--dur-state) var(--ease);
+}
+.nextLink svg {
+  width: clamp(28px, 4vw, 60px);
+  height: clamp(28px, 4vw, 60px);
+  margin-left: auto;
+  align-self: center;
+  transition: transform var(--dur-state) var(--ease), color var(--dur-state) var(--ease);
+}
+.nextLink:hover .nextName,
+.nextLink:hover svg {
+  color: var(--accent);
+}
+.nextLink:hover svg {
+  transform: translateX(8px);
+}
+.nextSub {
+  margin: 14px 0 0;
+  font-size: clamp(16px, 1.4vw, 20px);
+  font-weight: 600;
+  color: var(--body);
+}
+
+.ask {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-top: clamp(48px, 7vw, 110px);
+  padding-top: 20px;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.12);
+}
+.ask > p {
+  margin: 0;
+  font-size: clamp(18px, 1.6vw, 24px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.askActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.askWa,
+.askBrief {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 20px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background var(--dur-state) var(--ease), color var(--dur-state) var(--ease),
+    border-color var(--dur-state) var(--ease);
+}
+.askWa {
+  background: var(--accent);
+  color: var(--d-void);
+}
+.askWa svg {
+  width: 17px;
+  height: 17px;
+}
+.askWa:hover {
+  background: var(--ink);
+}
+.askBrief {
+  border: 1px solid rgb(var(--line-rgb) / 0.22);
+  color: var(--ink);
+}
+.askBrief:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plate {
+    animation: none;
+  }
+  .back,
+  .back svg,
+  .nextName,
+  .nextLink svg,
+  .askWa,
+  .askBrief {
+    transition: none;
+  }
+}

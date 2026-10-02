@@ -1,0 +1,141 @@
+/* ============================================================
+   Architecture diagrams. Hairline boxes, mono column heads, edges
+   in the line tone. Drawn in viewBox units. Text sizes inside the SVG
+   are attributes in Diagram.tsx, not CSS: a CSS px size would be
+   rewritten by the fluid pass and then scaled again by the viewBox,
+   so labels would outgrow their boxes on wide screens.
+   ============================================================ */
+
+.diagram {
+  margin: 0;
+}
+
+.frame {
+  padding: clamp(18px, 2.4vw, 34px);
+  border: 1px solid rgb(var(--line-rgb) / 0.12);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(rgb(var(--line-rgb) / 0.035) 1px, transparent 1px) 0 0 / 28px 28px,
+    linear-gradient(90deg, rgb(var(--line-rgb) / 0.035) 1px, transparent 1px) 0 0 / 28px 28px,
+    var(--surface);
+}
+
+.wide,
+.narrow {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.narrow {
+  display: none;
+}
+@media (max-width: 759px) {
+  .wide {
+    display: none;
+  }
+  .narrow {
+    display: block;
+  }
+}
+
+.head {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  fill: var(--label);
+}
+
+.edge {
+  fill: none;
+  stroke: rgb(var(--line-rgb) / 0.34);
+  stroke-width: 1.4;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition:
+    stroke-dashoffset 900ms var(--ease) calc(var(--i, 0) * 80ms),
+    stroke var(--dur-state) var(--ease);
+}
+
+/* Armed: JS has confirmed motion is welcome, so the links wait undrawn
+   until the figure is seen. Without JS nothing is armed and the drawing
+   is complete from the first paint. */
+.diagram[data-armed]:not([data-in]) .edge {
+  stroke-dashoffset: 1;
+}
+.diagram[data-armed]:not([data-in]) .node {
+  /* hidden-by-design: only ever true after JS has confirmed motion is
+     welcome and before the figure has been seen; reduced motion never
+     arms, and the observer always resolves on first sight. */
+  opacity: 0;
+  transform: translateY(6px);
+}
+.node {
+  transition:
+    opacity 600ms var(--ease) calc(var(--c, 0) * 140ms),
+    transform 600ms var(--ease) calc(var(--c, 0) * 140ms);
+}
+
+/* Packets ride the links once the drawing is in. */
+.pulse {
+  fill: var(--accent);
+  /* hidden-by-design: the packets are decoration riding links that must
+     be drawn first; the diagram reads completely without them, and
+     reduced motion removes them outright. */
+  opacity: 0;
+  transition: opacity 400ms var(--ease) 900ms;
+}
+.diagram[data-in] .pulse {
+  opacity: 0.85;
+}
+
+/* Hover a node: its links take the accent, everything else steps back. */
+.diagram[data-focus] .link:not([data-hot]) .edge {
+  stroke: rgb(var(--line-rgb) / 0.12);
+}
+.diagram[data-focus] .link:not([data-hot]) .pulse {
+  opacity: 0.15;
+}
+.link[data-hot] .edge {
+  stroke: var(--accent);
+}
+.node {
+  cursor: default;
+}
+.node:hover rect {
+  stroke: var(--accent);
+}
+
+.node rect {
+  fill: var(--bg);
+  stroke: rgb(var(--line-rgb) / 0.22);
+  stroke-width: 1;
+  transition: stroke var(--dur-state) var(--ease);
+}
+.nodeLabel {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  fill: var(--ink);
+}
+.nodeNote {
+  font-family: var(--font-mono);
+  fill: var(--accent);
+}
+
+.caption {
+  margin-top: 14px;
+  max-width: 62ch;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--body);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    display: none;
+  }
+  .edge,
+  .node,
+  .node rect {
+    transition: none;
+  }
+}

@@ -47,6 +47,15 @@
   --dur-state: 300ms;
   --dur-reveal: 1000ms;
 
+  /* ---- fluid px ----
+     Every authored px in the stylesheets is rewritten at build time to
+     `calc(N * var(--px))` (lib/postcss-fluid.cjs). The page was designed
+     at a 1536 wide viewport, so the unit is exactly 1px up to there and
+     then grows with the screen: 1.25px at 1920, which makes a 1920 screen
+     at 100% render the composition it shows at 125%. Capped at 1.5px so
+     an ultrawide does not blow the type up past poster scale. */
+  --px: clamp(1px, calc(100vw / 1536), 1.5px);
+
   /* ---- layout ---- */
   --gut: clamp(16px, 3.4vw, 48px);
   --col-pad: clamp(16px, 1.7vw, 26px);
