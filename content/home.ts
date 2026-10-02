@@ -176,9 +176,9 @@ export const STATS: Claim[] = [
   },
   {
     label: 'Systems shipped or in build',
-    value: '4',
-    caption: 'Delivered systems across three categories, plus one in build',
-    source: 'SimplyBox, RoyaleCard Arena, Snapose, franchise system',
+    value: '5',
+    caption: 'Three shipped, two in build, each with a published case study',
+    source: 'SimplyBox, RoyaleCard Arena, Snapose, Pawtrait, franchise system',
   },
   {
     label: 'People on the build',
@@ -545,90 +545,11 @@ export const TOGETHER = {
 } as const;
 
 /**
- * Section 11. Featured work. The biggest visual section, a sticky-scroll
- * gallery that runs through five projects.
- *
- * The five have to ship without client screenshots for now. Rather than
- * fake UI captures (which would lie about the work and would not pass
- * the tagline), each project is rendered as an editorial monogram: an
- * oversized initial inside a frame, the dot-cluster mark behind it, a
- * single accent index. Reads as art direction rather than as evidence.
+ * Section 11. Featured work. The projects live in content/work.ts, where
+ * each one is a full case study; the home gallery renders the same
+ * records, so a name, year or summary can never disagree between the
+ * cover and the page it opens.
  */
-type Project = {
-  slug: string;
-  index: string;
-  name: string;
-  initial: string;
-  subtitle: string;
-  year: string;
-  type: string;
-  status: 'shipped' | 'in build';
-  summary: string;
-  result?: Claim;
-};
-
-export const PROJECTS: Project[] = [
-  {
-    slug: 'simplybox',
-    index: '01',
-    name: 'SimplyBox',
-    initial: 'S',
-    subtitle: 'AI unified inbox for the Meta ecosystem',
-    year: '2025',
-    type: 'Product, competition',
-    status: 'shipped',
-    summary:
-      'Six apps to answer one message. SimplyBox unifies the Meta ecosystem into one inbox, grounded in the company\u2019s own knowledge by RAG. Response time down 80%+. Top 7, Llama AI Accelerator.',
-    result: {
-      label: 'Response time',
-      value: '80%+',
-      caption: 'Cut for CS teams using SimplyBox',
-      source: "Measured against the client's own pre-launch baseline",
-    },
-  },
-  {
-    slug: 'royalecard-arena',
-    index: '02',
-    name: 'RoyaleCard Arena',
-    initial: 'R',
-    subtitle: 'On-chain competitive strategy game',
-    year: '2025',
-    type: 'Product, competition',
-    status: 'shipped',
-    summary:
-      'An open-world game where market knowledge is the edge. Rules live on cards, the cards trade for you. Draft, ban, escrowed best of three. Winner, National Campus Hackathon.',
-    result: {
-      label: 'Competition result',
-      value: '1st',
-      caption: 'National Campus Hackathon, Solana x Colosseum',
-      source: 'Final standings, RoyaleCard Arena',
-    },
-  },
-  {
-    slug: 'snapose',
-    index: '03',
-    name: 'Snapose',
-    initial: 'A',
-    subtitle: 'Photobooth studio platform',
-    year: '2025',
-    type: 'Client product',
-    status: 'shipped',
-    summary:
-      'Competitors sell software. We shipped the operation around it: auto finance with waste analysis, offline-first with Drive sync. Six apps became one.',
-  },
-  {
-    slug: 'franchise-system',
-    index: '04',
-    name: 'Franchise System',
-    initial: 'F',
-    subtitle: 'Multi-outlet operations platform',
-    year: '2026',
-    type: 'Client, in build',
-    status: 'in build',
-    summary:
-      'One operating system for a leading multi-outlet restaurant chain: POS, finance, inventory, logistics and HR in one place.',
-  },
-];
 
 /**
  * Recognition keeps proof grounded in judged outcomes and verifiable sources.

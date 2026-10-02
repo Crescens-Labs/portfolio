@@ -3,10 +3,11 @@
 import { useRef, useState } from 'react';
 import { Wrap } from '@/components/layout';
 import { gsap, ScrollTrigger, useGSAP, prefersReducedMotion } from '@/lib/gsap';
-import { PROJECTS } from '@/content/home';
+import Link from 'next/link';
+import { CASE_STUDIES, type CaseStudy } from '@/content/work';
 import s from './work.module.css';
 
-const RAIL_INTRO = `Four systems shipped or in build, two competitions entered and placed. Four briefs on show here, each pinned beside its cover.`;
+const RAIL_INTRO = `Five systems shipped or in build, two competitions entered and placed. Each brief is pinned beside its cover, and each one has a full case study.`;
 
 /**
  * Section 11. Featured work, the centerpiece.
@@ -25,8 +26,8 @@ const RAIL_INTRO = `Four systems shipped or in build, two competitions entered a
  * monogram and ghost sit still, a printed plate rather than a parallax
  * toy, so the covers read as documents in a series.
  *
- * The Kost project stays dropped: four strong beats five where one is
- * speculative.
+ * The Kost project stays dropped until it signs: five real beats six where
+ * one is speculative.
  */
 export function Work() {
   const root = useRef<HTMLElement>(null);
@@ -42,13 +43,13 @@ export function Work() {
       // values like "2 / 2" stay text, as the content model holds.
       const statVals = q(`.${s.railStatVal}`);
       const systems = statVals[0];
-      if (systems && systems.textContent?.trim() === '4') {
+      if (systems && systems.textContent?.trim() === String(CASE_STUDIES.length)) {
         const counter = { n: 0 };
         gsap.fromTo(
           counter,
           { n: 0 },
           {
-            n: 4,
+            n: CASE_STUDIES.length,
             duration: 1.1,
             ease: 'house',
             scrollTrigger: { trigger: systems, start: 'top 92%', once: true },
@@ -124,7 +125,7 @@ export function Work() {
             </span>
           </h2>
           <p className={s.intro}>
-            Four in flight, none from a template. The reframe mattered more than the build.
+            Five in flight, none from a template. The reframe mattered more than the build.
           </p>
         </div>
 
@@ -140,7 +141,7 @@ export function Work() {
             <div className={s.railStats}>
               <div>
                 <span className={s.railStatKey}>systems</span>
-                <b className={s.railStatVal}>4</b>
+                <b className={s.railStatVal}>{CASE_STUDIES.length}</b>
                 <em className={s.railStatNote}>shipped or in build</em>
               </div>
               <div>
@@ -155,16 +156,16 @@ export function Work() {
             <div className={s.railProgress} aria-hidden="true">
               <b className={s.railIndex}>{String(active + 1).padStart(2, '0')}</b>
               <span className={s.railTicks}>
-                {PROJECTS.map((p, i) => (
+                {CASE_STUDIES.map((p, i) => (
                   <i key={p.slug} data-on={i === active} />
                 ))}
               </span>
-              <span className={s.railTotal}>{String(PROJECTS.length).padStart(2, '0')}</span>
+              <span className={s.railTotal}>{String(CASE_STUDIES.length).padStart(2, '0')}</span>
             </div>
           </aside>
 
           <div className={s.stack}>
-            {PROJECTS.map((p) => (
+            {CASE_STUDIES.map((p) => (
               <article key={p.slug} className={s.project} data-slug={p.slug}>
                 <ProjectCover project={p} />
                 <ProjectMeta project={p} />
@@ -177,7 +178,7 @@ export function Work() {
   );
 }
 
-function ProjectMeta({ project }: { project: (typeof PROJECTS)[number] }) {
+function ProjectMeta({ project }: { project: CaseStudy }) {
   return (
     <div className={s.meta}>
       <span className={s.metaIndex} aria-hidden="true">
@@ -202,7 +203,7 @@ function ProjectMeta({ project }: { project: (typeof PROJECTS)[number] }) {
         </div>
       </div>
       <p className={s.metaSummary}>{project.summary}</p>
-      <a className={s.metaCta} href={`#${project.slug}`}>
+      <Link className={s.metaCta} href={`/work/${project.slug}`}>
         <span>View case study</span>
         <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
           <path
@@ -214,7 +215,7 @@ function ProjectMeta({ project }: { project: (typeof PROJECTS)[number] }) {
             strokeLinejoin="round"
           />
         </svg>
-      </a>
+      </Link>
     </div>
   );
 }
@@ -225,7 +226,7 @@ function ProjectMeta({ project }: { project: (typeof PROJECTS)[number] }) {
  * the top corner. On hover the monogram lifts and the ghost sharpens,
  * so the cover reads as a surface with depth rather than a flat stamp.
  */
-function ProjectCover({ project }: { project: (typeof PROJECTS)[number] }) {
+function ProjectCover({ project }: { project: CaseStudy }) {
   return (
     <div className={s.cover}>
       <svg className={s.coverMark} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
