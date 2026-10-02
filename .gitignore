@@ -26,15 +26,7 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 
-# Local source material and agent tooling
 /assets/
-/docs/
-/.agents/
-/.claude/
-/.codex/
-/.impeccable/
-/AGENTS.md
-/CLAUDE.md
 
 # Generated local analysis and development output
 /graphify-out/
