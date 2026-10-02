@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { RevealText } from '@/components/RevealText';
 import type { CaseStudy } from '@/content/work';
+import { Diagram } from './Diagram';
 import s from './case.module.css';
 
 /**
@@ -62,6 +63,11 @@ export function CaseStory({ study }: { study: CaseStudy }) {
             </li>
           ))}
         </ol>
+      </Chapter>
+
+      <Chapter n="04" label="architecture" id="architecture">
+        <p className={s.kicker}>Written down, so your team can extend it</p>
+        <Diagram data={study.architecture} />
       </Chapter>
     </>
   );

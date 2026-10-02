@@ -129,9 +129,8 @@ export const CASE_STUDIES: CaseStudy[] = [
         ['kb', 'rag'],
         ['rag', 'llm'],
         ['llm', 'agent'],
-        ['router', 'agent'],
       ],
-      caption: 'Every channel into one queue; every draft grounded in the company’s own documents before a person sends it.',
+      caption: 'Every channel into one queue, and every answer retrieved from the company’s own documents before it reaches the agent.',
     },
     results: [
       {
@@ -192,8 +191,8 @@ export const CASE_STUDIES: CaseStudy[] = [
           label: 'game',
           nodes: [
             { id: 'rules', label: 'Card rules engine' },
-            { id: 'draft', label: 'Draft and ban' },
             { id: 'arena', label: 'Arena', note: 'best of three' },
+            { id: 'draft', label: 'Draft and ban' },
           ],
         },
         {
@@ -348,8 +347,8 @@ export const CASE_STUDIES: CaseStudy[] = [
         {
           label: 'core',
           nodes: [
-            { id: 'session', label: 'Session' },
             { id: 'tpl', label: 'Template editor' },
+            { id: 'session', label: 'Session' },
             { id: 'fin', label: 'Finance' },
           ],
         },
