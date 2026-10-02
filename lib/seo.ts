@@ -9,7 +9,7 @@ import { CONTACT, FAQ, SOCIALS, TAGLINE, TEAM } from '@/content/home';
  * Breadcrumb markup with one entry is noise a crawler ignores.
  */
 
-export const SITE_URL = 'https://crescenslabs.com';
+export const SITE_URL = 'https://crescens.dev';
 
 const LOGO_URL = `${SITE_URL}/logo.png`;
 

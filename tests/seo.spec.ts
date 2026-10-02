@@ -70,7 +70,7 @@ describe('crawl surface', () => {
     const txt = readFileSync(join(process.cwd(), 'public', 'llms.txt'), 'utf8');
     expect(txt.startsWith('# Crescens Labs')).toBe(true);
     expect(txt).toContain(SITE_URL);
-    expect(txt).toContain('hi@crescenslabs.com');
+    expect(txt).toContain('hi@crescens.dev');
     expect(txt.includes('\u2014')).toBe(false);
   });
 });

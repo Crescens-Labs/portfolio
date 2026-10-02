@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { getLenis } from '@/lib/lenis';
-import { SOCIALS } from '@/content/home';
+import { CONTACT, SOCIALS } from '@/content/home';
 import s from './ui.module.css';
 
 /** 15px glyphs for the header social cluster. Strokes and fills both ride
@@ -230,8 +230,8 @@ export function Nav() {
 
           <p className={s.menuSay}>
             <span>say hello</span>
-            <a className={s.menuMail} href="mailto:hi@crescenslabs.com">
-              hi@crescenslabs.com
+            <a className={s.menuMail} href={`mailto:${CONTACT.email}`}>
+              {CONTACT.email}
             </a>
             {/* Repeated from the header with labels, because the menu is
                 where a deliberate visitor lands. Icons alone are glanceable;

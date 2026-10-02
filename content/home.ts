@@ -750,7 +750,7 @@ export const CONTACT = {
     'The scope arrives in writing, before anything is signed.',
   ],
   secondaryLine: 'Prefer email? Write to us directly at',
-  email: 'hi@crescenslabs.com',
+  email: 'hi@crescens.dev',
 } as const;
 
 /**
@@ -761,7 +761,7 @@ export const FOOTER = {
   statementHead: 'We build systems that |outlast us|',
   statementTail: 'because ownership is the point.',
   meta: 'End to end software studio, working remote from Indonesia.',
-  email: 'hi@crescenslabs.com',
+  email: 'hi@crescens.dev',
   nav: [
     { label: 'Work', href: '#work' },
     { label: 'Process', href: '#process' },

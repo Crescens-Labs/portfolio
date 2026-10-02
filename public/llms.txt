@@ -18,8 +18,8 @@ Crescens Labs builds custom software end to end: web apps, mobile apps, internal
 
 ## Contact
 
-- Email: hi@crescenslabs.com
-- Site: https://crescenslabs.com
+- Email: hi@crescens.dev
+- Site: https://crescens.dev
 - GitHub: https://github.com/crescens-labs
 - X: https://x.com/crescenslabs
 - LinkedIn: https://www.linkedin.com/company/crescens-labs
