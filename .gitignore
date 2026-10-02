@@ -41,3 +41,6 @@ next-env.d.ts
 /app/styleguide/
 
 /.lighthouseci/
+
+# Raw ElevenLabs takes, re-masterable without regenerating
+/.audio-raw/
