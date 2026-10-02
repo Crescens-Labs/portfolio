@@ -499,12 +499,125 @@
   color: var(--label);
 }
 
+/* ---- next ---- */
+.next {
+  background: var(--bg);
+  color: var(--ink);
+  padding-block: var(--section-pad);
+}
+.nextInner {
+  position: relative;
+  z-index: 3;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+}
+.nextLink {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(14px, 2vw, 28px);
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.14);
+  padding-bottom: clamp(14px, 2vw, 26px);
+}
+.nextIndex {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+}
+.nextName {
+  font-size: clamp(48px, 9vw, 150px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  transition: color var(--dur-state) var(--ease);
+}
+.nextLink svg {
+  width: clamp(28px, 4vw, 60px);
+  height: clamp(28px, 4vw, 60px);
+  margin-left: auto;
+  align-self: center;
+  transition: transform var(--dur-state) var(--ease), color var(--dur-state) var(--ease);
+}
+.nextLink:hover .nextName,
+.nextLink:hover svg {
+  color: var(--accent);
+}
+.nextLink:hover svg {
+  transform: translateX(8px);
+}
+.nextSub {
+  margin: 14px 0 0;
+  font-size: clamp(16px, 1.4vw, 20px);
+  font-weight: 600;
+  color: var(--body);
+}
+
+.ask {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-top: clamp(48px, 7vw, 110px);
+  padding-top: 20px;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.12);
+}
+.ask > p {
+  margin: 0;
+  font-size: clamp(18px, 1.6vw, 24px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.askActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.askWa,
+.askBrief {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 20px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background var(--dur-state) var(--ease), color var(--dur-state) var(--ease),
+    border-color var(--dur-state) var(--ease);
+}
+.askWa {
+  background: var(--accent);
+  color: var(--d-void);
+}
+.askWa svg {
+  width: 17px;
+  height: 17px;
+}
+.askWa:hover {
+  background: var(--ink);
+}
+.askBrief {
+  border: 1px solid rgb(var(--line-rgb) / 0.22);
+  color: var(--ink);
+}
+.askBrief:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .plate {
     animation: none;
   }
   .back,
-  .back svg {
+  .back svg,
+  .nextName,
+  .nextLink svg,
+  .askWa,
+  .askBrief {
     transition: none;
   }
 }
