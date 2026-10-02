@@ -141,6 +141,64 @@
   color: var(--accent);
 }
 
+/* The WhatsApp line. A pill on the section's own accent, not WhatsApp
+   green: a second accent on the page is a bug, and the glyph already
+   says which app opens. */
+.waLine {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+.waLine > span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+}
+.wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px 12px 16px;
+  border: 1px solid rgb(var(--line-rgb) / 0.2);
+  border-radius: 999px;
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    background var(--dur-state) var(--ease),
+    border-color var(--dur-state) var(--ease),
+    color var(--dur-state) var(--ease);
+}
+.wa svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+  transition: color var(--dur-state) var(--ease);
+}
+.waLabel {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+}
+.waNumber {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--label);
+  transition: color var(--dur-state) var(--ease);
+}
+.wa:hover,
+.wa:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--d-void);
+}
+.wa:hover svg,
+.wa:hover .waNumber,
+.wa:focus-visible svg,
+.wa:focus-visible .waNumber {
+  color: var(--d-void);
+}
+
 /* ---- the form column -------------------------------------------------- */
 
 /* Back to open fields on the section's own field. The form was tried
@@ -306,6 +364,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .email,
+  .wa,
+  .wa svg,
+  .waNumber,
   .slotIndex,
   .message,
   .submit,

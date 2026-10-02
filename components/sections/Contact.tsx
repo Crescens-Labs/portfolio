@@ -4,7 +4,9 @@ import { useRef } from 'react';
 import { Wrap } from '@/components/layout';
 import { FormField } from '@/components/ui';
 import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
-import { CONTACT } from '@/content/home';
+import { SocialGlyph } from '@/components/Nav';
+import { CONTACT, WHATSAPP } from '@/content/home';
+import { external, waHref } from '@/lib/whatsapp';
 import s from './contact.module.css';
 
 /**
@@ -106,6 +108,18 @@ export function Contact() {
                 {CONTACT.email}
               </a>
             </p>
+
+            {/* The fast lane, for a visitor with one question who is not
+                ready to write a brief. The form stays the considered route,
+                this sits under it rather than competing with it. */}
+            <div className={s.waLine}>
+              <span>{CONTACT.whatsapp.kicker}</span>
+              <a className={s.wa} href={waHref(WHATSAPP.messages.hello)} {...external}>
+                <SocialGlyph label="WhatsApp" />
+                <span className={s.waLabel}>{CONTACT.whatsapp.label}</span>
+                <span className={s.waNumber}>{WHATSAPP.display}</span>
+              </a>
+            </div>
           </header>
 
           <form className={s.form} action="#" method="POST">
