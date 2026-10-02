@@ -1,3 +1,7 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+import { prefersReducedMotion } from '@/lib/gsap';
 import type { Diagram as DiagramData } from '@/content/work';
 import s from './diagram.module.css';
 
@@ -109,18 +113,21 @@ function Drawing({ data, layout, dir, className }: { data: DiagramData; layout: 
         const a = layout.boxes.get(from);
         const b = layout.boxes.get(to);
         if (!a || !b) return null;
+        const d = edgePath(a, b, dir);
         return (
-          <path
-            key={`${from}-${to}`}
-            className={s.edge}
-            d={edgePath(a, b, dir)}
-            pathLength={1}
-            style={{ '--i': i } as React.CSSProperties}
-          />
+          <g key={`${from}-${to}`} data-a={from} data-b={to} className={s.link}>
+            <path className={s.edge} d={d} pathLength={1} style={{ '--i': i } as React.CSSProperties} />
+            {/* A packet travelling the link, so the drawing reads as data
+                moving rather than as a flowchart. SMIL, because it moves
+                in viewBox units and scales with the drawing. */}
+            <circle className={s.pulse} r={3}>
+              <animateMotion dur="2.6s" begin={`${(i * 0.37) % 2.6}s`} repeatCount="indefinite" path={d} />
+            </circle>
+          </g>
         );
       })}
       {[...layout.boxes.values()].map((b) => (
-        <g key={b.id} className={s.node} style={{ '--c': b.col } as React.CSSProperties}>
+        <g key={b.id} className={s.node} data-node={b.id} style={{ '--c': b.col } as React.CSSProperties}>
           <rect x={b.x} y={b.y} width={b.w} height={b.h} rx={4} />
           <text className={s.nodeLabel} x={b.x + 14} y={b.y + (b.note ? 28 : 38)} fontSize={15} letterSpacing={-0.15}>
             {b.label}
@@ -136,9 +143,59 @@ function Drawing({ data, layout, dir, className }: { data: DiagramData; layout: 
   );
 }
 
+/**
+ * Motion is added, never required. The markup renders fully drawn; only
+ * once JS knows motion is welcome does it arm the figure (edges hidden),
+ * and the first sight of it draws them in, column by column. Hovering a
+ * node lights the links that touch it.
+ */
 export function Diagram({ data }: { data: DiagramData }) {
+  const root = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+
+    const hot = (id: string | null) => {
+      el.querySelectorAll<SVGGElement>('[data-a]').forEach((g) => {
+        const on = id !== null && (g.dataset.a === id || g.dataset.b === id);
+        g.toggleAttribute('data-hot', on);
+      });
+      el.toggleAttribute('data-focus', id !== null);
+    };
+    const nodes = [...el.querySelectorAll<SVGGElement>('[data-node]')];
+    const enter = (e: Event) => hot((e.currentTarget as SVGGElement).dataset.node ?? null);
+    const leave = () => hot(null);
+    nodes.forEach((n) => {
+      n.addEventListener('pointerenter', enter);
+      n.addEventListener('pointerleave', leave);
+    });
+
+    let io: IntersectionObserver | undefined;
+    if (!prefersReducedMotion()) {
+      el.dataset.armed = 'true';
+      io = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry?.isIntersecting) return;
+          el.dataset.in = 'true';
+          io?.disconnect();
+        },
+        { threshold: 0.35 },
+      );
+      io.observe(el);
+    }
+
+    return () => {
+      io?.disconnect();
+      nodes.forEach((n) => {
+        n.removeEventListener('pointerenter', enter);
+        n.removeEventListener('pointerleave', leave);
+      });
+    };
+  }, []);
+
   return (
-    <figure className={s.diagram}>
+    <figure className={s.diagram} ref={root}>
       <div className={s.frame}>
         <Drawing data={data} layout={wide(data)} dir="x" className={s.wide} />
         <Drawing data={data} layout={narrow(data)} dir="y" className={s.narrow} />
