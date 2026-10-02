@@ -211,13 +211,12 @@ export function Voices() {
       </Wrap>
 
       <div className={s.stage}>
-        <div className={s.rail} role="list" aria-label="Client words and receipts">
+        <ul className={s.rail} aria-label="Client words and receipts">
           {VOICES.cards.map((c, i) => (
-            <article
+            <li
               key={c.key}
               className={s.card}
               data-kind={c.kind}
-              role="listitem"
               style={{ '--lift': `${LIFT[i % LIFT.length]}px` } as React.CSSProperties}
             >
               <header className={s.who}>
@@ -230,9 +229,9 @@ export function Voices() {
                 </span>
               </header>
               <CardBody card={c} />
-            </article>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );
