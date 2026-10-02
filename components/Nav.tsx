@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { getLenis } from '@/lib/lenis';
 import { CONTACT, SOCIALS, WHATSAPP } from '@/content/home';
@@ -54,12 +55,15 @@ export function SocialGlyph({ label }: { label: string }) {
   }
 }
 
+/** Root-relative, so the menu works from a case study page as well as
+    from home. On home a `/#x` link is a same-document jump, as before. */
 const LINKS = [
-  { label: 'Work', href: '#work' },
-  { label: 'Process', href: '#process' },
-  { label: 'Lab', href: '#lab' },
-  { label: 'About', href: '#about' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Work', href: '/#work' },
+  { label: 'Case studies', href: '/work' },
+  { label: 'Process', href: '/#process' },
+  { label: 'Lab', href: '/#lab' },
+  { label: 'About', href: '/#about' },
+  { label: 'Contact', href: '/#contact' },
 ];
 
 /** Five dots on a C. Same geometry as the hero canvas and the loader. */
@@ -149,10 +153,10 @@ export function Nav() {
   return (
     <>
       <header className={s.nav}>
-        <a className={s.brand} href="#top" aria-label="Crescens Labs, home">
+        <Link className={s.brand} href="/#top" aria-label="Crescens Labs, home">
           <Mark />
           <span className={s.wordmark}>CRESCENS</span>
-        </a>
+        </Link>
 
         {/*
           The socials sit in the header itself, not inside the menu. The
@@ -204,7 +208,7 @@ export function Nav() {
       >
         <nav className={s.menuNav}>
           {LINKS.map((l, i) => (
-            <a
+            <Link
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
@@ -212,7 +216,7 @@ export function Nav() {
             >
               <span className={s.menuIndex}>{String(i + 1).padStart(2, '0')}</span>
               <span className={s.menuLabel}>{l.label}</span>
-            </a>
+            </Link>
           ))}
         </nav>
 

@@ -858,11 +858,11 @@ export const FOOTER = {
   meta: 'End to end software studio, working remote from Indonesia.',
   email: 'hi@crescens.dev',
   nav: [
-    { label: 'Work', href: '#work' },
-    { label: 'Process', href: '#process' },
-    { label: 'Products', href: '#lab' },
-    { label: 'About', href: '#about' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'Work', href: '/#work' },
+    { label: 'Process', href: '/#process' },
+    { label: 'Products', href: '/#lab' },
+    { label: 'About', href: '/#about' },
+    { label: 'Contact', href: '/#contact' },
   ],
   legal: [
     { label: 'Privacy Policy', href: '#' },

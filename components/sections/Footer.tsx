@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Wrap } from '@/components/layout';
 import { RevealText } from '@/components/RevealText';
 import { SocialGlyph } from '@/components/Nav';
@@ -29,9 +30,9 @@ export function Footer() {
           <span className={s.tagline}>{TAGLINE.text}</span>
           <nav className={s.metaNav} aria-label="Footer">
             {FOOTER.nav.map((n) => (
-              <a key={n.href} href={n.href}>
+              <Link key={n.href} href={n.href}>
                 {n.label}
-              </a>
+              </Link>
             ))}
           </nav>
           <a className={s.metaEmail} href={`mailto:${FOOTER.email}`}>
@@ -53,7 +54,7 @@ export function Footer() {
                 than a spinner. On hover the ring text and the core take
                 the accent: the whole seal lights before the visitor
                 commits to it. */}
-            <a className={s.ctaOrb} href="#contact" aria-label="Start a project, go to the contact form">
+            <Link className={s.ctaOrb} href="/#contact" aria-label="Start a project, go to the contact form">
               <svg className={s.ring} viewBox="0 0 120 120" aria-hidden="true" focusable="false">
                 <defs>
                   <path id="ctaRing" d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0" />
@@ -80,7 +81,7 @@ export function Footer() {
                   />
                 </svg>
               </span>
-            </a>
+            </Link>
 
             <p className={s.midTail}>{FOOTER.statementTail}</p>
           </div>
