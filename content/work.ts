@@ -51,6 +51,11 @@ export type CaseStudy = {
   voice?: string;
   /** What the client owns afterwards. Absent on our own products. */
   handover?: string[];
+  /**
+   * A real screenshot for the laptop screen, 16:10, e.g. 2560x1600, in
+   * public/work/<slug>/. Until it exists the screen shows a title card.
+   */
+  cover?: { src: string; alt: string };
   gallery: { src: string; alt: string }[];
 };
 
