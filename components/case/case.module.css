@@ -226,6 +226,112 @@
   color: var(--body);
 }
 
+/* ---- chapters ------------------------------------------------------
+   Label column, then content across the other three. The label is
+   sticky so it rides beside its chapter, the home page's rail at
+   chapter scale. Hairline across the top of every chapter. */
+
+.chapter {
+  position: relative;
+  background: var(--bg);
+  color: var(--ink);
+  padding-block: var(--section-pad);
+}
+.chapterInner {
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+  display: grid;
+  gap: clamp(18px, 2.4vw, 28px);
+}
+@media (min-width: 900px) {
+  .chapterInner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    gap: clamp(30px, 4vw, 72px);
+    align-items: start;
+  }
+}
+.label {
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.14);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+}
+.label span {
+  margin-right: 12px;
+  color: var(--accent);
+}
+@media (min-width: 900px) {
+  .label {
+    position: sticky;
+    top: calc(var(--nav-h) + 12px);
+  }
+}
+.chapterBody {
+  min-width: 0;
+  padding-top: 14px;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.14);
+}
+/* RevealText's spine at reading scale for a chapter statement. */
+.chapterBody > p:not(.kicker),
+.chapterBody > blockquote {
+  margin: 0;
+  max-width: 30ch;
+  font-size: clamp(26px, 3.3vw, 50px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.kicker {
+  margin: 0 0 clamp(16px, 2vw, 26px);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+}
+
+/* ---- the build ---- */
+.build {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: clamp(26px, 3vw, 40px);
+}
+@media (min-width: 760px) {
+  .build {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.build li {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+.buildIndex {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+}
+.buildTitle {
+  margin: 0;
+  font-size: clamp(20px, 1.9vw, 28px);
+  font-weight: 800;
+  letter-spacing: -0.026em;
+  line-height: 1.02;
+}
+.buildBody {
+  margin: 0;
+  max-width: 40ch;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--body);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .plate {
     animation: none;

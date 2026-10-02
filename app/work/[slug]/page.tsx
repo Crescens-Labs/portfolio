@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CaseHero } from '@/components/case/CaseHero';
+import { CaseStory } from '@/components/case/CaseStory';
 import { Footer } from '@/components/sections/Footer';
 import { CASE_STUDIES, getCaseStudy } from '@/content/work';
 
@@ -37,6 +38,7 @@ export default async function CaseStudyPage({ params }: Params) {
     <>
       <main>
         <CaseHero study={study} />
+        <CaseStory study={study} />
       </main>
       <Footer />
     </>
