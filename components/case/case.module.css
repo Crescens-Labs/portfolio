@@ -1,0 +1,237 @@
+/* ============================================================
+   Case study pages, /work/<slug>.
+   Same tokens, grain and type as home; the page reads as the next
+   frame of the cover the visitor clicked.
+   ============================================================ */
+
+/* ---- the opening ------------------------------------------------- */
+
+.top {
+  background: var(--d-void);
+  color: var(--ink);
+  padding-bottom: var(--section-pad);
+}
+
+/* The hero's key light, one source high right, so the case page opens
+   on the same field the home page does. */
+.topField {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(54% 40% at 78% 4%, rgb(var(--bloom-rgb) / 0.2) 0%, rgb(var(--bloom-rgb) / 0.07) 38%, transparent 70%),
+    radial-gradient(60% 50% at 0% 100%, rgb(96 140 118 / 0.1) 0%, transparent 64%);
+}
+
+.topInner {
+  position: relative;
+  z-index: 3;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+}
+
+.crumbs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: clamp(20px, 4vw, 56px);
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgb(var(--line-rgb) / 0.12);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--label);
+  text-decoration: none;
+  transition: color var(--dur-state) var(--ease);
+}
+.back svg {
+  width: 14px;
+  height: 14px;
+  transition: transform var(--dur-state) var(--ease);
+}
+.back:hover {
+  color: var(--ink);
+}
+.back:hover svg {
+  transform: translateX(-3px);
+}
+.count b {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.eyebrow {
+  margin: clamp(40px, 7vw, 104px) 0 var(--eyebrow-gap);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--label);
+}
+
+.name {
+  margin: 0;
+  font-size: clamp(52px, 10.4vw, 168px);
+  font-weight: 800;
+  letter-spacing: -0.052em;
+  line-height: 0.86;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.intro {
+  display: grid;
+  gap: clamp(22px, 3vw, 40px);
+  margin-top: clamp(22px, 3vw, 40px);
+}
+@media (min-width: 900px) {
+  .intro {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    align-items: end;
+  }
+}
+.subtitle {
+  margin: 0;
+  max-width: 22ch;
+  font-size: clamp(20px, 2.3vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.026em;
+  line-height: 1.08;
+  color: var(--body);
+}
+
+/* The meta ledger: four facts in a hairline grid, mono key over value. */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid rgb(var(--line-rgb) / 0.14);
+}
+@media (min-width: 640px) {
+  .facts {
+    grid-template-columns: 0.6fr 1fr 1.6fr 0.8fr;
+  }
+}
+.facts > div {
+  padding: 12px 14px 0 0;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+.facts dt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--label);
+}
+.facts dd {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+}
+.facts [data-k='status'] dd {
+  color: var(--accent);
+}
+
+/* ---- the plate ----
+   The gallery cover at banner proportions. */
+.plate {
+  position: relative;
+  isolation: isolate;
+  margin: clamp(32px, 5vw, 72px) 0 0;
+  aspect-ratio: 16 / 7;
+  min-height: 260px;
+  overflow: hidden;
+  border: 1px solid rgb(var(--line-rgb) / 0.12);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(56% 70% at 22% 0%, rgb(var(--bloom-rgb) / 0.16) 0%, transparent 70%),
+    radial-gradient(40% 60% at 100% 100%, rgb(96 140 118 / 0.16) 0%, transparent 62%),
+    var(--d-surface);
+  animation: plateIn 1.1s var(--ease) both;
+}
+@keyframes plateIn {
+  from {
+    clip-path: inset(10% 6% 10% 6% round 3px);
+    transform: scale(0.97);
+  }
+  to {
+    clip-path: inset(0 0 0 0 round 3px);
+    transform: none;
+  }
+}
+.plateMark {
+  position: absolute;
+  right: -4%;
+  top: -18%;
+  width: 62%;
+  height: 136%;
+  color: rgb(var(--line-rgb) / 0.05);
+  z-index: 0;
+}
+.plateIndex,
+.plateStatus {
+  position: absolute;
+  top: clamp(14px, 1.6vw, 22px);
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.plateIndex {
+  left: clamp(14px, 1.6vw, 22px);
+  color: var(--accent);
+}
+.plateStatus {
+  right: clamp(14px, 1.6vw, 22px);
+  padding: 5px 10px;
+  border: 1px solid rgb(var(--line-rgb) / 0.18);
+  border-radius: 999px;
+  color: var(--label);
+}
+.plateStatus[data-status='in build'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.plateMonogram {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  font-size: clamp(170px, 26vw, 400px);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  color: var(--ink);
+  opacity: 0.94;
+  user-select: none;
+}
+
+.summary {
+  margin: clamp(26px, 3.4vw, 44px) 0 0;
+  max-width: 52ch;
+  font-size: clamp(16px, 1.35vw, 20px);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--body);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plate {
+    animation: none;
+  }
+  .back,
+  .back svg {
+    transition: none;
+  }
+}
