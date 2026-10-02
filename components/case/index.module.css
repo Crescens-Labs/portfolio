@@ -137,6 +137,8 @@
   font-size: clamp(44px, 4.4vw, 70px);
   font-weight: 800;
   letter-spacing: -0.06em;
+  /* hidden-by-design: a hover preview of the row's cover, decoration
+     only; the row's name, subtitle and status carry all the content. */
   opacity: 0;
   pointer-events: none;
   transform: translateY(-50%) scale(0.86) rotate(-4deg);

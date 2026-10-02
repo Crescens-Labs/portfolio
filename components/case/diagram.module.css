@@ -63,6 +63,9 @@
   stroke-dashoffset: 1;
 }
 .diagram[data-armed]:not([data-in]) .node {
+  /* hidden-by-design: only ever true after JS has confirmed motion is
+     welcome and before the figure has been seen; reduced motion never
+     arms, and the observer always resolves on first sight. */
   opacity: 0;
   transform: translateY(6px);
 }
@@ -75,6 +78,9 @@
 /* Packets ride the links once the drawing is in. */
 .pulse {
   fill: var(--accent);
+  /* hidden-by-design: the packets are decoration riding links that must
+     be drawn first; the diagram reads completely without them, and
+     reduced motion removes them outright. */
   opacity: 0;
   transition: opacity 400ms var(--ease) 900ms;
 }
