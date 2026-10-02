@@ -39,3 +39,21 @@ describe('whatsapp', () => {
     expect(waHref('Hi, a call?')).toBe('https://wa.me/6281510123155?text=Hi%2C%20a%20call%3F');
   });
 });
+
+describe('voices', () => {
+  it('every receipt carries a source and every quote an English gloss', async () => {
+    const { VOICES } = await import('@/content/home');
+    for (const c of VOICES.cards) {
+      if (c.kind === 'receipt') expect(c.source.trim(), `${c.key} has no source`).not.toHaveLength(0);
+      if (c.kind === 'quote') expect(c.gloss.trim(), `${c.key} has no gloss`).not.toHaveLength(0);
+    }
+  });
+
+  it('names companies and roles, never a private person', async () => {
+    const { VOICES, TEAM } = await import('@/content/home');
+    const founders = TEAM.members.map((m) => m.name.split(' ')[0]);
+    for (const c of VOICES.cards) {
+      for (const f of founders) expect(c.name).not.toContain(f);
+    }
+  });
+});

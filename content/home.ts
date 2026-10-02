@@ -346,56 +346,131 @@ export const SERVICES = {
   cta: { kicker: "Let's scope it", label: 'Get in touch', href: '#contact' },
 } as const;
 
-/** Verbatim client feedback, retained in the language it was said in. */
-export const TESTIMONIAL = {
-  quote:
-    'gw baru dikasih liat flow yang pake snapose software yang kalian bikin and gw masih amazed padahal kita udah rehearse sebelumnya',
-  gloss:
-    'I was just shown the flow running on the Snapose software you built and I am still amazed, even though we had already rehearsed it.',
-  attribution: null as string | null,
-  context: 'Snapose, photobooth studio software',
-} as const;
-
 /**
- * The voices section. One verbatim quote plus the client-side receipts,
- * scattered as cards. The competition record lives in Recognition; this
- * section deliberately repeats none of it. The two numbers here are the
- * flagship outcomes from the stats strip, restated once as receipts,
- * which is the repetition a page is allowed: the number you want
- * remembered, and never a competition result twice.
+ * The voices section, a rail of cards in three kinds:
+ *
+ *   quote    a client's words, verbatim, in the language they were said
+ *            in, with an English gloss underneath. Never paraphrased.
+ *   receipt  a client-side outcome with its source, so the number beside
+ *            a quote can be checked.
+ *   chips    what a build actually contained, for the reader who wants
+ *            the mechanism behind the praise.
+ *
+ * Quotes and receipts alternate, so the rail reads as claim, evidence,
+ * claim. The competition record lives in Recognition; nothing here
+ * repeats it.
+ *
+ * Attribution is by role and company. Pawtrait agreed to be named; the
+ * people quoted are not, so no personal names appear.
  */
-export const VOICES = {
+export type VoiceCard =
+  | {
+      kind: 'quote';
+      key: string;
+      initial: string;
+      name: string;
+      role: string;
+      quote: string;
+      gloss: string;
+    }
+  | {
+      kind: 'receipt';
+      key: string;
+      initial: string;
+      name: string;
+      role: string;
+      value: string;
+      label: string;
+      /** Where a reader can check this. Required. */
+      source: string;
+    }
+  | {
+      kind: 'chips';
+      key: string;
+      initial: string;
+      name: string;
+      role: string;
+      note: string;
+      items: readonly string[];
+    };
+
+export const VOICES: {
+  eyebrow: string;
+  heading: { muted: string; strong: string };
+  lead: string;
+  cards: VoiceCard[];
+} = {
   eyebrow: '+ voices',
   heading: { muted: 'Said back', strong: 'to us.' },
-  lead: 'One verbatim quote and the receipts behind it. Nothing paraphrased, nothing invented.',
-  receipts: [
+  lead: 'Two clients in their own words, and the receipts behind them. Nothing paraphrased, nothing invented.',
+  cards: [
     {
+      kind: 'quote',
+      key: 'pawtrait',
+      initial: 'P',
+      name: 'CEO, Pawtrait',
+      role: 'first look at the app, in build',
+      quote: 'Gila proper banget gas jualin gasi',
+      gloss: 'This is seriously proper. Why are we not selling it already?',
+    },
+    {
+      kind: 'receipt',
       key: 'response',
+      initial: 'S',
+      name: 'SimplyBox',
+      role: 'AI unified inbox',
       value: '80%+',
       label: 'Cut in customer response time',
-      note: 'SimplyBox, AI unified inbox',
       source: "Measured against the client's own pre-launch baseline",
     },
     {
+      kind: 'quote',
+      key: 'snapose',
+      initial: 'S',
+      name: 'Snapose',
+      role: 'photobooth studio software',
+      quote:
+        'gw baru dikasih liat flow yang pake snapose software yang kalian bikin and gw masih amazed padahal kita udah rehearse sebelumnya',
+      gloss:
+        'I was just shown the flow running on the Snapose software you built and I am still amazed, even though we had already rehearsed it.',
+    },
+    {
+      kind: 'receipt',
       key: 'apps',
+      initial: 'S',
+      name: 'Snapose',
+      role: 'photobooth platform',
       value: '5 to 1',
       label: 'Apps a venue runs now',
-      note: 'Snapose, photobooth platform',
       source: 'Operator workflow audit, 2025',
     },
     {
+      kind: 'chips',
+      key: 'pawtrait-build',
+      initial: 'P',
+      name: 'Pawtrait',
+      role: 'what end to end meant here',
+      note: 'DIY pet photobox, one system',
+      items: [
+        'camera and printer, wired in',
+        'template editor',
+        'finance built in',
+        'soft-file gallery site',
+        'booth flow made for them',
+      ],
+    },
+    {
+      kind: 'receipt',
       key: 'early',
+      initial: 'R',
+      name: 'RoyaleCard Arena',
+      role: 'second hackathon',
       value: '1 day early',
       label: 'Ahead of a dual deadline',
-      note: 'RoyaleCard Arena, second hackathon',
       source: 'Deck, video and launch post shipped ahead',
     },
   ],
-  chips: {
-    note: 'Snapose architecture',
-    items: ['offline first', 'auto-sync to Drive', 'shared across laptops'],
-  },
-} as const;
+};
 
 export const PRODUCTS = {
   eyebrow: 'from the lab',
