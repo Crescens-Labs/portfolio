@@ -104,6 +104,9 @@
 /* One row: cover left, meta right. The row is the meta's sticky
    containing block, so the pin lasts exactly as long as the row does. */
 .project {
+  /* "Back to work" on a case study lands on this row, a little below the
+     viewport top so the row's own index and name are in view. */
+  scroll-margin-top: clamp(24px, 6vh, 72px);
   display: grid;
   grid-template-columns: 1fr;
   gap: clamp(18px, 2.4vw, 28px);

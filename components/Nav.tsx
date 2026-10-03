@@ -60,7 +60,6 @@ export function SocialGlyph({ label }: { label: string }) {
     from home. On home a `/#x` link is a same-document jump, as before. */
 const LINKS = [
   { label: 'Work', href: '/#work' },
-  { label: 'Case studies', href: '/work' },
   { label: 'Process', href: '/#process' },
   { label: 'Lab', href: '/#lab' },
   { label: 'About', href: '/#about' },

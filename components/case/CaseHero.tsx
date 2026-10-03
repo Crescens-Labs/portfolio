@@ -33,7 +33,7 @@ export function CaseHero({ study }: { study: CaseStudy }) {
         <Nav />
 
         <div className={s.crumbs}>
-          <Link href="/work" className={s.back}>
+          <Link href={`/#work-${study.slug}`} className={s.back}>
             <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
               <path
                 d="M14 8H3M7 4 3 8l4 4"
@@ -44,7 +44,7 @@ export function CaseHero({ study }: { study: CaseStudy }) {
                 strokeLinejoin="round"
               />
             </svg>
-            All work
+            Back to work
           </Link>
           <span className={s.count}>
             <b>{study.index}</b> / {total}

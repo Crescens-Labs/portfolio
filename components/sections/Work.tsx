@@ -184,7 +184,7 @@ export function Work() {
 
           <div className={s.stack}>
             {CASE_STUDIES.map((p) => (
-              <article key={p.slug} className={s.project} data-slug={p.slug}>
+              <article key={p.slug} id={`work-${p.slug}`} className={s.project} data-slug={p.slug}>
                 <ProjectCover project={p} />
                 <ProjectMeta project={p} />
               </article>
