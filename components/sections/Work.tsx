@@ -138,8 +138,9 @@ export function Work() {
           <h2 className={s.title}>
             <span className={s.tLine}>The hard part was</span>
             <span className={s.tLine}>
-              <span className={s.accent}>the problem</span>, not the code.
+              <span className={s.accent}>the problem</span>,
             </span>
+            <span className={s.tLine}>not the code.</span>
           </h2>
           <p className={s.intro}>
             Five in flight, none from a template. The reframe mattered more than the build.

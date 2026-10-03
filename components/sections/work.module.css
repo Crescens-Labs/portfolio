@@ -22,7 +22,6 @@
   grid-template-columns: 1fr;
   gap: clamp(16px, 2vw, 24px);
   margin-bottom: var(--head-gap);
-  max-width: 60ch;
 }
 @media (min-width: 900px) {
   .head {
@@ -39,9 +38,10 @@
   letter-spacing: -0.04em;
   color: var(--ink);
 }
-/* Two lines, deliberate: the setup sits on line one, the claim on line
-   two with the accent inside it. Leaving the break to the wrapper let
-   the heading collapse to one word per line on narrow columns. */
+/* Three lines, set by hand: the setup, the accent claim, the turn. The
+   head used to be capped at 60ch, and ch is measured at body size, so
+   the display line was squeezed into ~550px and broke into six. The
+   heading now runs the width it needs; only the intro keeps a measure. */
 .tLine {
   display: block;
 }
