@@ -14,7 +14,10 @@
  * `min-height` sizes the border box, so the content area is still exactly
  * one screen and the call to action stays above the fold. */
 .hero {
-  --run: clamp(180px, 30vh, 320px);
+  /* The run out holds the wordmark, so it is never shorter than the mark
+     plus air; on a wide, short screen 30vh alone let the letters crowd
+     the proof cards. */
+  --run: max(clamp(180px, 30vh, 320px), calc(14.6vw + 40px));
   position: relative;
   isolation: isolate;
   background: var(--d-void);
@@ -475,7 +478,13 @@
      the top of the screen, and it is why there is no separate dark band to
      seam against. The offset leaves air between the proof cards and the
      mark; pressed against them the two read as one block. */
-  margin-top: calc(clamp(20px, 5vh, 60px) - clamp(180px, 30vh, 320px));
+  margin-top: min(calc(clamp(20px, 5vh, 60px) - clamp(180px, 30vh, 320px)), -14.6%);
+  /* -14.6% is the mark's own height: a percentage margin resolves against
+     the container's width, the same width the SVG scales with, and the
+     viewBox is 1000 x 146. min() takes whichever pulls further, so the
+     letters always end inside the hero's field. With the height-based
+     pull alone, a wide screen left the bottom of the letters hanging
+     past the field onto a flat strip of ground, read as a dark seam. */
   /* The blend belongs on the element that owns the stacking context. On
      the glyphs inside, `z-index` here means they can only see their
      siblings, which is nothing, and the mark stays white over the cream. */
