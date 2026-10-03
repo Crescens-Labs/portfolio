@@ -86,7 +86,7 @@ export default function OpengraphImage() {
           <div style={{ display: 'flex', fontSize: 26, letterSpacing: 4, color: ACCENT }}>
             DON&apos;T TRUST. VERIFY.
           </div>
-          <div style={{ display: 'flex', fontSize: 22, color: '#8FA79A' }}>crescenslabs.com</div>
+          <div style={{ display: 'flex', fontSize: 22, color: '#8FA79A' }}>crescens.dev</div>
         </div>
       </div>
     ),

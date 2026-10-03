@@ -176,9 +176,9 @@ export const STATS: Claim[] = [
   },
   {
     label: 'Systems shipped or in build',
-    value: '4',
-    caption: 'Delivered systems across three categories, plus one in build',
-    source: 'SimplyBox, RoyaleCard Arena, Snapose, franchise system',
+    value: '5',
+    caption: 'Three shipped, two in build, each with a published case study',
+    source: 'SimplyBox, RoyaleCard Arena, Snapose, Pawtrait, franchise system',
   },
   {
     label: 'People on the build',
@@ -346,56 +346,131 @@ export const SERVICES = {
   cta: { kicker: "Let's scope it", label: 'Get in touch', href: '#contact' },
 } as const;
 
-/** Verbatim client feedback, retained in the language it was said in. */
-export const TESTIMONIAL = {
-  quote:
-    'gw baru dikasih liat flow yang pake snapose software yang kalian bikin and gw masih amazed padahal kita udah rehearse sebelumnya',
-  gloss:
-    'I was just shown the flow running on the Snapose software you built and I am still amazed, even though we had already rehearsed it.',
-  attribution: null as string | null,
-  context: 'Snapose, photobooth studio software',
-} as const;
-
 /**
- * The voices section. One verbatim quote plus the client-side receipts,
- * scattered as cards. The competition record lives in Recognition; this
- * section deliberately repeats none of it. The two numbers here are the
- * flagship outcomes from the stats strip, restated once as receipts,
- * which is the repetition a page is allowed: the number you want
- * remembered, and never a competition result twice.
+ * The voices section, a rail of cards in three kinds:
+ *
+ *   quote    a client's words, verbatim, in the language they were said
+ *            in, with an English gloss underneath. Never paraphrased.
+ *   receipt  a client-side outcome with its source, so the number beside
+ *            a quote can be checked.
+ *   chips    what a build actually contained, for the reader who wants
+ *            the mechanism behind the praise.
+ *
+ * Quotes and receipts alternate, so the rail reads as claim, evidence,
+ * claim. The competition record lives in Recognition; nothing here
+ * repeats it.
+ *
+ * Attribution is by role and company. Pawtrait agreed to be named; the
+ * people quoted are not, so no personal names appear.
  */
-export const VOICES = {
+export type VoiceCard =
+  | {
+      kind: 'quote';
+      key: string;
+      initial: string;
+      name: string;
+      role: string;
+      quote: string;
+      gloss: string;
+    }
+  | {
+      kind: 'receipt';
+      key: string;
+      initial: string;
+      name: string;
+      role: string;
+      value: string;
+      label: string;
+      /** Where a reader can check this. Required. */
+      source: string;
+    }
+  | {
+      kind: 'chips';
+      key: string;
+      initial: string;
+      name: string;
+      role: string;
+      note: string;
+      items: readonly string[];
+    };
+
+export const VOICES: {
+  eyebrow: string;
+  heading: { muted: string; strong: string };
+  lead: string;
+  cards: VoiceCard[];
+} = {
   eyebrow: '+ voices',
   heading: { muted: 'Said back', strong: 'to us.' },
-  lead: 'One verbatim quote and the receipts behind it. Nothing paraphrased, nothing invented.',
-  receipts: [
+  lead: 'Two clients in their own words, and the receipts behind them. Nothing paraphrased, nothing invented.',
+  cards: [
     {
+      kind: 'quote',
+      key: 'pawtrait',
+      initial: 'P',
+      name: 'CEO, Pawtrait',
+      role: 'first look at the app, in build',
+      quote: 'Gila proper banget gas jualin gasi',
+      gloss: 'This is seriously proper. Why are we not selling it already?',
+    },
+    {
+      kind: 'receipt',
       key: 'response',
+      initial: 'S',
+      name: 'SimplyBox',
+      role: 'AI unified inbox',
       value: '80%+',
       label: 'Cut in customer response time',
-      note: 'SimplyBox, AI unified inbox',
       source: "Measured against the client's own pre-launch baseline",
     },
     {
+      kind: 'quote',
+      key: 'snapose',
+      initial: 'S',
+      name: 'Snapose',
+      role: 'photobooth studio software',
+      quote:
+        'gw baru dikasih liat flow yang pake snapose software yang kalian bikin and gw masih amazed padahal kita udah rehearse sebelumnya',
+      gloss:
+        'I was just shown the flow running on the Snapose software you built and I am still amazed, even though we had already rehearsed it.',
+    },
+    {
+      kind: 'receipt',
       key: 'apps',
+      initial: 'S',
+      name: 'Snapose',
+      role: 'photobooth platform',
       value: '5 to 1',
       label: 'Apps a venue runs now',
-      note: 'Snapose, photobooth platform',
       source: 'Operator workflow audit, 2025',
     },
     {
+      kind: 'chips',
+      key: 'pawtrait-build',
+      initial: 'P',
+      name: 'Pawtrait',
+      role: 'what end to end meant here',
+      note: 'DIY pet photobox, one system',
+      items: [
+        'camera and printer, wired in',
+        'template editor',
+        'finance built in',
+        'soft-file gallery site',
+        'booth flow made for them',
+      ],
+    },
+    {
+      kind: 'receipt',
       key: 'early',
+      initial: 'R',
+      name: 'RoyaleCard Arena',
+      role: 'second hackathon',
       value: '1 day early',
       label: 'Ahead of a dual deadline',
-      note: 'RoyaleCard Arena, second hackathon',
       source: 'Deck, video and launch post shipped ahead',
     },
   ],
-  chips: {
-    note: 'Snapose architecture',
-    items: ['offline first', 'auto-sync to Drive', 'shared across laptops'],
-  },
-} as const;
+};
 
 export const PRODUCTS = {
   eyebrow: 'from the lab',
@@ -470,90 +545,11 @@ export const TOGETHER = {
 } as const;
 
 /**
- * Section 11. Featured work. The biggest visual section, a sticky-scroll
- * gallery that runs through five projects.
- *
- * The five have to ship without client screenshots for now. Rather than
- * fake UI captures (which would lie about the work and would not pass
- * the tagline), each project is rendered as an editorial monogram: an
- * oversized initial inside a frame, the dot-cluster mark behind it, a
- * single accent index. Reads as art direction rather than as evidence.
+ * Section 11. Featured work. The projects live in content/work.ts, where
+ * each one is a full case study; the home gallery renders the same
+ * records, so a name, year or summary can never disagree between the
+ * cover and the page it opens.
  */
-type Project = {
-  slug: string;
-  index: string;
-  name: string;
-  initial: string;
-  subtitle: string;
-  year: string;
-  type: string;
-  status: 'shipped' | 'in build';
-  summary: string;
-  result?: Claim;
-};
-
-export const PROJECTS: Project[] = [
-  {
-    slug: 'simplybox',
-    index: '01',
-    name: 'SimplyBox',
-    initial: 'S',
-    subtitle: 'AI unified inbox for the Meta ecosystem',
-    year: '2025',
-    type: 'Product, competition',
-    status: 'shipped',
-    summary:
-      'Six apps to answer one message. SimplyBox unifies the Meta ecosystem into one inbox, grounded in the company\u2019s own knowledge by RAG. Response time down 80%+. Top 7, Llama AI Accelerator.',
-    result: {
-      label: 'Response time',
-      value: '80%+',
-      caption: 'Cut for CS teams using SimplyBox',
-      source: "Measured against the client's own pre-launch baseline",
-    },
-  },
-  {
-    slug: 'royalecard-arena',
-    index: '02',
-    name: 'RoyaleCard Arena',
-    initial: 'R',
-    subtitle: 'On-chain competitive strategy game',
-    year: '2025',
-    type: 'Product, competition',
-    status: 'shipped',
-    summary:
-      'An open-world game where market knowledge is the edge. Rules live on cards, the cards trade for you. Draft, ban, escrowed best of three. Winner, National Campus Hackathon.',
-    result: {
-      label: 'Competition result',
-      value: '1st',
-      caption: 'National Campus Hackathon, Solana x Colosseum',
-      source: 'Final standings, RoyaleCard Arena',
-    },
-  },
-  {
-    slug: 'snapose',
-    index: '03',
-    name: 'Snapose',
-    initial: 'A',
-    subtitle: 'Photobooth studio platform',
-    year: '2025',
-    type: 'Client product',
-    status: 'shipped',
-    summary:
-      'Competitors sell software. We shipped the operation around it: auto finance with waste analysis, offline-first with Drive sync. Six apps became one.',
-  },
-  {
-    slug: 'franchise-system',
-    index: '04',
-    name: 'Franchise System',
-    initial: 'F',
-    subtitle: 'Multi-outlet operations platform',
-    year: '2026',
-    type: 'Client, in build',
-    status: 'in build',
-    summary:
-      'One operating system for a leading multi-outlet restaurant chain: POS, finance, inventory, logistics and HR in one place.',
-  },
-];
 
 /**
  * Recognition keeps proof grounded in judged outcomes and verifiable sources.
@@ -638,7 +634,8 @@ export const ENGAGEMENT = {
   lead: 'Three shapes, chosen by whether the scope is knowable up front. We tell you which one fits after the first call.',
   footnote:
     'Every engagement ends with handover. That is not an upsell, it is the definition of the work.',
-  cta: { label: 'Book a call', href: '#contact' },
+  /** Opens WhatsApp with WHATSAPP.messages.call prefilled. */
+  cta: { label: 'Book a call' },
   models: [
     {
       key: 'project',
@@ -725,6 +722,24 @@ export const FAQ = {
 } as const;
 
 /**
+ * WhatsApp, the fast lane. The form stays the considered route; this is
+ * for the visitor who wants to ask one thing before writing a brief, and
+ * for "Book a call", which is a scheduling conversation, not a form.
+ *
+ * `number` is digits only, country code first, no plus: the shape wa.me
+ * expects. The prefilled lines are written so the first message we
+ * receive already says which button was pressed.
+ */
+export const WHATSAPP = {
+  number: '6281510123155',
+  display: '+62 815 1012 3155',
+  messages: {
+    hello: 'Hi Crescens, I have a question before I send a brief.',
+    call: 'Hi Crescens, I would like to book a call. Here is a little about what we are working on:',
+  },
+} as const;
+
+/**
  * Section 17. Contact. The form field is labelled "What is breaking?"
  * on purpose. "Message" filters for nothing; "What is breaking?" filters
  * for people with a real operational problem and primes the exact
@@ -750,7 +765,8 @@ export const CONTACT = {
     'The scope arrives in writing, before anything is signed.',
   ],
   secondaryLine: 'Prefer email? Write to us directly at',
-  email: 'hi@crescenslabs.com',
+  whatsapp: { kicker: 'Rather ask first?', label: 'Chat on WhatsApp' },
+  email: 'hi@crescens.dev',
 } as const;
 
 /**
@@ -761,13 +777,13 @@ export const FOOTER = {
   statementHead: 'We build systems that |outlast us|',
   statementTail: 'because ownership is the point.',
   meta: 'End to end software studio, working remote from Indonesia.',
-  email: 'hi@crescenslabs.com',
+  email: 'hi@crescens.dev',
   nav: [
-    { label: 'Work', href: '#work' },
-    { label: 'Process', href: '#process' },
-    { label: 'Products', href: '#lab' },
-    { label: 'About', href: '#about' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'Work', href: '/#work' },
+    { label: 'Process', href: '/#process' },
+    { label: 'Products', href: '/#lab' },
+    { label: 'About', href: '/#about' },
+    { label: 'Contact', href: '/#contact' },
   ],
   legal: [
     { label: 'Privacy Policy', href: '#' },

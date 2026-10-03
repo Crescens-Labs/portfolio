@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { getSound } from '@/lib/sound';
+import { prefersReducedMotion } from '@/lib/gsap';
 import s from './music-toggle.module.css';
 
 /** The meter's tick count. Volume lands on the nearest tick visually. */
@@ -9,9 +11,11 @@ const TICKS = 12;
 /**
  * The floating music control, docked bottom right.
  *
- *   disc     play and pause, one glyph morphing into the other
- *   blade    the tape label: status, track name, and the volume as a
- *            VU meter of ticks, the same tick language as the process
+ *   disc     the site's one sound switch: music and interface cues
+ *            together. Its mark is the logo's five dots, and while
+ *            sound is on each dot listens to one band of the mix.
+ *   blade    the tape label: status, what is playing, and the volume as
+ *            a VU meter of ticks, the same tick language as the process
  *            bars and the footer barcode
  *
  * The control READS THE PAGE. A rAF-throttled sample on scroll finds the
@@ -20,20 +24,35 @@ const TICKS = 12;
  * is cream glass, in both cases via the same token mapping the sections
  * themselves use. The control never fights the page it floats over.
  *
- * The track drops in at `public/audio/theme.mp3`. Until it exists the
- * control renders dimmed and inert with an honest label, so the slot
- * never looks broken. Volume persists in localStorage; play never
- * autostarts, because a page that makes noise uninvited is a page
- * people leave.
+ * All audio lives in lib/sound.ts; the dock only mirrors and drives it.
+ * The blade names what is playing: the composed theme when
+ * public/audio/theme.mp3 exists, the generative score otherwise. Volume
+ * persists; nothing ever autostarts, because a page that makes noise
+ * uninvited is a page people leave.
  */
 export function MusicToggle() {
-  const audioRef = useRef<HTMLAudioElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const [playing, setPlaying] = useState(false);
+  const markRef = useRef<HTMLSpanElement>(null);
+  const [enabled, setEnabled] = useState(false);
+  const [music, setMusic] = useState<'theme' | 'score' | null>(null);
   const [open, setOpen] = useState(false);
-  const [volume, setVolume] = useState(0.7);
-  const [available, setAvailable] = useState<boolean | null>(null);
+  const [volume, setVolumeState] = useState(0.7);
   const [ground, setGround] = useState<'dark' | 'light' | 'void'>('dark');
+
+  // The engine owns the truth; the dock mirrors it.
+  useEffect(() => {
+    const engine = getSound();
+    if (!engine) return;
+    return engine.subscribe((st) => {
+      setEnabled(st.enabled);
+      setMusic(st.music);
+      setVolumeState(st.volume);
+    }) as () => void;
+  }, []);
+  const setVolume = (v: number | ((prev: number) => number)) => {
+    const next = typeof v === 'function' ? v(volume) : v;
+    getSound()?.setVolume(next);
+  };
 
   // The dock adopts the ground beneath it. Sampled on scroll and resize
   // through one rAF slot, so a long scroll costs one sample per frame,
@@ -68,54 +87,46 @@ export function MusicToggle() {
     };
   }, []);
 
-  // Restore the last volume, and probe for the track without loading it.
+  // The mark listens. Five dots, five log-spaced bands of the analyser,
+  // each dot's level written as --lv for CSS to scale. Only while sound is
+  // on and motion is welcome; otherwise the dots rest as the logo.
   useEffect(() => {
-    let restored = 0.7;
-    try {
-      const v = parseFloat(localStorage.getItem('crescens-vol') ?? '');
-      if (Number.isFinite(v)) restored = Math.min(1, Math.max(0, v));
-    } catch {
-      /* private mode: the default stands */
-    }
-    const probe = new Audio();
-    probe.preload = 'metadata';
-    probe.src = '/audio/theme.mp3';
-    const ok = () => setAvailable(true);
-    const no = () => setAvailable(false);
-    probe.addEventListener('loadedmetadata', ok, { once: true });
-    probe.addEventListener('error', no, { once: true });
-    // Volume restore rides the event that will fire anyway, so the
-    // effect itself performs no synchronous state writes.
-    probe.addEventListener('loadedmetadata', () => setVolume(restored), { once: true });
-    return () => {
-      probe.removeEventListener('loadedmetadata', ok);
-      probe.removeEventListener('error', no);
+    const engine = getSound();
+    const mark = markRef.current;
+    if (!enabled || !engine?.analyser || !mark || prefersReducedMotion()) return;
+    const an = engine.analyser;
+    const bins = new Uint8Array(an.frequencyBinCount);
+    const dots = [...mark.querySelectorAll<HTMLElement>('i')];
+    // [from bin, to bin, weight]. Weights tilt against the mix's own
+    // slope (the pads sit low, the bells high), so all five dots move
+    // instead of the first one pinning at full.
+    const bands = [
+      [1, 3, 0.55],
+      [3, 7, 0.75],
+      [7, 14, 1.2],
+      [14, 28, 2],
+      [28, 60, 3],
+    ];
+    let raf = 0;
+    const frame = () => {
+      an.getByteFrequencyData(bins);
+      bands.forEach(([a, b, w], i) => {
+        let sum = 0;
+        for (let k = a; k < b; k++) sum += bins[k];
+        const lv = Math.min(1, (sum / (b - a) / 255) * w);
+        dots[i]?.style.setProperty('--lv', lv.toFixed(3));
+      });
+      raf = requestAnimationFrame(frame);
     };
-  }, []);
+    raf = requestAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(raf);
+      dots.forEach((d) => d.style.removeProperty('--lv'));
+    };
+  }, [enabled]);
 
-  useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = volume;
-    try {
-      localStorage.setItem('crescens-vol', String(volume));
-    } catch {
-      /* private mode */
-    }
-  }, [volume]);
-
-  const toggle = async () => {
-    const a = audioRef.current;
-    if (!a || !available) return;
-    if (playing) {
-      a.pause();
-      setPlaying(false);
-    } else {
-      try {
-        await a.play();
-        setPlaying(true);
-      } catch {
-        setPlaying(false);
-      }
-    }
+  const toggle = () => {
+    void getSound()?.toggle();
   };
 
   // The meter: pointer position over the ticks becomes the volume, with
@@ -140,20 +151,20 @@ export function MusicToggle() {
     <div
       className={s.dock}
       data-open={open}
-      data-off={available === false}
       data-ground={ground}
-      onPointerEnter={() => available && setOpen(true)}
+      onPointerEnter={() => setOpen(true)}
       onPointerLeave={() => setOpen(false)}
+      onFocus={() => setOpen(true)}
+      onBlur={() => setOpen(false)}
     >
-      <audio ref={audioRef} src="/audio/theme.mp3" loop preload="none" />
 
       <div className={s.blade}>
         <div className={s.head}>
-          <span className={s.status} data-on={playing}>
+          <span className={s.status} data-on={enabled}>
             <i className={s.dot} aria-hidden="true" />
-            {available === false ? 'no track yet' : playing ? 'playing' : 'paused'}
+            {enabled ? 'sound on' : 'sound off'}
           </span>
-          <span className={s.name}>studio theme</span>
+          <span className={s.name}>{music === 'theme' ? 'studio theme' : 'generative score'}</span>
           <span className={s.read} aria-hidden="true">
             {String(Math.round(volume * 100)).padStart(2, '0')}
           </span>
@@ -186,15 +197,15 @@ export function MusicToggle() {
         type="button"
         className={s.disc}
         onClick={toggle}
-        aria-pressed={playing}
-        aria-label={playing ? 'Pause the music' : 'Play the music'}
-        disabled={available === false}
+        aria-pressed={enabled}
+        aria-label={enabled ? 'Turn sound off' : 'Turn sound on, music and interface sounds'}
+        data-sfx="none"
       >
         {/* The mark itself is the icon: the five dots of the C, still
             while paused, slowly turning while the theme plays. No play
             or pause glyph is needed; the blade says the state in words
             and the disc says it in motion and colour. */}
-        <span className={s.mark} aria-hidden="true">
+        <span className={s.mark} ref={markRef} aria-hidden="true">
           {[-88, -134, 180, 134, 88].map((deg, i) => {
             const a = (deg * Math.PI) / 180;
             return (

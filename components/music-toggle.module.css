@@ -50,12 +50,6 @@
   transform: translateX(0);
   pointer-events: auto;
 }
-.dock[data-off='true'] .blade {
-  /* hidden-by-design: with no track there is nothing for the blade to
-     say, so it never opens. */
-  opacity: 0;
-  pointer-events: none;
-}
 
 .head {
   display: flex;
@@ -172,14 +166,6 @@
   border-color: var(--accent);
   color: var(--accent);
 }
-.dock[data-off='true'] .disc {
-  opacity: 0.45;
-  cursor: default;
-}
-.dock[data-off='true'] .disc:hover {
-  border-color: rgb(var(--line-rgb) / 0.22);
-  transform: none;
-}
 
 /* The mark: five dots on the C's arc. Paused, it is the logo. Playing,
    the cluster turns once every nine seconds and each dot swells in
@@ -211,18 +197,13 @@
   background: currentColor;
   transform: translate(var(--dx), var(--dy));
 }
-.disc[aria-pressed='true'] .markDot {
-  animation: markPulse 1.8s var(--ease) infinite;
-  animation-delay: calc(var(--i) * 180ms);
-}
-@keyframes markPulse {
-  0%,
-  100% {
-    transform: translate(var(--dx), var(--dy)) scale(1);
-  }
-  50% {
-    transform: translate(var(--dx), var(--dy)) scale(1.45);
-  }
+/* Listening: each dot swells with its band of the mix (--lv, 0..1,
+   written per frame by the dock from the analyser), at most 1.55x so
+   the five never merge and the C always reads. Unset, it rests at the
+   logo's size, which is also the reduced-motion state. */
+.markDot {
+  transform: translate(var(--dx), var(--dy)) scale(calc(1 + var(--lv, 0) * 0.55));
+  transition: transform 90ms linear;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -232,8 +213,7 @@
   .dot {
     transition: none;
   }
-  .mark,
-  .disc[aria-pressed='true'] .markDot {
+  .mark {
     animation: none;
   }
 }

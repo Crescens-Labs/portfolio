@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { FAQ, SOCIALS, TEAM } from '@/content/home';
-import { faqLd, homeJsonLd, organizationLd, SITE_URL } from '@/lib/seo';
+import { CASE_STUDIES } from '@/content/work';
+import { caseStudyJsonLd, faqLd, homeJsonLd, organizationLd, SITE_URL } from '@/lib/seo';
 import sitemap from '@/app/sitemap';
 import robots from '@/app/robots';
 
@@ -52,9 +53,19 @@ describe('structured data', () => {
 });
 
 describe('crawl surface', () => {
-  it('lists the home route and only the home route', () => {
+  it('lists home, the work index and every case study', () => {
     const urls = sitemap().map((e) => new URL(e.url).pathname);
-    expect(urls).toEqual(['/']);
+    expect(urls).toEqual(['/', '/work', ...CASE_STUDIES.map((c) => `/work/${c.slug}`)]);
+  });
+
+  it('gives every case study a CreativeWork and a three-step breadcrumb', () => {
+    for (const c of CASE_STUDIES) {
+      const [work, crumbs] = caseStudyJsonLd(c);
+      expect(work['@type']).toBe('CreativeWork');
+      expect(work.url).toBe(`${SITE_URL}/work/${c.slug}`);
+      expect(crumbs.itemListElement).toHaveLength(3);
+      expect(JSON.stringify([work, crumbs])).not.toContain('\u2014');
+    }
   });
 
   it('robots allows the site, fences the styleguide, points at the sitemap', () => {
@@ -70,7 +81,7 @@ describe('crawl surface', () => {
     const txt = readFileSync(join(process.cwd(), 'public', 'llms.txt'), 'utf8');
     expect(txt.startsWith('# Crescens Labs')).toBe(true);
     expect(txt).toContain(SITE_URL);
-    expect(txt).toContain('hi@crescenslabs.com');
+    expect(txt).toContain('hi@crescens.dev');
     expect(txt.includes('\u2014')).toBe(false);
   });
 });

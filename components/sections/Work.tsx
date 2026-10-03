@@ -3,10 +3,12 @@
 import { useRef, useState } from 'react';
 import { Wrap } from '@/components/layout';
 import { gsap, ScrollTrigger, useGSAP, prefersReducedMotion } from '@/lib/gsap';
-import { PROJECTS } from '@/content/home';
+import Link from 'next/link';
+import { Device } from '@/components/Device';
+import { CASE_STUDIES, type CaseStudy } from '@/content/work';
 import s from './work.module.css';
 
-const RAIL_INTRO = `Four systems shipped or in build, two competitions entered and placed. Four briefs on show here, each pinned beside its cover.`;
+const RAIL_INTRO = `Five systems shipped or in build, two competitions entered and placed. Each brief is pinned beside its cover, and each one has a full case study.`;
 
 /**
  * Section 11. Featured work, the centerpiece.
@@ -25,8 +27,8 @@ const RAIL_INTRO = `Four systems shipped or in build, two competitions entered a
  * monogram and ghost sit still, a printed plate rather than a parallax
  * toy, so the covers read as documents in a series.
  *
- * The Kost project stays dropped: four strong beats five where one is
- * speculative.
+ * The Kost project stays dropped until it signs: five real beats six where
+ * one is speculative.
  */
 export function Work() {
   const root = useRef<HTMLElement>(null);
@@ -42,13 +44,13 @@ export function Work() {
       // values like "2 / 2" stay text, as the content model holds.
       const statVals = q(`.${s.railStatVal}`);
       const systems = statVals[0];
-      if (systems && systems.textContent?.trim() === '4') {
+      if (systems && systems.textContent?.trim() === String(CASE_STUDIES.length)) {
         const counter = { n: 0 };
         gsap.fromTo(
           counter,
           { n: 0 },
           {
-            n: 4,
+            n: CASE_STUDIES.length,
             duration: 1.1,
             ease: 'house',
             scrollTrigger: { trigger: systems, start: 'top 92%', once: true },
@@ -96,6 +98,19 @@ export function Work() {
           scrollTrigger: { trigger: row, start: 'top 84%', once: true },
         });
 
+        // The laptop drifts up through its stage as the row passes, a
+        // slow parallax against the fixed key light. Scrubbed, so it is
+        // tied to the hand on the wheel rather than to a clock.
+        gsap.fromTo(
+          rq('[data-device]'),
+          { yPercent: 9 },
+          {
+            yPercent: -4,
+            ease: 'none',
+            scrollTrigger: { trigger: row, start: 'top bottom', end: 'bottom top', scrub: true },
+          },
+        );
+
         // The meta's own blocks rise into place beside the arriving
         // cover, once, staggered top to bottom.
         gsap.from(rq(`.${s.meta} > *`), {
@@ -113,7 +128,10 @@ export function Work() {
 
   return (
     <section id="work" data-ground="dark" className={`specks-host ${s.work}`} ref={root}>
-      <i className="specks specks-live" aria-hidden="true" />
+      {/* Still grain, not the drifting film: the covers are the moving
+          thing in this section, and a second motion behind them only
+          competed with the devices. */}
+      <i className="specks specks-static" style={{ '--specks-o': 0.32 } as React.CSSProperties} aria-hidden="true" />
       <Wrap>
         <p className={s.eyebrow}>+ selected work</p>
         <div className={s.head}>
@@ -124,7 +142,7 @@ export function Work() {
             </span>
           </h2>
           <p className={s.intro}>
-            Four in flight, none from a template. The reframe mattered more than the build.
+            Five in flight, none from a template. The reframe mattered more than the build.
           </p>
         </div>
 
@@ -140,7 +158,7 @@ export function Work() {
             <div className={s.railStats}>
               <div>
                 <span className={s.railStatKey}>systems</span>
-                <b className={s.railStatVal}>4</b>
+                <b className={s.railStatVal}>{CASE_STUDIES.length}</b>
                 <em className={s.railStatNote}>shipped or in build</em>
               </div>
               <div>
@@ -155,16 +173,16 @@ export function Work() {
             <div className={s.railProgress} aria-hidden="true">
               <b className={s.railIndex}>{String(active + 1).padStart(2, '0')}</b>
               <span className={s.railTicks}>
-                {PROJECTS.map((p, i) => (
+                {CASE_STUDIES.map((p, i) => (
                   <i key={p.slug} data-on={i === active} />
                 ))}
               </span>
-              <span className={s.railTotal}>{String(PROJECTS.length).padStart(2, '0')}</span>
+              <span className={s.railTotal}>{String(CASE_STUDIES.length).padStart(2, '0')}</span>
             </div>
           </aside>
 
           <div className={s.stack}>
-            {PROJECTS.map((p) => (
+            {CASE_STUDIES.map((p) => (
               <article key={p.slug} className={s.project} data-slug={p.slug}>
                 <ProjectCover project={p} />
                 <ProjectMeta project={p} />
@@ -177,7 +195,7 @@ export function Work() {
   );
 }
 
-function ProjectMeta({ project }: { project: (typeof PROJECTS)[number] }) {
+function ProjectMeta({ project }: { project: CaseStudy }) {
   return (
     <div className={s.meta}>
       <span className={s.metaIndex} aria-hidden="true">
@@ -202,7 +220,7 @@ function ProjectMeta({ project }: { project: (typeof PROJECTS)[number] }) {
         </div>
       </div>
       <p className={s.metaSummary}>{project.summary}</p>
-      <a className={s.metaCta} href={`#${project.slug}`}>
+      <Link className={s.metaCta} href={`/work/${project.slug}`}>
         <span>View case study</span>
         <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
           <path
@@ -214,41 +232,22 @@ function ProjectMeta({ project }: { project: (typeof PROJECTS)[number] }) {
             strokeLinejoin="round"
           />
         </svg>
-      </a>
+      </Link>
     </div>
   );
 }
 
 /**
- * Each cover is an oversized initial inside a bordered frame, the
- * dot-cluster mark behind it as a low-contrast ghost, the accent index in
- * the top corner. On hover the monogram lifts and the ghost sharpens,
- * so the cover reads as a surface with depth rather than a flat stamp.
+ * The cover is a studio stage with the project on a laptop, after the
+ * reference's device shots. The screen holds the real capture once one
+ * exists, a title card until then (see components/Device.tsx).
  */
-function ProjectCover({ project }: { project: (typeof PROJECTS)[number] }) {
+function ProjectCover({ project }: { project: CaseStudy }) {
   return (
-    <div className={s.cover}>
-      <svg className={s.coverMark} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        {[-88, -134, 180, 134, 88].map((deg) => {
-          const a = (deg * Math.PI) / 180;
-          return (
-            <circle
-              key={deg}
-              cx={12 + Math.cos(a) * 9.4}
-              cy={12 + Math.sin(a) * 9.4}
-              r={2.6}
-              fill="currentColor"
-            />
-          );
-        })}
-      </svg>
-
+    <Link className={s.cover} href={`/work/${project.slug}`} tabIndex={-1} aria-hidden="true">
       <span className={s.coverIndex}>{project.index}</span>
-
-      <span className={s.coverMonogram} aria-hidden="true">
-        {project.initial}
-      </span>
-
-    </div>
+      <span className={s.coverStatus}>{project.status}</span>
+      <Device study={project} />
+    </Link>
   );
 }

@@ -1,7 +1,8 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import { MotionProvider } from '@/components/MotionProvider';
 import { MusicToggle } from '@/components/MusicToggle';
+import { SoundCues } from '@/components/SoundCues';
 import { SITE_URL } from '@/lib/seo';
 import './globals.css';
 import './specks.css';
@@ -57,6 +58,12 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+/** Mobile browser chrome takes the void ground, not the default white. */
+export const viewport: Viewport = {
+  themeColor: '#040706',
+  colorScheme: 'dark',
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrains.variable}`} data-ground="dark" suppressHydrationWarning>
@@ -67,9 +74,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           }}
         />
         <MotionProvider>{children}</MotionProvider>
-        {/* The floating music control. Renders dimmed until a track
-            lands at public/audio/theme.mp3. */}
+        {/* The sound switch, and the cues it switches on. Silent until
+            the visitor asks for sound. */}
         <MusicToggle />
+        <SoundCues />
       </body>
     </html>
   );

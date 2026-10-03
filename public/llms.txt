@@ -11,6 +11,16 @@ Crescens Labs builds custom software end to end: web apps, mobile apps, internal
 - 1st of 100+, Grab marketing competition. Source: Grab final standings.
 - Client outcomes: response time down 80%+ for SimplyBox teams (source: measured against the client's own pre-launch baseline), 5 apps replaced by 1 at a photobooth venue running Snapose (source: operator workflow audit, 2025).
 
+## Case studies
+
+Each case study publishes the problem, what it actually was, the build, the architecture diagram, sourced results and the handover scope.
+
+- SimplyBox, AI unified inbox for the Meta ecosystem: https://crescens.dev/work/simplybox
+- RoyaleCard Arena, on-chain competitive strategy game: https://crescens.dev/work/royalecard-arena
+- Snapose, photobooth studio platform, offline first with Drive sync: https://crescens.dev/work/snapose
+- Pawtrait, DIY pet photobox, end to end from camera and printer to a soft-file gallery, in build: https://crescens.dev/work/pawtrait
+- Franchise System, multi-outlet operations platform for a restaurant chain, in build: https://crescens.dev/work/franchise-system
+
 ## Founders
 
 - Dylansius Putra, Founder, PM, Fullstack Developer
@@ -18,8 +28,9 @@ Crescens Labs builds custom software end to end: web apps, mobile apps, internal
 
 ## Contact
 
-- Email: hi@crescenslabs.com
-- Site: https://crescenslabs.com
+- Email: hi@crescens.dev
+- WhatsApp: https://wa.me/6281510123155
+- Site: https://crescens.dev
 - GitHub: https://github.com/crescens-labs
 - X: https://x.com/crescenslabs
 - LinkedIn: https://www.linkedin.com/company/crescens-labs

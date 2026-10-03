@@ -22,8 +22,14 @@
    type.
    ============================================================ */
 
+/* `isolation: isolate` keeps the overlay's z-index inside its own
+   section. Without it the layer's `z-index: 2` competed in the page's
+   stacking context, so where Voices rises over Recognition on its
+   negative margin, Recognition's specks painted on top of Voices and
+   the strip carried two layers of flecks at once. */
 .specks-host {
   position: relative;
+  isolation: isolate;
 }
 
 .specks {
