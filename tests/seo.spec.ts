@@ -55,7 +55,7 @@ describe('structured data', () => {
 describe('crawl surface', () => {
   it('lists home, the work index and every case study', () => {
     const urls = sitemap().map((e) => new URL(e.url).pathname);
-    expect(urls).toEqual(['/', '/work', ...CASE_STUDIES.map((c) => `/work/${c.slug}`)]);
+    expect(urls).toEqual(['/', ...CASE_STUDIES.map((c) => `/work/${c.slug}`)]);
   });
 
   it('gives every case study a CreativeWork and a three-step breadcrumb', () => {
