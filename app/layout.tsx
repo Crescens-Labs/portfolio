@@ -6,6 +6,7 @@ import { SoundCues } from '@/components/SoundCues';
 import { SITE_URL } from '@/lib/seo';
 import './globals.css';
 import './specks.css';
+import './grid.css';
 
 /**
  * Display and mono faces are self-hosted at build time. The display setting

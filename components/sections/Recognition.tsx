@@ -50,7 +50,7 @@ export function Recognition() {
 
   return (
     <section id="recognition" data-ground="dark" className={`specks-host ${s.recognition}`} ref={root}>
-      <i className="specks specks-static" aria-hidden="true" />
+      <i className="grid-field" aria-hidden="true" />
       <Wrap>
         <p className={s.eyebrow}>{RECOGNITION.eyebrow}</p>
         <h2 className={s.title}>

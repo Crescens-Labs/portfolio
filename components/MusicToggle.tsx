@@ -9,10 +9,9 @@ import s from './music-toggle.module.css';
 const TICKS = 12;
 
 /**
- * The floating music control, docked bottom right.
+ * The floating sound control, docked bottom right.
  *
- *   disc     the site's one sound switch: music and interface cues
- *            together. Its mark is the logo's five dots, and while
+ *   disc     the site's one sound switch for the interface cues. Its mark is the logo's five dots, and while
  *            sound is on each dot listens to one band of the mix.
  *   blade    the tape label: status, what is playing, and the volume as
  *            a VU meter of ticks, the same tick language as the process
@@ -25,8 +24,7 @@ const TICKS = 12;
  * themselves use. The control never fights the page it floats over.
  *
  * All audio lives in lib/sound.ts; the dock only mirrors and drives it.
- * The blade names what is playing: the composed theme when
- * public/audio/theme.mp3 exists, the generative score otherwise. Volume
+ * There is no music, only cues that answer what the visitor does. Volume
  * persists; nothing ever autostarts, because a page that makes noise
  * uninvited is a page people leave.
  */
@@ -34,7 +32,6 @@ export function MusicToggle() {
   const trackRef = useRef<HTMLDivElement>(null);
   const markRef = useRef<HTMLSpanElement>(null);
   const [enabled, setEnabled] = useState(false);
-  const [music, setMusic] = useState<'theme' | 'score' | null>(null);
   const [open, setOpen] = useState(false);
   const [volume, setVolumeState] = useState(0.7);
   const [ground, setGround] = useState<'dark' | 'light' | 'void'>('dark');
@@ -45,7 +42,6 @@ export function MusicToggle() {
     if (!engine) return;
     return engine.subscribe((st) => {
       setEnabled(st.enabled);
-      setMusic(st.music);
       setVolumeState(st.volume);
     }) as () => void;
   }, []);
@@ -164,7 +160,7 @@ export function MusicToggle() {
             <i className={s.dot} aria-hidden="true" />
             {enabled ? 'sound on' : 'sound off'}
           </span>
-          <span className={s.name}>{music === 'theme' ? 'studio theme' : 'generative score'}</span>
+          <span className={s.name}>interface sound</span>
           <span className={s.read} aria-hidden="true">
             {String(Math.round(volume * 100)).padStart(2, '0')}
           </span>
@@ -198,11 +194,11 @@ export function MusicToggle() {
         className={s.disc}
         onClick={toggle}
         aria-pressed={enabled}
-        aria-label={enabled ? 'Turn sound off' : 'Turn sound on, music and interface sounds'}
+        aria-label={enabled ? 'Turn sound off' : 'Turn interface sound on'}
         data-sfx="none"
       >
         {/* The mark itself is the icon: the five dots of the C, still
-            while paused, slowly turning while the theme plays. No play
+            while paused, slowly turning while sound is on. No play
             or pause glyph is needed; the blade says the state in words
             and the disc says it in motion and colour. */}
         <span className={s.mark} ref={markRef} aria-hidden="true">

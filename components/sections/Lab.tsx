@@ -45,7 +45,7 @@ export function Lab() {
 
   return (
     <section id="lab" data-ground="dark" className={`specks-host ${s.lab}`} ref={root}>
-      <i className="specks specks-live" aria-hidden="true" />
+      <i className="grid-field" aria-hidden="true" />
       {/* The decrypt veil over everything. Pointer-transparent, so the
           form and the rows stay live underneath it. */}
       <CipherVeil hint="hover to decrypt" />

@@ -1,0 +1,54 @@
+/* ============================================================
+   The grid, the page's second surface.
+
+   Specks are the logo's grain: texture for the human, narrative
+   sections. The grid is engineering paper: it goes behind the sections
+   about systems and method (Bento, Process, Recognition, Lab), so the
+   two moods alternate down the page and no two neighbouring dark
+   sections share a surface.
+
+   Two weights, the way drafting paper is ruled: a fine line every
+   cell and a heavier one every fourth, so the field reads as measured
+   rather than as wallpaper. A soft elliptical mask lets it fade out
+   before the section edges, so it never meets the next section in a
+   hard line. Static on purpose: a moving background is a repaint every
+   frame, and paper does not move.
+
+   Usage: inside a .specks-host section (which isolates the stack),
+   render <i className="grid-field" aria-hidden="true" />. It sits at
+   z-index -1: above the section's own background, under its content.
+   ============================================================ */
+
+.grid-field {
+  --cell: 64px;
+  --minor: rgb(var(--line-rgb) / 0.04);
+  --major: rgb(var(--line-rgb) / 0.072);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--major) 1px, transparent 1px),
+    linear-gradient(to right, var(--minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--minor) 1px, transparent 1px);
+  background-size:
+    calc(var(--cell) * 4) calc(var(--cell) * 4),
+    calc(var(--cell) * 4) calc(var(--cell) * 4),
+    var(--cell) var(--cell),
+    var(--cell) var(--cell);
+  /* Ruled from the page's centre line, so the major lines sit
+     symmetrically on every width. */
+  background-position: center top;
+  -webkit-mask-image: radial-gradient(120% 80% at 50% 40%, #000 35%, transparent 88%);
+  mask-image: radial-gradient(120% 80% at 50% 40%, #000 35%, transparent 88%);
+}
+
+/* On phones the cells shrink with the type, and the heavier rule
+   steps back so the paper stays behind the words. */
+@media (max-width: 699px) {
+  .grid-field {
+    --cell: 40px;
+    --major: rgb(var(--line-rgb) / 0.06);
+  }
+}

@@ -1,11 +1,16 @@
 /**
- * The site's sound, one engine for every cue and the music.
+ * The site's sound: one engine, interface cues only.
  *
  *   master  <- volume from the dock, ramped, never stepped
- *     sfx   <- interface cues, decoded once, played as one-shot buffers
- *     music <- the composed theme if public/audio/theme.mp3 exists,
- *              otherwise the generative score (lib/score.ts)
+ *     glue  <- a gentle compressor, so cues that land together (a hover
+ *              into a click, the veil's flutter under a hover) never
+ *              stack into a spike
+ *       sfx <- the cues, decoded once, played as one-shot buffers
  *   analyser on the master, so the dock's mark can listen to it
+ *
+ * There is no background music. A page that is read for minutes does not
+ * need a bed under it, and a bed loud enough to be felt drowned the cues
+ * that answer what the visitor did. Silence between cues is the point.
  *
  * Rules, because a page that makes noise uninvited is a page people
  * leave:
@@ -15,9 +20,7 @@
  *     click or key press this time, never on load or on scroll.
  */
 
-import { startScore, type Score } from './score';
-
-export type Cue = 'hover' | 'click' | 'open' | 'close' | 'on' | 'off' | 'focus' | 'confirm';
+export type Cue = 'hover' | 'click' | 'open' | 'close' | 'on' | 'off' | 'focus' | 'confirm' | 'decrypt' | 'resolve';
 
 /** Per cue: level against the master, the shortest gap between two
     plays, and how far each play may drift in pitch (cents). */
@@ -30,12 +33,16 @@ const CUES: Record<Cue, { gain: number; gapMs: number; detune: number }> = {
   off: { gain: 0.3, gapMs: 300, detune: 0 },
   focus: { gain: 0.12, gapMs: 140, detune: 80 },
   confirm: { gain: 0.3, gapMs: 300, detune: 0 },
+  // The Lab's veil: a texture under the pointer, not an event, so it sits
+  // low and cannot retrigger while the reveal is still running.
+  decrypt: { gain: 0.2, gapMs: 2500, detune: 40 },
+  resolve: { gain: 0.24, gapMs: 2500, detune: 0 },
 };
 
 const KEY_ON = 'crescens-sound';
 const KEY_VOL = 'crescens-vol';
 
-type State = { enabled: boolean; volume: number; music: 'theme' | 'score' | null };
+type State = { enabled: boolean; volume: number };
 type Listener = (s: State) => void;
 
 function read(key: string): string | null {
@@ -57,14 +64,11 @@ class SoundEngine {
   private ctx: AudioContext | null = null;
   private master!: GainNode;
   private sfx!: GainNode;
-  private musicBus!: GainNode;
   analyser: AnalyserNode | null = null;
   private buffers = new Map<Cue, AudioBuffer>();
   private last = new Map<Cue, number>();
-  private theme: AudioBufferSourceNode | null = null;
-  private score: Score | null = null;
   private listeners = new Set<Listener>();
-  state: State = { enabled: false, volume: 0.7, music: null };
+  state: State = { enabled: false, volume: 0.7 };
 
   constructor() {
     if (typeof window === 'undefined') return;
@@ -103,12 +107,16 @@ class SoundEngine {
     this.master = ctx.createGain();
     this.master.gain.value = 0;
     this.sfx = ctx.createGain();
-    this.musicBus = ctx.createGain();
+    const glue = ctx.createDynamicsCompressor();
+    glue.threshold.value = -18;
+    glue.knee.value = 12;
+    glue.ratio.value = 3;
+    glue.attack.value = 0.003;
+    glue.release.value = 0.18;
     this.analyser = ctx.createAnalyser();
     this.analyser.fftSize = 256;
     this.analyser.smoothingTimeConstant = 0.82;
-    this.sfx.connect(this.master);
-    this.musicBus.connect(this.master);
+    this.sfx.connect(glue).connect(this.master);
     this.master.connect(this.analyser);
     this.analyser.connect(ctx.destination);
     this.ctx = ctx;
@@ -135,35 +143,6 @@ class SoundEngine {
     );
   }
 
-  /** Composed theme first, generative score when there is none. */
-  private async startMusic() {
-    const ctx = this.graph();
-    const theme = await this.load('/audio/theme.mp3');
-    if (!this.state.enabled) return;
-    if (theme) {
-      const src = ctx.createBufferSource();
-      src.buffer = theme;
-      src.loop = true;
-      src.connect(this.musicBus);
-      src.start();
-      this.theme = src;
-      this.set({ music: 'theme' });
-      return;
-    }
-    const grain = await this.load('/audio/grain.mp3');
-    if (!this.state.enabled) return;
-    this.score = startScore(ctx, this.musicBus, grain);
-    this.set({ music: 'score' });
-  }
-
-  private stopMusic() {
-    this.theme?.stop();
-    this.theme = null;
-    this.score?.stop();
-    this.score = null;
-    this.set({ music: null });
-  }
-
   /** Must be called from a user gesture: it creates or resumes the context. */
   async enable() {
     if (this.state.enabled) return;
@@ -176,7 +155,6 @@ class SoundEngine {
     this.master.gain.setTargetAtTime(this.state.volume, now, 0.6);
     await this.loadCues();
     this.play('on', true);
-    void this.startMusic();
   }
 
   async disable() {
@@ -188,7 +166,6 @@ class SoundEngine {
     this.master.gain.setTargetAtTime(0, now + 0.25, 0.35);
     window.setTimeout(() => {
       if (this.state.enabled) return;
-      this.stopMusic();
       void this.ctx?.suspend();
     }, 1800);
   }

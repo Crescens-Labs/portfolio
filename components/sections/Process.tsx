@@ -65,7 +65,7 @@ export function Process() {
 
   return (
     <section id="process" data-ground="dark" className={`specks-host ${s.process}`} ref={root}>
-      <i className="specks specks-static" aria-hidden="true" />
+      <i className="grid-field" aria-hidden="true" />
       <Wrap>
         <p className={shared.eyebrow}>+ process</p>
 

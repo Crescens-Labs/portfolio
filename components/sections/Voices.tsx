@@ -180,7 +180,7 @@ export function Voices() {
 
   return (
     <section id="voices" data-ground="dark" className={`specks-host ${s.voices}`} ref={root}>
-      <i className="specks specks-live" aria-hidden="true" />
+      <i className="specks specks-static" style={{ '--specks-o': 0.5 } as React.CSSProperties} aria-hidden="true" />
       <Wrap>
         <p className={s.eyebrow}>{VOICES.eyebrow}</p>
         <header className={s.head}>

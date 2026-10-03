@@ -1,10 +1,11 @@
 /**
- * Generates the site's sound from ElevenLabs, then masters it for the web.
+ * Generates the site's interface sound from ElevenLabs, then masters it
+ * for the web. Effects only: the site has no background music. A page
+ * read for minutes does not need a bed under it, and one drowned the
+ * cues that answer what the visitor did.
  *
- *   node scripts/generate-audio.mjs                 every effect + the theme
+ *   node scripts/generate-audio.mjs                 every effect
  *   node scripts/generate-audio.mjs --only=hover    one cue, by name
- *   node scripts/generate-audio.mjs --sfx           effects only
- *   node scripts/generate-audio.mjs --music         theme only
  *   node scripts/generate-audio.mjs --variants=3    takes per effect
  *   node scripts/generate-audio.mjs --master-only   re-master the PICKS below
  *                                                   from .audio-raw, no API
@@ -90,40 +91,30 @@ export const SFX = [
     text: 'A soft warm confirmation chime, one rounded glassy note with a gentle bloom, friendly and calm, short decay, no harshness.',
     maxMs: 700,
   },
+  {
+    // The Lab's decrypt veil opening. A split-flap board is the right
+    // object: mechanical, paper, and literally characters resolving.
+    name: 'decrypt',
+    seconds: 1.4,
+    influence: 0.7,
+    text: 'A split-flap departure board flipping: a fast soft flutter of many tiny dry paper flaps clicking, quickly slowing down and settling, close-miked, quiet, no voices, no beeps, no music.',
+    maxMs: 1400,
+  },
+  {
+    // The veil fully clear: the last flap lands, and a small glass note.
+    name: 'resolve',
+    seconds: 1.0,
+    influence: 0.7,
+    text: 'One soft final clack of a paper split-flap landing on its letter, followed by a single delicate high glass tick with a short gentle ring, quiet and clean.',
+    maxMs: 1000,
+  },
 ];
 
 /**
  * Chosen takes, by measurement (attack, single onset, spectral centroid
  * for harshness, flatness for tonality). Re-mastered with --master-only.
  */
-export const PICKS = { hover: 1, click: 1, open: 2, close: 1, on: 1, off: 3, focus: 2, confirm: 1 };
-
-/**
- * The tape-hiss bed for the generative score (lib/score.ts). Generated
- * with `loop: true` from the sound-effects endpoint, mastered by
- * --master-only into public/audio/grain.mp3.
- */
-export const GRAIN = {
-  text: 'Soft warm tape hiss with faint gentle vinyl crackle, steady, quiet, no music, no hum',
-  seconds: 20,
-};
-
-/**
- * The composed studio theme. The ElevenLabs Music API needs a paid plan;
- * until one is on the account the site plays the generative score, and
- * the moment public/audio/theme.mp3 exists the engine prefers it.
- */
-export const THEME = {
-  name: 'theme',
-  ms: 120000,
-  prompt: [
-    'Minimal nocturnal ambient electronica for the website of a small software studio, instrumental only.',
-    'Deep warm analog synth pads moving slowly through D minor and F major, a soft felt piano playing a sparse three-note motif that returns,',
-    'a gentle low sub pulse, quiet tape hiss and vinyl crackle like film grain, a faint brushed hi-hat appearing in the middle section and leaving again.',
-    'About 76 BPM, calm, focused, precise, premium, the feeling of working late in a dark green forest studio.',
-    'No vocals, no drops, no big builds, no bright leads. Even dynamics from start to end so it can loop and sit under reading.',
-  ].join(' '),
-};
+export const PICKS = { hover: 1, click: 1, open: 2, close: 1, on: 1, off: 3, focus: 2, confirm: 1, decrypt: 2, resolve: 3 };
 
 // ---------------------------------------------------------------------------
 
@@ -171,30 +162,6 @@ function masterSfx(src, dst, maxMs) {
   ]);
 }
 
-/**
- * Master the theme into a seamless loop: the last 4s are crossfaded onto
- * the first 4s, so the loop point has no seam, then the whole track is
- * normalised to a quiet -23 LUFS bed.
- */
-function masterTheme(src, dst, lufs = -23) {
-  const dur = parseFloat(
-    execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', src]).toString(),
-  );
-  const x = 4;
-  ff([
-    '-i', src,
-    '-filter_complex',
-    [
-      `[0]atrim=0:${x},asetpts=PTS-STARTPTS[head]`,
-      `[0]atrim=${x}:${dur - x},asetpts=PTS-STARTPTS[body]`,
-      `[0]atrim=${dur - x}:${dur},asetpts=PTS-STARTPTS[tail]`,
-      `[tail][head]acrossfade=d=${x}:c1=tri:c2=tri[seam]`,
-      `[seam][body]concat=n=2:v=0:a=1,loudnorm=I=${lufs}:TP=-2:LRA=9[out]`,
-    ].join(';'),
-    '-map', '[out]', '-ar', '44100', '-b:a', '128k', dst,
-  ]);
-}
-
 async function main() {
   const args = Object.fromEntries(
     process.argv.slice(2).map((a) => {
@@ -208,22 +175,15 @@ async function main() {
       masterSfx(join(RAW, `${cue.name}-${pick}.mp3`), join(OUT, `${cue.name}.mp3`), cue.maxMs);
       console.log(`master ${cue.name} <- take ${pick}`);
     }
-    if (existsSync(join(RAW, 'theme-raw.mp3'))) masterTheme(join(RAW, 'theme-raw.mp3'), join(OUT, 'theme.mp3'));
-    // The film-grain bed under the generative score: tape hiss and
-    // crackle, looped seamlessly, quiet. Taken from the sound-effects
-    // endpoint, which the free tier allows (the music API does not).
-    if (existsSync(join(RAW, 'grain.mp3'))) masterTheme(join(RAW, 'grain.mp3'), join(OUT, 'grain.mp3'), -30);
     return;
   }
   const key = loadKey();
   const variants = Number(args.variants ?? 1);
   const only = args.only ? String(args.only).split(',') : null;
-  const doSfx = !args.music || args.sfx;
-  const doMusic = !args.sfx || args.music;
   mkdirSync(RAW, { recursive: true });
   mkdirSync(OUT, { recursive: true });
 
-  if (doSfx) {
+  {
     for (const cue of SFX) {
       if (only && !only.includes(cue.name)) continue;
       for (let v = 1; v <= variants; v++) {
@@ -242,27 +202,6 @@ async function main() {
       masterSfx(join(RAW, `${cue.name}-${pick}.mp3`), join(OUT, `${cue.name}.mp3`), cue.maxMs);
       console.log(`     -> ${OUT}/${cue.name}.mp3 (take ${pick})`);
     }
-  }
-
-  if (doMusic && (!only || only.includes('theme'))) {
-    const raw = join(RAW, 'theme-raw.mp3');
-    let audio;
-    try {
-      audio = await post(
-        '/music?output_format=mp3_44100_128',
-        { prompt: THEME.prompt, music_length_ms: THEME.ms, model_id: 'music_v1', force_instrumental: true },
-        key,
-      );
-    } catch (e) {
-      // Older accounts reject the instrumental flag; the prompt already
-      // says no vocals, so retry without it rather than fail the run.
-      if (!String(e).includes('force_instrumental')) throw e;
-      audio = await post('/music?output_format=mp3_44100_128', { prompt: THEME.prompt, music_length_ms: THEME.ms }, key);
-    }
-    writeFileSync(raw, audio);
-    console.log(`music theme: ${audio.length} bytes`);
-    masterTheme(raw, join(OUT, 'theme.mp3'));
-    console.log(`     -> ${OUT}/theme.mp3 (seamless loop)`);
   }
 }
 

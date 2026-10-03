@@ -24,7 +24,7 @@ import s from './footer.module.css';
 export function Footer() {
   return (
     <footer id="footer" data-ground="void" className={`specks-host ${s.footer}`}>
-      <i className="specks specks-live" aria-hidden="true" />
+      <i className="specks specks-static" style={{ '--specks-o': 0.5 } as React.CSSProperties} aria-hidden="true" />
       <Wrap>
         <div className={s.metaTop}>
           <span className={s.tagline}>{TAGLINE.text}</span>
