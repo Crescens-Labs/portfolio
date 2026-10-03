@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { getSound } from '@/lib/sound';
 import s from './cipher-veil.module.css';
 
 /**
@@ -22,6 +23,10 @@ import s from './cipher-veil.module.css';
  * The cipher is written as text-like lines, words of random length in
  * mono, mutating on idle and sizzling in the accent along the decrypt
  * edge. Canvas 2D only.
+ *
+ * Sound, when the visitor has turned it on: the split-flap flutter as the
+ * veil starts to open from rest, and the last flap landing as the
+ * section comes fully clear. Once each per visit to the section.
  *
  * Motion contract: reduced motion, coarse pointers and narrow viewports
  * never mount the veil at all; the section is simply itself.
@@ -134,6 +139,7 @@ export function CipherVeil({ hint }: { hint?: string }) {
       const { width, height } = host.getBoundingClientRect();
       if (Math.abs(width - w) < 1 && Math.abs(height - h) < 1) return;
       window.clearTimeout(settle);
+      window.clearTimeout(landing);
       settle = window.setTimeout(() => {
         layout();
         // Assigning canvas.width cleared it. Repaint the whole veil, loop
@@ -181,9 +187,19 @@ export function CipherVeil({ hint }: { hint?: string }) {
       if (inside && radius >= coverMax() - 1) return;
       wake();
     };
+    // The cues mark the two ends of a reveal, once each: opening from a
+    // veil that is (nearly) whole, and arriving at fully clear.
+    let resolved = false;
+    let decryptAt = -Infinity;
+    let landing = 0;
     const onEnter = () => {
       inside = true;
       window.clearTimeout(linger);
+      if (radius < edge) {
+        resolved = false;
+        decryptAt = performance.now();
+        getSound()?.play('decrypt');
+      }
       wake();
     };
     const onLeave = () => {
@@ -357,6 +373,27 @@ export function CipherVeil({ hint }: { hint?: string }) {
       // Parks at rest (veiled, pointer gone) and once fully decrypted:
       // a clear section has nothing left to animate, and the loop used
       // to redraw it every frame for as long as the pointer stayed.
+      // "Clear" is what the visitor sees: the solid part of the circle
+      // covers every corner of the section's on-screen part. The full
+      // section takes seconds longer, off screen, where no one is looking.
+      if (inside && !resolved && radius > edge) {
+        const r = host.getBoundingClientRect();
+        const top = Math.max(0, -r.top);
+        const bottom = Math.min(h, window.innerHeight - r.top);
+        const far = Math.max(
+          Math.hypot(sx, sy - top),
+          Math.hypot(w - sx, sy - top),
+          Math.hypot(sx, bottom - sy),
+          Math.hypot(w - sx, bottom - sy),
+        );
+        if (radius - edge >= far) {
+          resolved = true;
+          // The last flap lands after the flutter has settled, never on
+          // top of it: the flutter runs ~1.4s and thins out by ~1.1s.
+          const wait = Math.max(0, decryptAt + 1100 - performance.now());
+          landing = window.setTimeout(() => getSound()?.play('resolve'), wait);
+        }
+      }
       if ((!inside && radius < 1) || (inside && radius >= coverMax() - 1)) {
         running = false;
         return;
@@ -368,6 +405,7 @@ export function CipherVeil({ hint }: { hint?: string }) {
       running = false;
       window.clearTimeout(linger);
       window.clearTimeout(settle);
+      window.clearTimeout(landing);
       cancelAnimationFrame(raf);
       ro.disconnect();
       io.disconnect();
