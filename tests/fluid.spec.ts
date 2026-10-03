@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const { fluidValue } = require('../lib/postcss-fluid.cjs') as { fluidValue: (v: string) => string };
+const { fluidValue, targetsSvgText } = require('../lib/postcss-fluid.cjs') as {
+  fluidValue: (v: string) => string;
+  targetsSvgText: (selector: string) => boolean;
+};
 
 /**
  * The fluid px pass is what makes a 1920 screen at 100% show the design
@@ -30,6 +33,15 @@ describe('fluid px', () => {
 
   it('never rewrites inside url()', () => {
     expect(fluidValue("url('/a-12px.png') 4px")).toBe("url('/a-12px.png') calc(4 * var(--px))");
+  });
+
+  it('leaves SVG text in viewBox units, so wordmarks are never scaled twice', () => {
+    expect(targetsSvgText('.wordmark text')).toBe(true);
+    expect(targetsSvgText('.ctaOrb:hover .ring text')).toBe(true);
+    expect(targetsSvgText('.a > tspan, .b textPath')).toBe(true);
+    expect(targetsSvgText('.text')).toBe(false);
+    expect(targetsSvgText('.wordmark')).toBe(false);
+    expect(targetsSvgText('.card text, .card')).toBe(false);
   });
 
   it('defines the unit with a 1px floor at the 1536 reference', () => {
