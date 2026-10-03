@@ -54,7 +54,7 @@ export function Bento() {
 
   return (
     <section id="capabilities" data-ground="dark" className={`specks-host ${s.bento}`} ref={root}>
-      <i className="specks specks-live" aria-hidden="true" />
+      <i className="specks specks-static" style={{ '--specks-o': 0.5 } as React.CSSProperties} aria-hidden="true" />
       <Wrap>
         <p className={shared.eyebrow}>{BENTO.eyebrow}</p>
         <div className={shared.head}>

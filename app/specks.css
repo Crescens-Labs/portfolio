@@ -5,12 +5,14 @@
    logo's field into public/grain-speck.png, white on transparent, so
    they draw as pure added light and never wash the palette under them.
 
-   Two moods, mixed on purpose so the page does not read as one endless
-   sheet of the same weather:
+   One mood, still. A drifting "live" variant used to step the tile's
+   background-position on a loop, which repainted the whole section
+   three times a second for as long as it was on screen: the main cost
+   behind the jank from the Lab down to the footer. Grain is texture,
+   and texture does not need to move to be felt. Sections that want a
+   different surface take the grid (app/grid.css) instead.
 
      .specks-static  pure bintik, sitting still
-     .specks-live    the same flecks, drifting on a stepped loop so
-                     the band reads as film, not wallpaper
 
    The hero takes neither: it has its own field, video and vignette,
    and an extra layer there reads as noise on the one screen that is
@@ -46,45 +48,9 @@
   opacity: var(--specks-o, 0.7);
 }
 
-/* The live mood. The tile itself shifts on whole steps, so the flecks
-   flicker like film rather than slide. The layer stays exactly the
-   section's size: a repeating background has no edge to expose, so no
-   oversized layer is needed and nothing has to clip around sticky or
-   pinned children. */
-.specks-live {
-  opacity: var(--specks-o, 0.5);
-  animation: specks-drift 1.2s steps(4) infinite;
-}
-
-@keyframes specks-drift {
-  0% {
-    background-position: 0 0;
-  }
-  25% {
-    background-position: -37px 21px;
-  }
-  50% {
-    background-position: 26px -31px;
-  }
-  75% {
-    background-position: -21px -16px;
-  }
-  100% {
-    background-position: 0 0;
-  }
-}
-
 /* Same physical fleck size on dense screens. */
 @media (min-resolution: 2dppx) {
   .specks {
     background-size: calc(var(--grain-size) * 0.62) calc(var(--grain-size) * 0.62);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .specks-live {
-    animation: none;
-    /* Falls back to the static mood: the texture stays, the film
-       stops. */
   }
 }
