@@ -68,17 +68,43 @@ export function BarcodeStrip() {
     const moveTicks = gsap.quickTo(ticks, 'x', { duration: 1.05, ease: 'house' });
     const moveHead = gsap.quickTo(head, 'x', { duration: 0.45, ease: 'house' });
 
+    // Measured once and on resize, never inside the handler: reading
+    // offsetWidth there, right after the tweens wrote transforms, forced
+    // a layout on every pointer move.
+    let headW = head.offsetWidth;
+    let viewW = window.innerWidth;
+    const onResize = () => {
+      headW = head.offsetWidth;
+      viewW = window.innerWidth;
+    };
+
     const onMove = (e: PointerEvent) => {
       // -1 at the left edge, 1 at the right. The code travels the
       // opposite way to the pointer so the strip reads as being read,
       // not dragged, and the head lands exactly under the cursor.
-      const n = (e.clientX / window.innerWidth) * 2 - 1;
+      const n = (e.clientX / viewW) * 2 - 1;
       moveCode(n * -76);
       moveTicks(n * 38);
-      moveHead(e.clientX - head.offsetWidth / 2);
+      moveHead(e.clientX - headW / 2);
     };
-    window.addEventListener('pointermove', onMove, { passive: true });
-    return () => window.removeEventListener('pointermove', onMove);
+
+    // Listening only while the strip is on screen. It used to follow
+    // the pointer across the whole page, three tweens per move, for a
+    // strip that sits at the very bottom.
+    let listening = false;
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting === listening) return;
+      listening = entry.isIntersecting;
+      if (listening) window.addEventListener('pointermove', onMove, { passive: true });
+      else window.removeEventListener('pointermove', onMove);
+    });
+    io.observe(el);
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => {
+      io.disconnect();
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('resize', onResize);
+    };
   }, []);
 
   const backgroundImage = barcodeStops();
